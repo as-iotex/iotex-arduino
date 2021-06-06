@@ -46,10 +46,10 @@ Use the provided `Unit tests - launch` configuration
 
 ## Library usage
 
-Sample scenarios for the endpoints supported in milestone one are provided in `tests/src/api/wallets/walletsTests.cpp`
+Sample scenarios for the endpoints supported in milestone one are provided in `tests/src/api/wallets/walletsTests.cpp`  
 The user flow is the following:
 
-1. Create the connection:
+1. Create the connection:  
    `Connection<Api> connection(tIp, tPort, tBaseUrl);`
-2. Now you are ready to interact with the blockchain by calling any api methods. Eg:
+2. Now you are ready to interact with the blockchain by calling any api methods. Eg:  
    `ResultCode result = connection.api.wallets.getBalance(tAccount, balance);`
