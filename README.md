@@ -8,7 +8,7 @@
 
 ### Building in VSCode
 
-Press <kbd>F1<kbd> to open the terminal and write `Tasks: Run task`
+Press <kbd>F1</kbd> to open the terminal and write `Tasks: Run task`  
 Select the task `Arduino - Run unit tests`
 
 ## VSCode
@@ -28,17 +28,19 @@ Use the provided `Unit tests - launch` configuration
 
 ## Milestone 1 - JSON-RPC over HTTP/S
 
-[x] JSON-RPC parser/serializer  
+- [x] **JSON-RPC parser/serializer**  
     - `Iotex::api::rpc::` contains helper methods that construct the RPC request for each of the supported api endpoints.  
     - `Iotex::ResponseTypes::` contains helper methods for parsing JSON responses into C++ structs
   
-[x] *IConnection:* This is an Interface for a HTTP/HTTPs connection. Possibly a mock implementation or an implementation for one board (eg. ESP32)  
-    Implemented in `Iotex::Connection`, which contains a platform specific `Iotex::Host` instance, selected at compile time  
+- [x] **IConnection:** This is an Interface for a HTTP/HTTPs connection. Possibly a mock implementation or an implementation for one board (eg. ESP32)  
+  
+    Implemented in `Iotex::Connection`, which contains a platform specific `Iotex::Host` instance, selected at compile time    
     The proper implementation of `Iotex::Host` is compiled based on the current platform. This is currently done by checking for a compiler flag (see `#ifdef OS` in `/src/http/os/http.cpp`)  
     `/src/http/os/http.cpp` contains an implementation of the HTTP class which works on Linux OS by using curl  
     A different implementation will be provided later on for each of the supported boards (ESP32, ESP8266, etc.)  
 
-[x] *Api:* This is a class/interface for the IoTeX JSON-RPC api. Will implement the following methods, which construct the payload using the JSON-RPC parser, send a request over HTTP using IConnection, parse the response and return it in an adequate struct/class. Implements the following methods (initially)  
+- [x] **Api:** This is a class/interface for the IoTeX JSON-RPC api. Will implement the following methods, which construct the payload using the JSON-RPC parser, send a request over HTTP using IConnection, parse the response and return it in an adequate struct/class. Implements the following methods (initially)  
+  
     Implemented in `Iotex::Api`  
     The full api divided in "subsections". Eg. the methods created for this milestone are encapsulated inside the `Iotex::api::Wallets` class  
 
