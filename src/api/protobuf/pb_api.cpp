@@ -33,7 +33,7 @@ namespace
                 break;
 
             default:
-                ResultCode::ERROR_JSON_PARSE;
+                return ResultCode::ERROR_JSON_PARSE;
             }
 
         // Set the value
