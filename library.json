@@ -1,0 +1,47 @@
+{
+    "name": "iotex-arduino",
+    "description": "Library to interact with the Iotex bockchain from Arduino boards",
+    "repository": {
+      "type": "git",
+      "url": ""
+    },
+    "version": "0.0.1",
+    "authors": [
+      {
+        "name": "iotex",
+        "email": "",
+        "url": ""
+      }
+    ],
+    "frameworks": "arduino",
+    "platforms": [
+      "espressif8266",
+      "espressif32"
+    ],
+    "export": {
+      "include": [
+        "src/*",
+        "include/*",
+        "examples/*",
+        "extern/*",
+        "*.md",
+        "*.json",
+        "*.properties",
+        "LICENSE",
+        "*.ini",
+        "keywords.txt"
+      ],
+      "exclude": [
+        "*/*.txt"
+      ]
+    },
+    "build": {
+        "flags":
+        [
+            "-Iinclude/iotex",
+            "-Iextern"
+        ],
+        "extraScript": "extra_script.py"
+    },
+    "libLDFMode": "deep+"
+  }
