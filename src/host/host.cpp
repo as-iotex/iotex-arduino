@@ -38,7 +38,9 @@ std::string Host::toString()
 	out.reserve(strlen(_hostname) + PORT_MAX_STRING_LEN + strlen(_baseUrl) + 3);
 	out += (this->_hostname);
 	out += ":";
-	out += std::to_string(this->_port);
+	char port_str[6] = { 0 };
+	snprintf(port_str, 6, "%u", this->_port);
+	out += port_str;
 	if (strlen(_baseUrl))
 	{
 		out += "/";

@@ -6,6 +6,7 @@
 #ifndef PB_API_H
 #define PB_API_H
 
+#include <stdlib.h>
 #include <string.h>
 #include <vector>
 #include <string>
