@@ -62,6 +62,7 @@ add_library(iotex-antenna-arduino STATIC
         src/encoder/bech32.cpp
         src/random/os/random.cpp
         src/storage/os/storage.cpp
+        src/account/account.cpp
 )
 
 target_include_directories(iotex-antenna-arduino 
