@@ -1,6 +1,7 @@
 
 #include "api/wallet/wallets.h"
 
+using namespace Iotex;
 using namespace Iotex::api;
 using namespace Iotex::ResponseTypes;
 

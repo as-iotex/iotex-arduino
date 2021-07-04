@@ -12,6 +12,7 @@
 #include <string>
 
 #include "api/base.h"
+#include "result_codes.h"
 
 namespace Iotex 
 {
@@ -108,7 +109,7 @@ namespace Iotex
 
     struct GetBalanceResponse
     {
-      api::ResultCode fromJson(std::string jsonString);
+      ResultCode fromJson(std::string jsonString);
       const char *getBalance() { return balance.c_str(); }
 
       private:
@@ -118,7 +119,7 @@ namespace Iotex
     struct GetAccountResponse
     {
       public:
-        api::ResultCode fromJson(std::string jsonString);
+        ResultCode fromJson(std::string jsonString);
 
       public:
         AccountMeta accountMeta;
@@ -128,7 +129,7 @@ namespace Iotex
     struct GetActionsResponse_Transfer
     {
       public:
-        api::ResultCode fromJson(std::string jsonString);
+        ResultCode fromJson(std::string jsonString);
 
       public:
         std::string total;

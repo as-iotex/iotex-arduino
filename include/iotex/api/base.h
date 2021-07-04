@@ -3,26 +3,12 @@
 
 #include "host/host.h"
 #include "http/http.h"
-
-#define IOTEX_ADDRESS_STRLEN    41
-#define IOTEX_MAX_BALANCE_STRLEN    30
-#define IOTEX_HASH_STRLEN    64
-#define IOTEX_PUBLIC_KEY_STRLEN    88
-#define IOTEX_SIGNATURE_STRLEN    88
-#define IOTEX_TIMESTAMP_STRLEN    21 // TODO check if this is correct or it can be bigger
+#include "constants.h"
 
 namespace Iotex 
 {
     namespace api 
     {
-        enum class ResultCode
-        {
-            SUCCESS,
-            ERROR_HTTP,
-            ERROR_JSON_PARSE,
-            ERROR_UNKNOWN
-        };
-
         class Base 
         {
             protected:
