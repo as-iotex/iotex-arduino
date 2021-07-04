@@ -1,10 +1,7 @@
+#ifdef OS
 
 #include "http/http.h"
 #include "helpers/client_helpers.h"
-
-// Conditionally compile this file
-// TODO This should be handled in compilation configuration
-#ifdef OS
 
 #include <curl/curl.h>
 #include <cstring>
@@ -93,6 +90,16 @@ namespace
             curl_global_cleanup();
             return readBuffer;
         };
+
+        int get(const char* request, char* rspBuf, size_t size)
+        {
+            return -1;
+        }
+
+        int post(const char* request, const char* body, char* rspBuf, size_t size)
+        {
+            return -1;
+        }
     };
 
 }  // namespace

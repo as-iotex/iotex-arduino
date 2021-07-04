@@ -23,30 +23,78 @@ namespace Iotex
 
 				std::string get(const char* request) override 
 				{
-					HTTPClient httpClient;
-					httpClient.setReuse(false);
-					httpClient.setTimeout(3000);
+					if (!Initialize(request))
+					{
+						return "";
+					};
 
-					httpClient.addHeader("Content-Type", "application/json");
-					httpClient.begin(std::string("http://" + std::string(request)).c_str());
+					_httpClient.GET();
 
-					httpClient.GET();
-
-					return httpClient.getString().c_str();
+					return _httpClient.getString().c_str();
 				}
 
 				std::string post(const char* request, const char *body) override 
 				{
-					HTTPClient httpClient;
-					httpClient.setReuse(true);
-					httpClient.setTimeout(3000);
+					if (!Initialize(request))
+					{
+						return "";
+					};
 
-					httpClient.addHeader("Content-Type", "application/json");
-					httpClient.begin(std::string("http://" + std::string(request)).c_str());
-
-					httpClient.POST(body);
-					return httpClient.getString().c_str();
+					_httpClient.POST(body);
+					std::string ret;
+					ret = _httpClient.getString().c_str();
+					return ret;
 				}
+
+				int get(const char* request, char* rspBuf, size_t size)
+				{
+					if (!Initialize(request))
+					{
+						return -1;
+					};
+
+					_httpClient.GET();
+					memcpy(rspBuf, _httpClient.getString().c_str(), _httpClient.getString().length());
+					return strlen(rspBuf);
+				}
+
+				int post(const char* request, const char* body, char* rspBuf, size_t size)
+				{
+					if (!Initialize(request))
+					{
+						return -1;
+					};
+					int errorCode = _httpClient.POST(body);
+					memcpy(rspBuf, _httpClient.getString().c_str(), _httpClient.getString().length());
+					return strlen(rspBuf);
+				}
+			
+			private:
+				HTTPClient _httpClient;
+				#ifdef ESP8266
+				WiFiClient _wifiClient;
+				#endif
+
+				bool Initialize(const char* path)
+				{
+					_httpClient.setReuse(true);
+					_httpClient.setTimeout(3000);
+					_httpClient.addHeader("Content-Type", "application/json");
+					String url = "http://";
+					url += path;
+					bool initOk = false;
+					#ifdef ESP8266
+					initOk = _httpClient.begin(_wifiClient, url);
+					#else
+					initOk = _httpClient.begin(url);
+					#endif
+					if (!initOk)
+					{
+						Serial.println("Failed to initialize HTTP client");
+					}
+					return initOk;
+				}
+
 		}; // class PlatformHTTP : public AbstractHTTP
 	}  // namespace
 

@@ -16,6 +16,9 @@ namespace Iotex
 
         virtual std::string get(const char* request) = 0;
         virtual std::string post(const char* request, const char* body) = 0;
+        
+        virtual int get(const char* request, char* rspBuf, size_t size) = 0;
+        virtual int post(const char* request, const char* body, char* rspBuf, size_t size) = 0;
     };
 
     class AbstractHTTP : public IHTTP 
