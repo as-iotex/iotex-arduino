@@ -14,22 +14,36 @@ add_library(iotex-antenna-arduino STATIC
         extern/cjson/cJSON.c
         # Base64
         extern/base64/base64.c
-    # Crypto
+        # Crypto
     #     extern/crypto/secp256k1.c
-    #     extern/crypto/ecdsa.c
-    #     extern/crypto/sha2.c    
-    #     extern/crypto/sha3.c    
-    #     extern/crypto/bignum.c    
-    #     extern/crypto/rand.c    
-    #     extern/crypto/memzero.c    
-    #     extern/crypto/rfc6979.c    
-    #     extern/crypto/hmac_drbg.c    
-    
-    # # NanoPb
-    #     extern/nanopb/pb_common.c
-    #     extern/nanopb/pb_encode.c
-    #     extern/nanopb/pb_decode.c
-
+            extern/crypto/address.c     
+            extern/crypto/base58.c
+            extern/crypto/bignum.c
+            extern/crypto/bip32.c
+            extern/crypto/blake256.c
+            extern/crypto/blake2b.c
+            extern/crypto/curves.c
+            extern/crypto/ecdsa.c
+            extern/crypto/groestl.c
+            extern/crypto/hasher.c    
+            extern/crypto/hmac.c    
+            extern/crypto/hmac_drbg.c    
+            extern/crypto/memzero.c    
+            extern/crypto/nist256p1.c    
+            extern/crypto/rand.c    
+            extern/crypto/rfc6979.c    
+            extern/crypto/ripemd160.c    
+            extern/crypto/secp256k1.c
+            extern/crypto/sha2.c    
+            extern/crypto/sha3.c    
+            extern/crypto/script.c    
+            extern/crypto/aes/aes_modes.c
+            extern/crypto/aes/aescrypt.c
+            extern/crypto/aes/aeskey.c
+            extern/crypto/aes/aestab.c
+            extern/crypto/aes/aestst.c
+            extern/crypto/ed25519-donna/ed25519.c
+   
     # Iotex embedded
         # extern/iotex-emb/abi_pack.c
         # extern/iotex-emb/abi_read_contract.c
@@ -61,6 +75,8 @@ target_include_directories(iotex-antenna-arduino
     PUBLIC include
 
     # Extern
+    PUBLIC extern
+    PUBLIC extern/crypto        # Needed for sources inside crypto
     # PUBLIC extern/BigNumber/src
     # PUBLIC extern/BigNumber/src/BigNumber
     PUBLIC extern
