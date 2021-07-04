@@ -57,6 +57,7 @@ add_library(iotex-antenna-arduino STATIC
         src/api/rpc.cpp
         src/api/wallet/wallets.cpp
         src/api/protobuf/pb_api.cpp
+        src/signer/signer.cpp
         src/encoder/encoder.cpp
         src/encoder/bech32.cpp
         src/random/os/random.cpp
