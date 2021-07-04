@@ -10,9 +10,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(iotex-antenna-arduino STATIC
     # Extern
-        # extern/tiny-bignum-c/bn.cpp
-    # Utils
+        # JSON
         extern/cjson/cJSON.c
+        # Base64
+        extern/base64/base64.c
     # Crypto
     #     extern/crypto/secp256k1.c
     #     extern/crypto/ecdsa.c
