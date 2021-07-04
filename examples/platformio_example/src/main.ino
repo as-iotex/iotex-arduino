@@ -122,6 +122,17 @@ void setup() {
   Serial.printf("Eth address: %s\n", ethAddrBuf);
   Serial.print("Public key:");
   printhex(publicKeyBuf, sizeof(publicKeyBuf));
+
+  // Test signMessage, the signature should match the one produced by running the command
+  // ioctl account sign abcd -s <walletName>
+  uint8_t message[] = {0xAB, 0xCD};
+  uint8_t signature[IOTEX_SIGNATURE_SIZE] = {0};
+  existingAccount.signMessage(message, sizeof(message), signature);
+  Serial.print("\n\n ----------  Signing message ----------\n");
+  Serial.print("Message: ");
+  printhex(message, sizeof(message));
+  Serial.print("Signature: ");
+  printhex(signature, sizeof(signature));
 }
 
 /**
