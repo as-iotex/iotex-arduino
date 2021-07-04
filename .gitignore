@@ -1,2 +1,9 @@
 build/*
 **/.pio/*
+extern/**/tests/*
+extern/**/examples/*
+extern/**/docs/*
+extern/**/.github/*
+extern/nanopb/spm-test/*
+extern/nanopb/spm_headers/*
+extern/nanopb/tools/*
