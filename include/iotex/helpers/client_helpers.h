@@ -16,7 +16,9 @@
 #include <pgmspace.h>
 
 #else
-#define OS
+    #ifndef OS
+        #define OS
+    #endif
 #endif
 
 #endif

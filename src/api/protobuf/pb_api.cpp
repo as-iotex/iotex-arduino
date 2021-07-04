@@ -1,6 +1,7 @@
 #include "protobuf/pb_api.h"
 #include "cjson/cJSON.h"
 
+using namespace Iotex;
 using namespace Iotex::ResponseTypes;
 using namespace Iotex::api;
 
@@ -27,7 +28,10 @@ namespace
                     {return ResultCode::ERROR_JSON_PARSE;}
                 break;
 
+            case CppType::UINT8:
+            case CppType::UINT16:
             case CppType::UINT32:
+            case CppType::UINT64:
                 if(!cJSON_IsNumber(json))
                     {return ResultCode::ERROR_JSON_PARSE;}
                 break;
@@ -51,8 +55,20 @@ namespace
                 *(bool*)pData = json->valueint;
                 break;
 
+            case CppType::UINT8:
+                *(uint8_t*)pData = json->valueint;
+                break;
+
+            case CppType::UINT16:
+                *(uint16_t*)pData = json->valueint;
+                break;
+
             case CppType::UINT32:
                 *(uint32_t*)pData = json->valueint;
+                break;
+
+            case CppType::UINT64:
+                *(uint64_t*)pData = json->valueint;
                 break;
         }
 
@@ -256,7 +272,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
     
     // Action - core - nonce
     const cJSON* nonce = cJSON_GetObjectItemCaseSensitive(core, "nonce");
-    ret = SetValueFromJsonObject(nonce, CppType::STRING, (void *)&(actionInfoResponse.action.core.nonce));
+    ret = SetValueFromJsonObject(nonce, CppType::UINT64, (void *)&(actionInfoResponse.action.core.nonce));
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);

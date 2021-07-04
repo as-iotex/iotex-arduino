@@ -48,24 +48,8 @@ add_library(iotex-antenna-arduino STATIC
             extern/crypto/aes/aestst.c
             extern/crypto/ed25519-donna/ed25519.c
    
-    # Iotex embedded
-        # extern/iotex-emb/abi_pack.c
-        # extern/iotex-emb/abi_read_contract.c
-        # extern/iotex-emb/config.c
-        # extern/iotex-emb/endian_conv.c
-        # extern/iotex-emb/iotex_emb.c
-        # extern/iotex-emb/parse.c
-        # extern/iotex-emb/pb_pack.c
-        # extern/iotex-emb/pb_proto.c
-        # extern/iotex-emb/request.c
-        # extern/iotex-emb/response.c
-        # extern/iotex-emb/rule.c
-        # extern/iotex-emb/signer.c
-        # extern/iotex-emb/u128.c
-        # extern/iotex-emb/utils.c
-
     # Protobuf
-        # protobuf/c_files/action.pb.c
+        protobuf/c_files/action.pb.c
 
     # Iotex-arduino
         src/http/os/http.cpp        
@@ -80,28 +64,22 @@ add_library(iotex-antenna-arduino STATIC
 )
 
 target_include_directories(iotex-antenna-arduino 
-    PUBLIC include
-
-    # Extern
+    # Extern       
     PUBLIC extern
     PUBLIC extern/crypto        # Needed for sources inside crypto
     PUBLIC extern/nanopb
-    # PUBLIC extern/BigNumber/src
-    # PUBLIC extern/BigNumber/src/BigNumber
-    PUBLIC extern
-    # PUBLIC extern/crypto
-    # PUBLIC extern/tiny-bignum-c
-    # PUBLIC extern/iotex-emb/include/iotex-emb
-    # PUBLIC extern/iotex-emb/include
-    # PUBLIC extern/nanopb
-    # PUBLIC protobuf/c_files
 
+    # Others
     PRIVATE src/encoder         # For util subfolder
+    PRIVATE protobuf/c_files
+    
     # Iotex-arduino
+    PUBLIC include
     PUBLIC include/iotex
 )
 
 target_compile_definitions(iotex-antenna-arduino
+    PUBLIC OS
     PUBLIC _DEBUG_HTTP_
     # PUBLIC ARDUINO
 )

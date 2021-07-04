@@ -72,9 +72,10 @@ namespace Iotex
     struct ActionCore_Transfer
     {
       uint32_t version;
-      std::string nonce;
-      std::string gasLimit;
+      uint64_t nonce;
+      uint64_t gasLimit;
       char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
+      uint32_t chainId;
       Transfer transfer;
     };
 
