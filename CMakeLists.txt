@@ -75,6 +75,7 @@ add_library(iotex-antenna-arduino STATIC
         src/api/protobuf/pb_api.cpp
         src/encoder/encoder.cpp
         src/encoder/bech32.cpp
+        src/random/os/random.cpp
 )
 
 target_include_directories(iotex-antenna-arduino 
