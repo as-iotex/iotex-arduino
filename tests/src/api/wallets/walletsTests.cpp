@@ -56,11 +56,11 @@ TEST_F(WalletTests, GetActionByHash)
     Connection<Api> connection(tIp, tPort, tBaseUrl);
     ActionInfo_Transfer transaction;
     ResultCode result = connection.api.wallets.getTransactionByHash(tTransactionHash, transaction);
-    
+
     ASSERT_EQ(result, ResultCode::SUCCESS);
     ASSERT_EQ(transaction.action.core.version, 0);
-    ASSERT_EQ(transaction.action.core.nonce, "1");
-    ASSERT_EQ(transaction.action.core.gasLimit, "21000");
+    ASSERT_EQ(transaction.action.core.nonce, 1);
+    ASSERT_EQ(transaction.action.core.gasLimit, 21000);
     ASSERT_STREQ(transaction.action.core.gasPrice, "1000000000000");
     ASSERT_STREQ(transaction.action.core.transfer.amount, "888000000000000000000");
     ASSERT_STREQ(transaction.action.core.transfer.recipient, "io1xkx7y9ygsa3dlmvzzyvv8zm6hd6rmskh4dawyu");

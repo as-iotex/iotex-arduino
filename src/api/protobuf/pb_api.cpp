@@ -7,6 +7,16 @@ using namespace Iotex::api;
 
 namespace
 {
+    bool IsNumeric(const std::string &s)
+    {
+        for (const char& c : s)
+        {
+            if (c < '0' || c > '9')
+                return false;
+        }
+        return true;
+    }
+
     ResultCode SetValueFromJsonObject(const cJSON* json, CppType type, void* pData, size_t max_size = 0)
     {
         // Validate type and size
@@ -272,22 +282,29 @@ ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
     
     // Action - core - nonce
     const cJSON* nonce = cJSON_GetObjectItemCaseSensitive(core, "nonce");
-    ret = SetValueFromJsonObject(nonce, CppType::UINT64, (void *)&(actionInfoResponse.action.core.nonce));
-    if (ret != ResultCode::SUCCESS)
+    // Nonce is string in the HTTP response, but uint64 in the protobuf
+    // As a workaround, we get the string value and convert to int here
+    std::string buf;
+    ret = SetValueFromJsonObject(nonce, CppType::STRING, (void*)&buf);
+    if (ret != ResultCode::SUCCESS || !IsNumeric(buf))
     {
         cJSON_Delete(data);
         return ret;
     }
-    
+    actionInfoResponse.action.core.nonce = atol(buf.c_str());
+
     // Action - core - gasLimit
     const cJSON* gasLimit = cJSON_GetObjectItemCaseSensitive(core, "gasLimit");
-    ret = SetValueFromJsonObject(gasLimit, CppType::STRING, (void *)&(actionInfoResponse.action.core.gasLimit));
+    // GasLimit is string in the HTTP response, but uint64 in the protobuf
+    // As a workaround, we get the string value and convert to int here
+    ret = SetValueFromJsonObject(gasLimit, CppType::STRING, &buf);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
         return ret;
     }
-    
+    actionInfoResponse.action.core.gasLimit = atol(buf.c_str());
+
     // Action - core - gasPrice
     const cJSON* gasPrice = cJSON_GetObjectItemCaseSensitive(core, "gasPrice");
     ret = SetValueFromJsonObject(gasPrice, CppType::C_STRING, (void *)&(actionInfoResponse.action.core.gasPrice), IOTEX_MAX_BALANCE_STRLEN);
