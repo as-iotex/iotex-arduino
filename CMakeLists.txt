@@ -14,6 +14,10 @@ add_library(iotex-antenna-arduino STATIC
         extern/cjson/cJSON.c
         # Base64
         extern/base64/base64.c
+        # NanoPb
+        extern/nanopb/pb_common.c
+        extern/nanopb/pb_encode.c
+        extern/nanopb/pb_decode.c
         # Crypto
     #     extern/crypto/secp256k1.c
             extern/crypto/address.c     
@@ -77,6 +81,7 @@ target_include_directories(iotex-antenna-arduino
     # Extern
     PUBLIC extern
     PUBLIC extern/crypto        # Needed for sources inside crypto
+    PUBLIC extern/nanopb
     # PUBLIC extern/BigNumber/src
     # PUBLIC extern/BigNumber/src/BigNumber
     PUBLIC extern
