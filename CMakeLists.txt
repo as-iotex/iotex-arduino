@@ -73,6 +73,8 @@ add_library(iotex-antenna-arduino STATIC
         src/api/rpc.cpp
         src/api/wallet/wallets.cpp
         src/api/protobuf/pb_api.cpp
+        src/encoder/encoder.cpp
+        src/encoder/bech32.cpp
 )
 
 target_include_directories(iotex-antenna-arduino 
@@ -92,6 +94,7 @@ target_include_directories(iotex-antenna-arduino
     # PUBLIC extern/nanopb
     # PUBLIC protobuf/c_files
 
+    PRIVATE src/encoder         # For util subfolder
     # Iotex-arduino
     PUBLIC include/iotex
 )
