@@ -6,4 +6,4 @@ global_env = DefaultEnvironment()
 script_dir = dirname(realpath('__file__'))
 
 # Print environment for debugging
-print(env.Dump())
+# print(env.Dump())

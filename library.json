@@ -39,9 +39,27 @@
         "flags":
         [
             "-Iinclude/iotex",
-            "-Iextern"
+            "-Iextern",
+            "-Iextern/nanopb",
+            "-Iextern/crypto",
+            "-Iextern/cjson",
+            "-Isrc/encoder",
+            "-Iprotobuf/c_files"
+            
         ],
-        "extraScript": "extra_script.py"
+        "extraScript": "extra_script.py",
+        "srcFilter": 
+        [
+          "+<*>",
+          "+<../extern/*>",
+          "-<../extern/nanopb/examples/*>",
+          "-<../extern/nanopb/tests/*>",
+          "-<../extern/crypto/aes/aescrypt.c>",
+          "-<**/os/*>"
+        ]
     },
-    "libLDFMode": "deep+"
+    "libLDFMode": "deep+",
+    "dependencies":
+    [
+    ]
   }
