@@ -3,10 +3,39 @@
 
 #include <memory>
 #include <string>
+#include "result_codes.h"
 
 namespace Iotex
 {
-    class IHTTP 
+    enum GrpcStatusCode
+    {
+        OK = 0,
+        CANCELLED,
+        UNKNOWN,
+        INVALIUD_ARGUMENT,
+        DEADLINE_EXCEEDED,
+        NOT_FOUND,
+        ALREADY_EXISTS,
+        PERMISSION_DENIED,
+        RESOURCE_EXHAUSTED,
+        FAILED_PRECONDITION,
+        ABORTED,
+        OUT_OF_RANGE,
+        UNIMPLEMENTED,
+        INTERNAL,
+        UNAVAILABLE,
+        DATA_LOSS,
+        UNAUTHENTICATED,
+        END
+    };
+
+    struct GrpcStatus
+    {
+        GrpcStatusCode code;
+        std::string message;
+    };
+
+    class IHTTP
     {
         protected:
         IHTTP() = default;
@@ -15,10 +44,10 @@ namespace Iotex
         virtual ~IHTTP() {}
 
         virtual std::string get(const char* request) = 0;
-        virtual std::string post(const char* request, const char* body) = 0;
-        
-        virtual int get(const char* request, char* rspBuf, size_t size) = 0;
-        virtual int post(const char* request, const char* body, char* rspBuf, size_t size) = 0;
+        virtual Iotex::ResultCode post(const char* request, const char* body, std::string& response) = 0;
+
+        virtual int get(const char *request, char *rspBuf, size_t size) { return -1; };
+        virtual int post(const char *request, const char *body, char *rspBuf, size_t size) { return -1; };
     };
 
     class AbstractHTTP : public IHTTP 

@@ -1,5 +1,6 @@
 
 #include "api/wallet/wallets.h"
+#include "signer/signer.h"
 
 using namespace Iotex;
 using namespace Iotex::api;
@@ -8,55 +9,58 @@ using namespace Iotex::ResponseTypes;
 ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getAccount(this->host_, address);
-	auto rsp = http_->post(callData.url.c_str(), callData.body.c_str());
-	if (rsp == "")
+	std::string rspBody;
+	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
+	if (ret != ResultCode::SUCCESS)
 	{
 		return ResultCode::ERROR_HTTP;
 	}
 
 	ResponseTypes::GetAccountResponse resp;
-	ResultCode res = resp.fromJson(rsp);
-	if (res != ResultCode::SUCCESS)
-		return res;
+	ret = resp.fromJson(rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
 
 	data = resp.accountMeta;
-	return ResultCode::SUCCESS;
+	return ret;
 }
 
 ResultCode Wallets::getBalance(const char *const address, std::string& balance)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getBalance(this->host_, address);
-	auto rawRsp = http_->post(callData.url.c_str(), callData.body.c_str());
-	if (rawRsp == "")
+	std::string rspBody;
+	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
+	if (ret != ResultCode::SUCCESS)
 	{
-		return ResultCode::ERROR_HTTP;
+		return ret;
 	}
 
 	ResponseTypes::GetBalanceResponse response;
-	ResultCode result = response.fromJson(rawRsp);
-	if (result != ResultCode::SUCCESS)
-		return result;
+	ret = response.fromJson(rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
 
 	balance = std::string(response.getBalance());
-	return ResultCode::SUCCESS;
+	return ret;
 }
 
 
 ResultCode Wallets::getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
-	auto rawRsp = http_->post(callData.url.c_str(), callData.body.c_str());
-	if (rawRsp == "")
+	std::string rspBody;
+	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
+	if (ret != ResultCode::SUCCESS)
 	{
-		return ResultCode::ERROR_HTTP;
+		return ret;
 	}
 	ResponseTypes::GetActionsResponse_Transfer response;
-	ResultCode result = response.fromJson(rawRsp);
-	if (result != ResultCode::SUCCESS)
-		return result;
+	ret = response.fromJson(rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
 
 	action = response.actionInfo.at(0);
-	return ResultCode::SUCCESS;
+	return ret;
 }
 
 ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE])

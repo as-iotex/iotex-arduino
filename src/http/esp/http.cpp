@@ -33,16 +33,25 @@ namespace Iotex
 					return _httpClient.getString().c_str();
 				}
 
-				std::string post(const char* request, const char *body) override 
+				Iotex::ResultCode post(const char* request, const char *body, std::string& response) override 
 				{
+					const char * headerKeys[] = {"grpc-status", "grpc-message"} ;
+					const size_t numberOfHeaders = 2;
+					
 					if (!Initialize(request))
 					{
 						return "";
 					};
 
+					_httpClient.collectHeaders(headerKeys, numberOfHeaders)
 					_httpClient.POST(body);
 					std::string ret;
-					ret = _httpClient.getString().c_str();
+					response = _httpClient.getString().c_str();
+					GrpcStatusCode grpcStatus = (GrpcStatusCode) atoi(_httpClient.header("grpc-status").c_str());
+					if (grpcStatus != GrpcStatusCode::OK)
+					{
+						response = _httpClient.header("grpc-message").c_str();
+					}
 					return ret;
 				}
 
