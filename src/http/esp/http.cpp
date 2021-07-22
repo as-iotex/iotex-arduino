@@ -40,19 +40,27 @@ namespace Iotex
 					
 					if (!Initialize(request))
 					{
-						return "";
+						return ResultCode::ERROR_HTTP;
 					};
 
-					_httpClient.collectHeaders(headerKeys, numberOfHeaders)
+					_httpClient.collectHeaders(headerKeys, numberOfHeaders);
+					#ifdef DEBUG_HTTP
+						Serial.println("HTTP::post(): Request Body: ");
+						Serial.println(body);
+					#endif
 					_httpClient.POST(body);
-					std::string ret;
 					response = _httpClient.getString().c_str();
 					GrpcStatusCode grpcStatus = (GrpcStatusCode) atoi(_httpClient.header("grpc-status").c_str());
 					if (grpcStatus != GrpcStatusCode::OK)
 					{
 						response = _httpClient.header("grpc-message").c_str();
+						#ifdef DEBUG_HTTP
+							Serial.printf("HTTP::post(): Grpc message: %s\n", _httpClient.header("grpc-message").c_str());
+						#endif
+						return ResultCode::ERROR_GRPC;
 					}
-					return ret;
+					Serial.printf("HTTP::post(): Response body: %s\n", _httpClient.header("grpc-message").c_str());
+					return ResultCode::SUCCESS;
 				}
 
 				int get(const char* request, char* rspBuf, size_t size)
