@@ -44,7 +44,8 @@
             "-Iextern/crypto",
             "-Iextern/cjson",
             "-Isrc/encoder",
-            "-Iprotobuf/c_files"
+            "-Iprotobuf/c_files",
+            "-DRAND_PLATFORM_INDEPENDENT"
             
         ],
         "extraScript": "extra_script.py",
