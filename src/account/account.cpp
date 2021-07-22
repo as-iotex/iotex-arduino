@@ -1,4 +1,5 @@
 #include "account/account.h"
+#include "api/wallet/wallets.h"
 
 #include <vector>
 
@@ -83,15 +84,14 @@ void Account::signMessage(const uint8_t *message, size_t size, uint8_t signature
     _pSigner->signMessage(message, size, _privateKey, signature);
 }
 
-void Account::signTokenTransferAction(Iotex::ResponseTypes::Action_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE])
+void Account::signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
-    // TODO
-}
+    uint8_t encodedCore[1024] = {0};
+    size_t encodedCoreSize = encoder.protobuf_encodeTransfer(transfer, encodedCore, sizeof(encodedCore));
 
-ResultCode Account::sendTokeTransferAction(Iotex::ResponseTypes::Action_Transfer &transfer)
-{
-    // TODO
-    return ResultCode::ERROR_UNKNOWN;
+    uint8_t hash[IOTEX_HASH_SIZE] = {0};
+    signer.getHash(encodedCore, encodedCoreSize, hash);
+    signer.signHash(hash, _privateKey, signature);
 }
 
 

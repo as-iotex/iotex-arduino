@@ -100,8 +100,7 @@ typedef struct _TerminatePlumChain {
 typedef struct _Transfer { 
     /* used by state-based model */
     pb_callback_t amount; 
-    pb_callback_t recipient; 
-    pb_callback_t payload; 
+    pb_callback_t recipient; /* bytes payload = 3; */
 } Transfer;
 
 /* Deprecated */
@@ -289,7 +288,6 @@ typedef struct _ActionCore {
     uint64_t nonce; 
     uint64_t gasLimit; 
     pb_callback_t gasPrice; 
-    uint32_t chainID; 
     pb_size_t which_action;
     union {
         Transfer transfer;
@@ -349,7 +347,7 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define Transfer_init_default                    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Transfer_init_default                    {{{NULL}, NULL}, {{NULL}, NULL}}
 #define Candidate_init_default                   {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define CandidateList_init_default               {{{NULL}, NULL}}
 #define PutPollResult_init_default               {0, false, CandidateList_init_default}
@@ -379,7 +377,7 @@ extern "C" {
 #define PlumFinalizeExit_init_default            {{{NULL}, NULL}, 0}
 #define PlumSettleDeposit_init_default           {0}
 #define PlumTransfer_init_default                {0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define ActionCore_init_default                  {0, 0, 0, {{NULL}, NULL}, 0, 0, {Transfer_init_default}}
+#define ActionCore_init_default                  {0, 0, 0, {{NULL}, NULL}, 0, {Transfer_init_default}}
 #define Action_init_default                      {false, ActionCore_init_default, {{NULL}, NULL}, {{NULL}, NULL}, _Encoding_MIN}
 #define Receipt_init_default                     {0, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Log_init_default                         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}}
@@ -391,7 +389,7 @@ extern "C" {
 #define DepositToRewardingFund_init_default      {{{NULL}, NULL}, {{NULL}, NULL}}
 #define ClaimFromRewardingFund_init_default      {{{NULL}, NULL}, {{NULL}, NULL}}
 #define GrantReward_init_default                 {_RewardType_MIN, 0}
-#define Transfer_init_zero                       {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Transfer_init_zero                       {{{NULL}, NULL}, {{NULL}, NULL}}
 #define Candidate_init_zero                      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define CandidateList_init_zero                  {{{NULL}, NULL}}
 #define PutPollResult_init_zero                  {0, false, CandidateList_init_zero}
@@ -421,7 +419,7 @@ extern "C" {
 #define PlumFinalizeExit_init_zero               {{{NULL}, NULL}, 0}
 #define PlumSettleDeposit_init_zero              {0}
 #define PlumTransfer_init_zero                   {0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define ActionCore_init_zero                     {0, 0, 0, {{NULL}, NULL}, 0, 0, {Transfer_init_zero}}
+#define ActionCore_init_zero                     {0, 0, 0, {{NULL}, NULL}, 0, {Transfer_init_zero}}
 #define Action_init_zero                         {false, ActionCore_init_zero, {{NULL}, NULL}, {{NULL}, NULL}, _Encoding_MIN}
 #define Receipt_init_zero                        {0, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Log_init_zero                            {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}}
@@ -465,7 +463,6 @@ extern "C" {
 #define TerminatePlumChain_subChainAddress_tag   1
 #define Transfer_amount_tag                      1
 #define Transfer_recipient_tag                   2
-#define Transfer_payload_tag                     3
 #define ActionEvmTransfer_actionHash_tag         1
 #define ActionEvmTransfer_numEvmTransfers_tag    2
 #define ActionEvmTransfer_evmTransfers_tag       3
@@ -565,7 +562,6 @@ extern "C" {
 #define ActionCore_nonce_tag                     2
 #define ActionCore_gasLimit_tag                  3
 #define ActionCore_gasPrice_tag                  4
-#define ActionCore_chainID_tag                   5
 #define ActionCore_transfer_tag                  10
 #define ActionCore_execution_tag                 12
 #define ActionCore_startSubChain_tag             13
@@ -604,8 +600,7 @@ extern "C" {
 /* Struct field encoding specification for nanopb */
 #define Transfer_FIELDLIST(X, a) \
 X(a, CALLBACK, SINGULAR, STRING,   amount,            1) \
-X(a, CALLBACK, SINGULAR, STRING,   recipient,         2) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           3)
+X(a, CALLBACK, SINGULAR, STRING,   recipient,         2)
 #define Transfer_CALLBACK pb_default_field_callback
 #define Transfer_DEFAULT NULL
 
@@ -828,7 +823,6 @@ X(a, STATIC,   SINGULAR, UINT32,   version,           1) \
 X(a, STATIC,   SINGULAR, UINT64,   nonce,             2) \
 X(a, STATIC,   SINGULAR, UINT64,   gasLimit,          3) \
 X(a, CALLBACK, SINGULAR, STRING,   gasPrice,          4) \
-X(a, STATIC,   SINGULAR, UINT32,   chainID,           5) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (action,transfer,action.transfer),  10) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (action,execution,action.execution),  12) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (action,startSubChain,action.startSubChain),  13) \

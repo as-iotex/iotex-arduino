@@ -402,3 +402,22 @@ ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
 
     return ret;
 }
+
+ResultCode SendTokenTransferResponse::fromJson(std::string jsonString)
+{
+    ResultCode ret = ResultCode::SUCCESS;
+    cJSON *data = cJSON_Parse(jsonString.c_str());
+    if (data == NULL)
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+
+    // Convert
+    const cJSON* hash = cJSON_GetObjectItemCaseSensitive(data, "actionHash");
+    ret = SetValueFromJsonObject(hash, CppType::C_STRING, (void *)&(this->hash), IOTEX_HASH_STRLEN);
+
+    cJSON_Delete(data);
+
+    return ret;
+}

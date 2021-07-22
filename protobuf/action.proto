@@ -16,7 +16,7 @@ message Transfer {
   // used by state-based model
   string amount = 1;
   string recipient = 2;
-  bytes payload = 3;
+  // bytes payload = 3; // Unused
 }
 
 // Candidates and list of candidates
@@ -207,7 +207,7 @@ message ActionCore {
   uint64 nonce = 2;
   uint64 gasLimit = 3;
   string gasPrice = 4;
-  uint32 chainID = 5;
+  // uint32 chainID = 5;  // Unused
   oneof action {
     Transfer transfer = 10;
     Execution execution = 12;

@@ -23,6 +23,8 @@ namespace Iotex
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) = 0;
 
+                virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) = 0;
+
             protected:
                 IWallets(Host &host, IHTTP &http) : Base(host, http) {}
         };  // class IWallets
@@ -37,7 +39,9 @@ namespace Iotex
                 virtual ResultCode getBalance(const char *const address, std::string& balance) override;
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) override;
-        };  // class Wallets : public IWallets
+
+                virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) override;
+        }; // class Wallets : public IWallets
 
     }  // namespace api
 }  // namespace Iotex

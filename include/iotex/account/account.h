@@ -8,6 +8,7 @@
 #include "random/random.h"
 #include "encoder/encoder.h"
 #include "signer/signer.h"
+#include "connection/connection.h"
 
 namespace Iotex
 {
@@ -32,10 +33,30 @@ namespace Iotex
 
             // Signing
             void signMessage(const uint8_t *message, size_t size, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
-            void signTokenTransferAction(Iotex::ResponseTypes::Action_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
+            void signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
 
             // Action execution
-            ResultCode sendTokeTransferAction(Iotex::ResponseTypes::Action_Transfer &transfer);
+            template<typename TAPI>
+            ResultCode sendTokenTransferAction(Connection<TAPI>& conn, uint64_t nonce, uint64_t gasLimit, const char* gasPrice, const char* amount, const char* recipient, uint8_t hash[IOTEX_HASH_SIZE])
+            {
+                // TODO Get account meta instead of receiving nonce?
+
+                ResponseTypes::ActionCore_Transfer core;
+                core.version = 1;
+                core.gasLimit = gasLimit;
+                core.nonce = nonce;
+                strcpy(core.gasPrice, gasPrice);
+                core.chainId = 0;
+                strcpy(core.transfer.amount, amount);
+                core.transfer.payload = "";
+                strcpy(core.transfer.recipient, recipient);
+
+                // Sign
+                uint8_t signature[IOTEX_SIGNATURE_SIZE];
+                signTokenTransferAction(core, signature);
+
+                return conn.api.wallets.sendTokenTransfer(_publicKey, signature, core, hash);
+            }
 
         private:
             std::string _iotexAddr;

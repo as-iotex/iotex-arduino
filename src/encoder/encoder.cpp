@@ -40,7 +40,9 @@ namespace
 
     bool encode_bytes(pb_ostream_t* stream, const pb_field_t* field, void* const* arg)
     {
-        const uint8_t* bytes = (const uint8_t*)(*arg);
+        if (arg == nullptr)
+            return true;
+        const uint8_t *bytes = (const uint8_t *)(*arg);
 
         if (!pb_encode_tag_for_field(stream, field))
             return false;
@@ -143,14 +145,14 @@ int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& tra
     pbCore.nonce = transfer.nonce;
     pbCore.gasPrice.arg = transfer.gasPrice;
     pbCore.gasPrice.funcs.encode = &encode_string;
-    pbCore.chainID = transfer.chainId;
+    // pbCore.chainID = transfer.chainId;
     pbCore.which_action = ActionCore_transfer_tag;
     pbCore.action.transfer.amount.arg = transfer.transfer.amount;
     pbCore.action.transfer.amount.funcs.encode = &encode_string;
-    pbCore.action.transfer.payload.arg = (void*)transfer.transfer.payload.c_str();
-    pbCore.action.transfer.payload.funcs.encode = &encode_bytes;
     pbCore.action.transfer.recipient.arg = transfer.transfer.recipient;
     pbCore.action.transfer.recipient.funcs.encode = &encode_string;
+    // pbCore.action.transfer.payload.arg = (void*)transfer.transfer.payload.c_str();
+    // pbCore.action.transfer.payload.funcs.encode = &encode_bytes;
 
     pb_ostream_t stream = pb_ostream_from_buffer(encodedCore, sizeof(encodedCore));
     pb_encode(&stream, ActionCore_fields, &pbCore);

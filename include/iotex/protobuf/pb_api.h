@@ -84,7 +84,7 @@ namespace Iotex
       ActionCore_Transfer core;
       char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
       char signature[IOTEX_SIGNATURE_STRLEN + 1];
-      Encoding encoding;
+      // Encoding encoding;
     };
 
     struct ActionInfo_Transfer
@@ -135,6 +135,15 @@ namespace Iotex
       public:
         std::string total;
         std::vector<ActionInfo_Transfer> actionInfo;
+    };
+    
+    struct SendTokenTransferResponse
+    {
+      public:
+        ResultCode fromJson(std::string jsonString);
+
+      public:
+        char hash[IOTEX_HASH_STRLEN];
     };
 
     ////////////////////////////////////////////////////////////////////////////////
