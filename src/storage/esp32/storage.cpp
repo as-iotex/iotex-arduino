@@ -8,6 +8,7 @@ using namespace Iotex;
 
 // Define global object
 Storage storage;
+bool Storage::_init = false;
 
 void Storage::Initialize()
 {
@@ -20,7 +21,7 @@ void Storage::Initialize()
 ResultCode Storage::savePrivateKey(void* storageId, const uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE])
 {
     Initialize();
-    int startIndex = *((int*) storageId);
+    int startIndex = *((uint32_t*) storageId);
     for (int i = 0; i < IOTEX_PRIVATE_KEY_SIZE; i++)
     {
         EEPROM.write(startIndex + i, privateKey[i]);
@@ -32,7 +33,7 @@ ResultCode Storage::savePrivateKey(void* storageId, const uint8_t privateKey[IOT
 ResultCode Storage::readPrivateKey(void *storageId, uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE])
 {
     Initialize();
-    int startIndex = *((int*)storageId);
+    int startIndex = *((uint32_t*)storageId);
     for (int i = 0; i < IOTEX_PRIVATE_KEY_SIZE; i++)
     {
         privateKey[i] = EEPROM.read(startIndex + i);
