@@ -59,7 +59,7 @@ void Account::getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN])
 
 void Account::getEthereumAddress(char buffer[IOTEX_ADDRESS_STRLEN])
 {
-    memcpy(buffer, _ethAddr.c_str(), IOTEX_ADDRESS_STRLEN);
+    memcpy(buffer, _ethAddr.c_str(), ETH_ADDRESS_STRLEN);
 }
 
 void Account::getPublicKey(uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE])
