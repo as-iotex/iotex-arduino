@@ -100,7 +100,7 @@ typedef struct _TerminatePlumChain {
 typedef struct _Transfer { 
     /* used by state-based model */
     pb_callback_t amount; 
-    pb_callback_t recipient; /* bytes payload = 3; */
+    pb_callback_t recipient; /* bytes payload = 3; // Unused */
 } Transfer;
 
 /* Deprecated */

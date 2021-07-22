@@ -6,10 +6,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(BlockHeader, BlockHeader, 2)
+PB_BIND(BlockHeader, BlockHeader, AUTO)
 
 
-PB_BIND(BlockHeaderCore, BlockHeaderCore, 2)
+PB_BIND(BlockHeaderCore, BlockHeaderCore, AUTO)
 
 
 PB_BIND(EpochData, EpochData, AUTO)
@@ -18,7 +18,7 @@ PB_BIND(EpochData, EpochData, AUTO)
 PB_BIND(ChainMeta, ChainMeta, AUTO)
 
 
-PB_BIND(BlockMeta, BlockMeta, 2)
+PB_BIND(BlockMeta, BlockMeta, AUTO)
 
 
 PB_BIND(BlockIdentifier, BlockIdentifier, AUTO)

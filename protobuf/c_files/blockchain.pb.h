@@ -5,7 +5,7 @@
 #define PB_BLOCKCHAIN_PB_H_INCLUDED
 #include <pb.h>
 #include "action.pb.h"
-#include "google/protobuf/timestamp.pb.h"
+#include "timestamp.pb.h"
 
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.

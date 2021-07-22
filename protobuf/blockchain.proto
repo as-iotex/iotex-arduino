@@ -14,7 +14,7 @@ option java_package = "com.github.iotexproject.grpc.types";
 
 import "action.proto";
 // import "proto/types/endorsement.proto";
-import "google/protobuf/timestamp.proto";
+import "timestamp.proto";
 
 // header of a block
 message BlockHeader {
