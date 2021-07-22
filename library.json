@@ -51,6 +51,7 @@
         "srcFilter": 
         [
           "+<*>",
+          "+<../protobuf/c_files/*>",
           "+<../extern/*>",
           "-<../extern/nanopb/examples/*>",
           "-<../extern/nanopb/tests/*>",
