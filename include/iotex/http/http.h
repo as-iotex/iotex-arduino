@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include "result_codes.h"
+#include "helpers/client_helpers.h"
 
 namespace Iotex
 {
@@ -32,7 +33,7 @@ namespace Iotex
     struct GrpcStatus
     {
         GrpcStatusCode code;
-        std::string message;
+        IotexString message;
     };
 
     class IHTTP
@@ -43,8 +44,8 @@ namespace Iotex
         public:
         virtual ~IHTTP() {}
 
-        virtual std::string get(const char* request) = 0;
-        virtual Iotex::ResultCode post(const char* request, const char* body, std::string& response) = 0;
+        virtual IotexString get(const char* request) = 0;
+        virtual Iotex::ResultCode post(const char* request, const char* body, IotexString& response) = 0;
 
         virtual int get(const char *request, char *rspBuf, size_t size) { return -1; };
         virtual int post(const char *request, const char *body, char *rspBuf, size_t size) { return -1; };

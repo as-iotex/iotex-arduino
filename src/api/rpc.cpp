@@ -16,7 +16,7 @@ namespace
 //Wallets
 ////////////////////////////////////////////////////////////////////////////////
 
-RpcCallData Wallets::getAccount(Host& host, const std::string address)
+RpcCallData Wallets::getAccount(Host& host, const IotexString address)
 {
 	RpcCallData ret;
 	// Url
@@ -33,12 +33,12 @@ RpcCallData Wallets::getAccount(Host& host, const std::string address)
 	return ret;
 }
 
-RpcCallData Wallets::getBalance(Host& host, const std::string address)
+RpcCallData Wallets::getBalance(Host& host, const IotexString address)
 {
  	return getAccount(host, address);
 }
 
-RpcCallData Wallets::getActionByHash(Host& host, const std::string hash, bool checkPending)
+RpcCallData Wallets::getActionByHash(Host& host, const IotexString hash, bool checkPending)
 {
 	RpcCallData ret;
 	// Url

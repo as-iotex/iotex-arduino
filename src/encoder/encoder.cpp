@@ -54,7 +54,7 @@ namespace
 // Define global encoder
 Encoder encoder;
 
-ResultCode Encoder::bech32_encodeHexString(const std::string &data, std::string &encodedData)
+ResultCode Encoder::bech32_encodeHexString(const IotexString &data, IotexString &encodedData)
 {
     // Convert string to vector and delegate
     uint8_t bytes[data.length()/2];
@@ -65,7 +65,7 @@ ResultCode Encoder::bech32_encodeHexString(const std::string &data, std::string 
     return ResultCode::SUCCESS;
 }
 
-ResultCode Encoder::bech32_encode(const vector<uint8_t> data, std::string &encodedData)
+ResultCode Encoder::bech32_encode(const vector<uint8_t> data, IotexString &encodedData)
 {
     // Convert to 5 bit int
     vector<uint8_t> dataAs5BitUint;
@@ -73,7 +73,7 @@ ResultCode Encoder::bech32_encode(const vector<uint8_t> data, std::string &encod
 
     // Encode
     // Use "io" as prefix for mainnet
-    encodedData = bech32::Encode(bech32::Encoding::BECH32, "io", dataAs5BitUint);
+    encodedData = IotexString(bech32::Encode(bech32::Encoding::BECH32, "io", dataAs5BitUint).c_str());
 
     return ResultCode::SUCCESS;
 }

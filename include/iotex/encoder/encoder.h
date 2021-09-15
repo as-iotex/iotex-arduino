@@ -15,8 +15,8 @@ namespace Iotex
     {
         public:
             //Bech32
-            ResultCode bech32_encodeHexString(const std::string &data, std::string &encodedData);
-            ResultCode bech32_encode(const std::vector<uint8_t> data, std::string &encodedData);
+            ResultCode bech32_encodeHexString(const IotexString &data, IotexString &encodedData);
+            ResultCode bech32_encode(const std::vector<uint8_t> data, IotexString &encodedData);
             ResultCode bech32_convertBytesTo5Bit(const std::vector<uint8_t> &in, std::vector<uint8_t> &out);
 
             // Base64

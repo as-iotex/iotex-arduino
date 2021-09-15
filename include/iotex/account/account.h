@@ -59,8 +59,8 @@ namespace Iotex
             }
 
         private:
-            std::string _iotexAddr;
-            std::string _ethAddr;
+            IotexString _iotexAddr;
+            IotexString _ethAddr;
             uint8_t _publicKey[IOTEX_PUBLIC_KEY_SIZE];
             uint8_t _privateKey[IOTEX_PRIVATE_KEY_SIZE];
             

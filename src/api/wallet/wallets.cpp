@@ -9,7 +9,7 @@ using namespace Iotex::ResponseTypes;
 ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getAccount(this->host_, address);
-	std::string rspBody;
+	IotexString rspBody;
 	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
 	{
@@ -25,10 +25,10 @@ ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 	return ret;
 }
 
-ResultCode Wallets::getBalance(const char *const address, std::string& balance)
+ResultCode Wallets::getBalance(const char *const address, IotexString& balance)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getBalance(this->host_, address);
-	std::string rspBody;
+	IotexString rspBody;
 	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
 	{
@@ -40,7 +40,7 @@ ResultCode Wallets::getBalance(const char *const address, std::string& balance)
 	if (ret != ResultCode::SUCCESS)
 		return ret;
 
-	balance = std::string(response.getBalance());
+	balance = IotexString(response.getBalance());
 	return ret;
 }
 
@@ -48,7 +48,7 @@ ResultCode Wallets::getBalance(const char *const address, std::string& balance)
 ResultCode Wallets::getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
-	std::string rspBody;
+	IotexString rspBody;
 	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
 	{
@@ -66,7 +66,7 @@ ResultCode Wallets::getTransactionByHash(const char *const address, ResponseType
 ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE])
 {
 	rpc::RpcCallData callData = rpc::Wallets::sendTokenTransfer(this->host_, transfer, senderPubKey, signature);
-	std::string rspBody;
+	IotexString rspBody;
 	ResultCode ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
 		return ret;

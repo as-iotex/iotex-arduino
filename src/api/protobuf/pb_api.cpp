@@ -7,7 +7,7 @@ using namespace Iotex::api;
 
 namespace
 {
-    bool IsNumeric(const std::string &s)
+    bool IsNumeric(const IotexString &s)
     {
         for (const char& c : s)
         {
@@ -58,7 +58,7 @@ namespace
                 break;
 
             case CppType::STRING:
-                *(std::string *)pData = json->valuestring;
+                *(IotexString *)pData = json->valuestring;
                 break;
 
             case CppType::BOOLEAN:
@@ -86,7 +86,7 @@ namespace
     }
 }
 
-ResultCode GetBalanceResponse::fromJson(std::string jsonString)
+ResultCode GetBalanceResponse::fromJson(IotexString jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;
     cJSON *data = cJSON_Parse(jsonString.c_str());
@@ -109,7 +109,7 @@ ResultCode GetBalanceResponse::fromJson(std::string jsonString)
     return ret;
 }
 
-ResultCode GetAccountResponse::fromJson(std::string jsonString)
+ResultCode GetAccountResponse::fromJson(IotexString jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;
     
@@ -182,7 +182,7 @@ ResultCode GetAccountResponse::fromJson(std::string jsonString)
     return ret;
 }
 
-ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
+ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;
     
@@ -284,7 +284,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
     const cJSON* nonce = cJSON_GetObjectItemCaseSensitive(core, "nonce");
     // Nonce is string in the HTTP response, but uint64 in the protobuf
     // As a workaround, we get the string value and convert to int here
-    std::string buf;
+    IotexString buf;
     ret = SetValueFromJsonObject(nonce, CppType::STRING, (void*)&buf);
     if (ret != ResultCode::SUCCESS || !IsNumeric(buf))
     {
@@ -403,7 +403,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(std::string jsonString)
     return ret;
 }
 
-ResultCode SendTokenTransferResponse::fromJson(std::string jsonString)
+ResultCode SendExecutionResponse::fromJson(IotexString jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;
     cJSON *data = cJSON_Parse(jsonString.c_str());

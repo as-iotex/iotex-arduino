@@ -15,7 +15,10 @@
 #include <Arduino.h>
 #include <pgmspace.h>
 
+#define IotexString String
 #else
+    #define IotexString std::string
+    
     #ifndef OS
         #define OS
     #endif

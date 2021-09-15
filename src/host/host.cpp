@@ -1,4 +1,5 @@
 #include "host/host.h"
+#include "helpers/client_helpers.h"
 
 #include <cstdio>
 #include <string>
@@ -28,13 +29,13 @@ bool Host::set(const char* hostname, int port, const char* baseUrl)
 	return true;
 }
 
-std::string Host::ip() const noexcept { return this->_hostname; };
+IotexString Host::ip() const noexcept { return this->_hostname; };
 
 int Host::port() const noexcept { return this->_port; };
 
-std::string Host::toString()
+IotexString Host::toString()
 {
-	std::string out;
+	IotexString out;
 	out.reserve(strlen(_hostname) + PORT_MAX_STRING_LEN + strlen(_baseUrl) + 3);
 	out += (this->_hostname);
 	out += ":";

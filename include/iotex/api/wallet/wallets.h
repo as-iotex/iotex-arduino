@@ -19,7 +19,7 @@ namespace Iotex
 
                 virtual ResultCode getAccount(const char *const address, ResponseTypes::AccountMeta& data) = 0;
 
-                virtual ResultCode getBalance(const char *const address, std::string& balance) = 0;
+                virtual ResultCode getBalance(const char *const address, IotexString& balance) = 0;
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) = 0;
 
@@ -36,7 +36,7 @@ namespace Iotex
 
                 virtual ResultCode getAccount(const char *const address, ResponseTypes::AccountMeta& data) override;
 
-                virtual ResultCode getBalance(const char *const address, std::string& balance) override;
+                virtual ResultCode getBalance(const char *const address, IotexString& balance) override;
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) override;
 

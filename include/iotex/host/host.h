@@ -1,6 +1,7 @@
 #ifndef HOST_H
 #define HOST_H
 
+#include "helpers/client_helpers.h"
 #include <string>
 
 namespace Iotex
@@ -20,10 +21,10 @@ namespace Iotex
 
 			bool set(const char* ip, int port, const char* baseUrl = nullptr);
 
-			std::string ip() const noexcept;
+			IotexString ip() const noexcept;
 			int port() const noexcept;
 
-			std::string toString();
+			IotexString toString();
 
 		protected:
 			char _hostname[IP_MAX_STRING_LEN + 1];

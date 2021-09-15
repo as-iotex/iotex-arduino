@@ -49,17 +49,17 @@ namespace
         static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp) 
         {
             // https://curl.haxx.se/libcurl/c/CURLOPT_WRITEFUNCTION.html
-            ((std::string *)userp)->append((char *)contents, size * nmemb);
+            ((IotexString *)userp)->append((char *)contents, size * nmemb);
             return size * nmemb;
         }
 
         /**/
 
-        std::string get(const char* request) override 
+        IotexString get(const char* request) override 
         {
             CURL *curl;
             CURLcode res;
-            std::string readBuffer;
+            IotexString readBuffer;
 
             curl = curl_easy_init();
             if (curl != nullptr) {
@@ -84,7 +84,7 @@ namespace
 
         /**/
 
-        Iotex::ResultCode post(const char* request, const char* body, std::string& response)
+        Iotex::ResultCode post(const char* request, const char* body, IotexString& response)
         {
             // https://curl.haxx.se/libcurl/c/http-post.html
             CURL *curl;

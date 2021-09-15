@@ -50,9 +50,9 @@ namespace Iotex
     {
         char address[IOTEX_ADDRESS_STRLEN + 1];
         char balance[IOTEX_MAX_BALANCE_STRLEN + 1];
-        std::string nonce;
-        std::string pendingNonce;
-        std::string numActions;
+        IotexString nonce;
+        IotexString pendingNonce;
+        IotexString numActions;
         bool isContract;
     };
     
@@ -66,7 +66,7 @@ namespace Iotex
     {
       char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
       char recipient[IOTEX_ADDRESS_STRLEN + 1];
-      std::string payload;
+      IotexString payload;
     };
 
     struct ActionCore_Transfer
@@ -93,15 +93,18 @@ namespace Iotex
       char actHash[IOTEX_HASH_STRLEN + 1];
       char blkHash[IOTEX_HASH_STRLEN + 1];
       char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
-      std::string blkHeight;
+      IotexString blkHeight;
       char sender[IOTEX_ADDRESS_STRLEN + 1];
       char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
     };
 
+    // TODO
+    // struct ActionInfo_Execution
+    
     struct BlockIdentifier
     {
         char hash[IOTEX_HASH_STRLEN + 1];
-        std::string height;
+        IotexString height;
     };
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -110,17 +113,17 @@ namespace Iotex
 
     struct GetBalanceResponse
     {
-      ResultCode fromJson(std::string jsonString);
+      ResultCode fromJson(IotexString jsonString);
       const char *getBalance() { return balance.c_str(); }
 
       private:
-        std::string balance;
+        IotexString balance;
     };
 
     struct GetAccountResponse
     {
       public:
-        ResultCode fromJson(std::string jsonString);
+        ResultCode fromJson(IotexString jsonString);
 
       public:
         AccountMeta accountMeta;
@@ -130,17 +133,17 @@ namespace Iotex
     struct GetActionsResponse_Transfer
     {
       public:
-        ResultCode fromJson(std::string jsonString);
+        ResultCode fromJson(IotexString jsonString);
 
       public:
-        std::string total;
+        IotexString total;
         std::vector<ActionInfo_Transfer> actionInfo;
     };
     
-    struct SendTokenTransferResponse
+    struct SendExecutionResponse
     {
       public:
-        ResultCode fromJson(std::string jsonString);
+        ResultCode fromJson(IotexString jsonString);
 
       public:
         char hash[IOTEX_HASH_STRLEN];

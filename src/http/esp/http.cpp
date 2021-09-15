@@ -21,7 +21,7 @@ namespace Iotex
 			public:
 				PlatformHTTP() = default;
 
-				std::string get(const char* request) override 
+				IotexString get(const char* request) override 
 				{
 					if (!Initialize(request))
 					{
@@ -33,7 +33,7 @@ namespace Iotex
 					return _httpClient.getString().c_str();
 				}
 
-				Iotex::ResultCode post(const char* request, const char *body, std::string& response) override 
+				Iotex::ResultCode post(const char* request, const char *body, IotexString& response) override 
 				{
 					const char * headerKeys[] = {"grpc-status", "grpc-message"} ;
 					const size_t numberOfHeaders = 2;
