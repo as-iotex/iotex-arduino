@@ -163,7 +163,7 @@ ResultCode Signer::str2hex(const char *str, uint8_t *hex, size_t size)
     const char *end = begin + strlen(str);
 
     /* Check output buffer size */
-    if (size < ((end - begin) + 1) / 2) {
+    if (size < strlen(str) / 2) {
         return ResultCode::ERROR_BAD_PARAMETER;
     }
 
