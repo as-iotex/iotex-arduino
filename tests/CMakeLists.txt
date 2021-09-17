@@ -39,6 +39,10 @@ endif()
 
 set (IOTEX_UNIT_TESTS_SOURCES 
     src/api/wallets/walletsTests.cpp
+    src/abi/abiTests.cpp
+    src/contract/contractTests.cpp
+    src/account/accountTests_Execution.cpp
+    src/account/accountTests_Integration.cpp
 )
 
 add_executable(iotex_unit_tests
@@ -66,7 +70,10 @@ add_test(
     NAME iotex_unit_tests
     COMMAND iotex_unit_tests
 )
-  
+
+add_definitions(-DTESTFILESDIR="${CMAKE_CURRENT_BINARY_DIR}/files/")
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/files DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 # Cmake 3.10
 # gtest_discover_tests(iotex_unit_tests)
 
