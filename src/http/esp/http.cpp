@@ -46,7 +46,7 @@ namespace Iotex
 					_httpClient.collectHeaders(headerKeys, numberOfHeaders);
 
 					#ifdef DEBUG_HTTP
-						printf("HTTP::post(): Request path: %s\r\n", request);
+						IOTEX_DEBUG_F("HTTP::post(): Request path: %s\r\n", request);
 						Serial.println("HTTP::post(): Request Body: ");
 						Serial.println(body);
 					#endif
@@ -64,12 +64,12 @@ namespace Iotex
 					{
 						response = _httpClient.header("grpc-message").c_str();
 						#ifdef DEBUG_HTTP
-							printf("HTTP::post(): Grpc error, message: %s\n", _httpClient.header("grpc-message").c_str());
+							IOTEX_DEBUG_F("HTTP::post(): Grpc error, message: %s\n", _httpClient.header("grpc-message").c_str());
 						#endif
 						return ResultCode::ERROR_GRPC;
 					}
 					#ifdef DEBUG_HTTP
-						printf("HTTP::post(): Grpc success, message : %s\n", _httpClient.header("grpc-message").c_str());
+						IOTEX_DEBUG_F("HTTP::post(): Grpc success, message : %s\n", _httpClient.header("grpc-message").c_str());
 					#endif
 					return ResultCode::SUCCESS;
 				}

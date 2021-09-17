@@ -85,7 +85,7 @@ ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SI
 	rpc::RpcCallData callData = rpc::Wallets::sendExecution(this->host_, execution, senderPubKey, signature);
 	IotexString rspBody;
 
-	// printf("Wallets::sendExecution: %s\n", callData.body.c_str());
+	// IOTEX_DEBUG_F("Wallets::sendExecution: %s\n", callData.body.c_str());
 
 	ResultCode ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
@@ -98,7 +98,7 @@ ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SI
 
 	signer.str2hex(response.hash, hash, IOTEX_HASH_SIZE);
 
-	// printf("Action hash: %s\n", response.hash);
+	// IOTEX_DEBUG_F("Action hash: %s\n", response.hash);
 
 	return ret;
 }

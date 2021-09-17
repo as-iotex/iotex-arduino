@@ -52,7 +52,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
             // Function selector
             generateFunctionSelector(function, contractData);
             ConvertToHexString(contractData, out);
-            // printf("Iotex::Contract::generateCallData:Function selector:\n%s\n", out.c_str());
+            // IOTEX_DEBUG_F("Iotex::Contract::generateCallData:Function selector:\n%s\n", out.c_str());
             
             // Params
             for (int inputIdx = 0; inputIdx < function.inputs.size(); inputIdx++)
@@ -60,12 +60,12 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
                 auto &input = function.inputs.at(inputIdx);
                 uint32_t remainingInputs = function.inputs.size() - inputIdx;
 
-                // printf("Iotex::Contract::generateCallData: Generating bytes for parameter %s\n", input.name.c_str());
+                // IOTEX_DEBUG_F("Iotex::Contract::generateCallData: Generating bytes for parameter %s\n", input.name.c_str());
 
                 // Validate user passed this key in ParameterValuesDictionary
                 if(params.find(input.name) == params.end())
                 {
-                    // printf("Iotex::Contract::generateCallData Parameter %s not supplied by user\n", input.name.c_str());
+                    // IOTEX_DEBUG_F("Iotex::Contract::generateCallData Parameter %s not supplied by user\n", input.name.c_str());
                     return ResultCode::ERROR_BAD_PARAMETER;
                 }
 
@@ -92,7 +92,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
 
@@ -111,7 +111,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
                 
@@ -130,7 +130,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
                 
@@ -149,7 +149,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
 
@@ -171,7 +171,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Tail bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Tail bytes: %s\n", valString.c_str());
 
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
@@ -194,7 +194,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
                     IotexString valString;
                     ConvertToHexString(data, valString);
-                    // printf("Tail bytes: %s\n", valString.c_str());
+                    // IOTEX_DEBUG_F("Tail bytes: %s\n", valString.c_str());
 
                     staticHeadsOrDynamicTails.push_back(std::move(data));
                 }
@@ -258,7 +258,7 @@ void Iotex::Contract::ConvertToHexString(std::vector<uint8_t>& data, IotexString
 
 int32_t Iotex::Contract::generateBytesForUint(const uint8_t *pVal, size_t size, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForUint of size %d\n", size);
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForUint of size %d\n", size);
     if (size > 32 || out == nullptr)
         return -1;
     size_t paddingBytes = 32 - size;
@@ -273,7 +273,7 @@ int32_t Iotex::Contract::generateBytesForUint(const uint8_t *pVal, size_t size, 
 
 int32_t Iotex::Contract::generateBytesForAddress(const uint8_t *pVal, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForAddress\n");
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForAddress\n");
     uint8_t address[20];
     memcpy(address, pVal, 20);
     EndianSwap(address, 20);
@@ -282,7 +282,7 @@ int32_t Iotex::Contract::generateBytesForAddress(const uint8_t *pVal, uint8_t* o
 
 int32_t Iotex::Contract::generateBytesForInt(const int8_t *pVal, size_t size, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForInt of size %d\n", size);
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForInt of size %d\n", size);
     if (size > 256 || out == nullptr || (size>8 && size%8))
         return -1;
     size_t paddingBytes = 32 - size;
@@ -297,7 +297,7 @@ int32_t Iotex::Contract::generateBytesForInt(const int8_t *pVal, size_t size, ui
 
 void Iotex::Contract::generateBytesForBool(bool val, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForBool\n");
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForBool\n");
     memset(out, 0, 32);
     if(val)
         out[31] = 1;
@@ -305,7 +305,7 @@ void Iotex::Contract::generateBytesForBool(bool val, uint8_t* out)
 
 int32_t Iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForStaticBytes of size %d\n", size);
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForStaticBytes of size %d\n", size);
     // Get number of 32 byte groups
     size_t n32ByteGroups = ceil((float)size / 32.0);
     // Get padding bytes
@@ -325,7 +325,7 @@ int32_t Iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size,
 
 int32_t Iotex::Contract::generateBytesForBytes(uint8_t* pVal, size_t size, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForBytes of size %d\n", size);
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForBytes of size %d\n", size);
     // Encode length
     size_t encodedBytes = generateBytesForUint((const uint8_t *)&size, sizeof(size_t), out);
 
@@ -337,7 +337,7 @@ int32_t Iotex::Contract::generateBytesForBytes(uint8_t* pVal, size_t size, uint8
 
 int32_t Iotex::Contract::generateBytesForString(char* pVal, size_t size, uint8_t* out)
 {
-    // printf("Iotex::Contract::generateBytesForString of size %d\n", size);
+    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForString of size %d\n", size);
     return generateBytesForBytes((uint8_t*) pVal, size, out);
 }
 

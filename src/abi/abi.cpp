@@ -11,14 +11,14 @@ ResultCode Iotex::abi::parseContract(const IotexString &contractAbi, std::vector
     cJSON *data = cJSON_Parse(contractAbi.c_str());
     if (data == NULL)
     {
-        printf("Iotex::abi::parseContract(): Cannot parse ABI JSON. Wrong format\r\n");
+        IOTEX_DEBUG_F("Iotex::abi::parseContract(): Cannot parse ABI JSON. Wrong format\r\n");
         cJSON_Delete(data);
         return ResultCode::ERROR_JSON_PARSE;
     }
 
     if (!cJSON_IsArray(data))
     {
-        printf("Iotex::abi::parseContract(): Provided ABI is not a JSON array\r\n");
+        IOTEX_DEBUG_F("Iotex::abi::parseContract(): Provided ABI is not a JSON array\r\n");
         cJSON_Delete(data);
         return ResultCode::ERROR_JSON_PARSE;
     }
@@ -32,7 +32,7 @@ ResultCode Iotex::abi::parseContract(const IotexString &contractAbi, std::vector
         ret = SetValueFromJsonObject(typeJson, CppType::STRING, (void *)&(type));
         if (ret != ResultCode::SUCCESS)
         {
-            printf("Iotex::abi::parseContract(): Error parsing element\r\n");
+            IOTEX_DEBUG_F("Iotex::abi::parseContract(): Error parsing element\r\n");
             cJSON_Delete(data);
             return ResultCode::ERROR_JSON_PARSE;
         }
@@ -119,7 +119,7 @@ ResultCode Iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
     ret = SetValueFromJsonObject(nameJson, CppType::STRING, (void *)&(out.name));
     if (ret != ResultCode::SUCCESS)
     {
-        printf("Iotex::abi::parseInputOutput(): Error parsing name\r\n");
+        IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Error parsing name\r\n");
         return ret;
     }
 
@@ -129,13 +129,13 @@ ResultCode Iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
     ret = SetValueFromJsonObject(typeJson, CppType::STRING, (void *)&(type));
     if (ret != ResultCode::SUCCESS)
     {
-        printf("Iotex::abi::parseInputOutput(): Error parsing type\r\n");
+        IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Error parsing type\r\n");
         return ret;
     }
     ret = InputOutputAbi::getTypeAndSizeFromString(type, out.type, out.size_bytes);
     if (ret != ResultCode::SUCCESS)
     {
-        printf("Iotex::abi::parseInputOutput(): Error parsing type %s\r\n", type.c_str());
+        IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Error parsing type %s\r\n", type.c_str());
         return ret;
     }
     if (
@@ -307,7 +307,7 @@ void Iotex::abi::FunctionAbi::getSignature(IotexString &out)
                 break;
 
             default:
-                printf("Type not supported\r\n");
+                IOTEX_DEBUG_F("Type not supported\r\n");
         }
 
         if (i < inputs.size() - 1) out += ',';

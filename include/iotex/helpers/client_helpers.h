@@ -16,11 +16,11 @@
 #include <pgmspace.h>
 
 #define IotexString String
-#define printf(fmt, ...) Serial.printf(fmt, ##__VA_ARGS__)
+#define IOTEX_DEBUG_F(fmt, ...) Serial.printf(fmt, ##__VA_ARGS__)
 
 #else
     #define IotexString std::string
-    
+    #define IOTEX_DEBUG_F(fmt, ...) printf(fmt, ##__VA_ARGS__)
     #ifndef OS
         #define OS
     #endif
