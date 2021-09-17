@@ -10,11 +10,17 @@
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
             "miDebuggerPath": "gdb",
+            "preLaunchTask": "Arduino: Build unit tests",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": false
+                },
+                {
+                    "description": "Enable all-exceptions",
+                    "text": "catch throw",
+                    "ignoreFailures": true
                 }
             ],
             // "sourceFileMap": {
@@ -31,7 +37,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            // "preLaunchTask": "clang++ build active file"
+            "preLaunchTask": "Arduino: Build unit tests",
         }
     ]
 }
