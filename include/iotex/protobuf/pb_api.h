@@ -13,6 +13,7 @@
 
 #include "api/base.h"
 #include "result_codes.h"
+#include "helpers/json_helper.h"
 
 namespace Iotex 
 {
@@ -20,28 +21,7 @@ namespace Iotex
    * @namespace		ResponseTypes	  Protobuf response messages mapped to c structs that might support reflection and JSON serialization/deserialization
    */
   namespace ResponseTypes
-  {
-    ////////////////////////////////////////////////////////////////////////////////
-    // Reflection helpers
-    ////////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * @enum CppType  Variable types, for reflection purposes
-     */
-    enum class CppType
-    {
-        UINT8,
-        UINT16,
-        UINT32,
-        UINT64,
-        BIGINT,
-        BOOLEAN,
-        C_STRING,
-        STRING,
-        OBJECT,
-        BYTES
-    };
-    
+  {  
     ////////////////////////////////////////////////////////////////////////////////
     // PROTOBUF OBJECTS
     ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +48,13 @@ namespace Iotex
       char recipient[IOTEX_ADDRESS_STRLEN + 1];
       IotexString payload;
     };
+    
+    struct Execution
+    {
+      char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
+      char contract[IOTEX_ADDRESS_STRLEN + 1];
+      IotexString data;
+    };
 
     struct ActionCore_Transfer
     {
@@ -78,10 +65,27 @@ namespace Iotex
       uint32_t chainId;
       Transfer transfer;
     };
+    
+    struct ActionCore_Execution
+    {
+      uint32_t version;
+      uint64_t nonce;
+      uint64_t gasLimit;
+      char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
+      Execution execution;
+    };
 
     struct Action_Transfer
     {
       ActionCore_Transfer core;
+      char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
+      char signature[IOTEX_SIGNATURE_STRLEN + 1];
+      // Encoding encoding;
+    };
+   
+    struct Action_Execution
+    {
+      ActionCore_Execution core;
       char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
       char signature[IOTEX_SIGNATURE_STRLEN + 1];
       // Encoding encoding;
@@ -97,9 +101,6 @@ namespace Iotex
       char sender[IOTEX_ADDRESS_STRLEN + 1];
       char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
     };
-
-    // TODO
-    // struct ActionInfo_Execution
     
     struct BlockIdentifier
     {
@@ -146,162 +147,21 @@ namespace Iotex
         ResultCode fromJson(IotexString jsonString);
 
       public:
-        char hash[IOTEX_HASH_STRLEN];
+        char hash[IOTEX_HASH_STRLEN + 1];
     };
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // JSON Serialization helpers (Initial work, currently unused and not needed)
-    ////////////////////////////////////////////////////////////////////////////////
-
-    struct JsonProp
-    {
-      const CppType type;
-      const std::string name;
-
-      JsonProp(CppType type, std::string name) : type(type),
-                                                  name(name), 
-                                                  _initialized(false)
-      {}
-
-      /* Setters */
-      void setValue(const char* value)
-      {
-        if(_initialized && type == CppType::C_STRING)
-        {
-          free(_value.c_string);
-        }
-        _value.c_string = (char*) malloc(strlen(value));
-        memcpy(_value.c_string, value, strlen(value));
-        _initialized = true;
-      }
-
-      void setValue(uint64_t value)
-      {
-        _initialized = true;
-        _value.uint64 = value;
-      }
-      
-      void setValue(bool value)
-      {
-        _initialized = true;
-        _value.boolean = value;
-      }
-
-      /* Getters */
-      const char* getValueCString()
-      {
-        return _initialized ? _value.c_string : nullptr;
-      }
-
-      uint64_t getValueUint64()
-      {
-        return _value.uint64;
-      }
-      
-      bool getValueBool()
-      {
-        return _value.boolean;
-      }
-      
-      const uint8_t* getValueBytes()
-      {
-        return _value.bytes;
-      }
-
-      ~JsonProp()
-      {
-        if(_initialized && isHeapAllocated())
-        {
-          free(_value.object);
-        }
-      }          
-
-      uint32_t getBytesCount()
-      {
-        return _bytesCount;
-      }
-
-      private:
-        bool _initialized;
-        union
-        {
-          uint8_t uint8;
-          uint16_t uint16;
-          uint32_t uint32;
-          uint64_t uint64;
-          bool boolean;
-          char *c_string;
-          std::string *string;
-          void *object;
-          uint8_t *bytes;
-        } _value;
-
-        uint32_t _bytesCount; // bytes count, only used for bytes type
-
-        bool isHeapAllocated()
-        {
-          if (
-            type == CppType::C_STRING || 
-            type == CppType::STRING || 
-            type == CppType::OBJECT || 
-            type == CppType::BYTES
-            )
-          {
-            return true;
-          }
-          else
-            return false;
-        }
-    };
-
-    /**
-     * @struct  StringJsonProp  Struct that represents a string json property using std::string
-     */
-    struct StringJsonProp : JsonProp
-    {
-      StringJsonProp(std::string name) : 
-        JsonProp(CppType::C_STRING, name)
-        {}
-    };
-
-    struct Uint8JsonProp : JsonProp
-    {
-      Uint8JsonProp(std::string name) : 
-        JsonProp(CppType::UINT8, name)
-        {}
-    };
-
-    struct Uint64JsonProp : JsonProp
-    {
-      Uint64JsonProp(std::string name) : 
-        JsonProp(CppType::UINT64, name)
-        {}
-    };
-    
-    struct BytesJsonProp : JsonProp
-    {
-      BytesJsonProp(std::string name) : 
-        JsonProp(CppType::BYTES, name)
-        {}
-    };
-
-    struct BoolJsonProp : JsonProp
-    {
-      BoolJsonProp(std::string name): 
-        JsonProp(CppType::BOOLEAN, name)
-        {}
-    };
+    // JSON Objects - unused
     
     struct AccountMetaJsonObject
     {
       public:
-        StringJsonProp address;
-        StringJsonProp balance;
-        Uint64JsonProp nonce;
-        Uint64JsonProp pendingNonce;
-        Uint64JsonProp numActions;
-        BoolJsonProp isContract;
-        BytesJsonProp contractByteCode;
+        json::StringJsonProp address;
+        json::StringJsonProp balance;
+        json::Uint64JsonProp nonce;
+        json::Uint64JsonProp pendingNonce;
+        json::Uint64JsonProp numActions;
+        json::BoolJsonProp isContract;
+        json::BytesJsonProp contractByteCode;
 
       public:
         AccountMetaJsonObject() :
@@ -326,8 +186,8 @@ namespace Iotex
 
     struct BlockIdentifierJsonObject
     {
-      StringJsonProp hash;
-      Uint64JsonProp height;
+      json::StringJsonProp hash;
+      json::Uint64JsonProp height;
 
       BlockIdentifierJsonObject() :
         hash("hash"),

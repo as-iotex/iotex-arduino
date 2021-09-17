@@ -4,6 +4,7 @@
 using namespace Iotex;
 using namespace Iotex::ResponseTypes;
 using namespace Iotex::api;
+using namespace Iotex::reflection;
 
 namespace
 {
@@ -42,6 +43,9 @@ namespace
             case CppType::UINT16:
             case CppType::UINT32:
             case CppType::UINT64:
+            case CppType::BIGINT:
+            case CppType::BYTES:
+            case CppType::ARRAY:
                 if(!cJSON_IsNumber(json))
                     {return ResultCode::ERROR_JSON_PARSE;}
                 break;
@@ -80,7 +84,12 @@ namespace
             case CppType::UINT64:
                 *(uint64_t*)pData = json->valueint;
                 break;
-        }
+            
+            case CppType::OBJECT:
+            case CppType::BYTES:
+            case CppType::ARRAY:
+                break;
+            }
 
         return ResultCode::SUCCESS;
     }
@@ -414,7 +423,8 @@ ResultCode SendExecutionResponse::fromJson(IotexString jsonString)
     }
 
     // Convert
-    const cJSON* hash = cJSON_GetObjectItemCaseSensitive(data, "actionHash");
+    memset(hash, 0, sizeof(hash));
+    const cJSON *hash = cJSON_GetObjectItemCaseSensitive(data, "actionHash");
     ret = SetValueFromJsonObject(hash, CppType::C_STRING, (void *)&(this->hash), IOTEX_HASH_STRLEN);
 
     cJSON_Delete(data);
