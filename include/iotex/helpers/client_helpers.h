@@ -16,6 +16,8 @@
 #include <pgmspace.h>
 
 #define IotexString String
+#define printf(fmt, ...) Serial.printf(fmt, ##__VA_ARGS__)
+
 #else
     #define IotexString std::string
     
