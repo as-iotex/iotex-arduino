@@ -64,6 +64,9 @@ add_library(iotex-antenna-arduino STATIC
         src/random/platformRand32.cpp
         src/storage/os/storage.cpp
         src/account/account.cpp
+        src/abi/abi.cpp
+        src/helpers/json_helper.cpp
+        src/contract/contract.cpp
 )
 
 target_include_directories(iotex-antenna-arduino 
