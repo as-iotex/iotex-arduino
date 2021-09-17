@@ -29,6 +29,12 @@ namespace Iotex
              */
             int32_t protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer &transfer, uint8_t *out, size_t maxOutSize);
 
+            /**
+             * \return  The number of bytes encoded if out buffer is big enough
+             *          -1 if outBuf is too small
+             */
+            int32_t protobuf_encodeExecution(ResponseTypes::ActionCore_Execution &execution, uint8_t *out, size_t maxOutSize);
+
         private:
     };
 }

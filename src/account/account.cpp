@@ -94,6 +94,20 @@ void Account::signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer 
     signer.signHash(hash, _privateKey, signature);
 }
 
+void Account::signExecutionAction(Iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE])
+{
+    uint8_t encodedCore[1024] = {0};
+    size_t encodedCoreSize = encoder.protobuf_encodeExecution(execution, encodedCore, sizeof(encodedCore));
+
+    uint8_t h[IOTEX_HASH_SIZE] = {0};
+    signer.getHash(encodedCore, encodedCoreSize, h);
+
+    if (hash)
+    {
+        memcpy(hash, h, IOTEX_HASH_SIZE);
+    }
+    signer.signHash(h, _privateKey, signature);
+}
 
 
 

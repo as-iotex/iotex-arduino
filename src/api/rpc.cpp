@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "encoder/encoder.h"
+#include "signer/signer.h"
 #include <numeric>
 #include <string>
 
@@ -73,7 +74,7 @@ RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCo
 	ret.url += "SendAction";
 
 	// Body
-	char body[1024] = {0}; 	// TODO: Improve max size. 1024 should be enough for most transfers for now
+	char body[1024] = {0}; 	// TODO: Improve max size. 1024 should be enough for most executions unless data is too big
 
 	sprintf(body + strlen(body), R"({"action": {"core": )");
 	sprintf(body + strlen(body), R"({"version": )");
@@ -94,6 +95,57 @@ RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCo
 	sprintf(body + strlen(body), R"(,"recipient": ")");
 	sprintf(body + strlen(body), "%s", transfer.transfer.recipient);
 	sprintf(body + strlen(body), R"(","payload": ")");
+	sprintf(body + strlen(body), R"("}})");
+	sprintf(body + strlen(body), R"(,"senderPubKey": ")");
+	sprintf(body + strlen(body), "%s", base64PublicKey);
+	sprintf(body + strlen(body), R"(")");
+	sprintf(body + strlen(body), R"(,"signature": ")");
+	sprintf(body + strlen(body), "%s", base64Signature);
+	sprintf(body + strlen(body), R"(","encoding": "IOTEX_PROTOBUF"}})");
+
+	ret.body = body;
+	return ret;
+}
+
+RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_Execution execution, const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE])
+{
+	RpcCallData ret;
+	// Base64 encode signature and sender public key
+    char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
+    char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
+	uint8_t data[execution.execution.data.length() / 2] = {0};
+	char base64Data[sizeof(data)*2] = {0}; // Double the size is enough for a base64 encoded message
+	encoder.base64_encode(signature, IOTEX_SIGNATURE_SIZE, base64Signature);
+	encoder.base64_encode(senderPubKey, IOTEX_PUBLIC_KEY_SIZE, base64PublicKey);
+	signer.str2hex(execution.execution.data.c_str(), data, sizeof(data));
+	encoder.base64_encode(data, sizeof(data), base64Data);
+
+	// Url
+	ret.url.reserve(URL_MAX_LEN);
+	ret.url += host.toString().c_str();
+	ret.url += "SendAction";
+	
+	// Body
+	char body[1024 + sizeof(base64Data)] = {0}; 	// TODO: Improve max size. 1024 should be enough for most transfers for now
+
+	sprintf(body + strlen(body), R"({"action": {"core": )");
+	sprintf(body + strlen(body), R"({"version": )");
+	sprintf(body + strlen(body), "%d", execution.version);
+	sprintf(body + strlen(body), R"(,"nonce": ")");
+	sprintf(body + strlen(body), "%llu", execution.nonce);
+	sprintf(body + strlen(body), R"(","gasLimit": ")");
+	sprintf(body + strlen(body), "%llu", execution.gasLimit);
+	sprintf(body + strlen(body), R"(","gasPrice": ")");
+	sprintf(body + strlen(body), "%s", execution.gasPrice);
+	sprintf(body + strlen(body), R"(")");
+	sprintf(body + strlen(body), R"(,"execution":)");
+	sprintf(body + strlen(body), R"({"amount": ")");
+	sprintf(body + strlen(body), "%s", execution.execution.amount);
+	sprintf(body + strlen(body), R"(")");
+	sprintf(body + strlen(body), R"(,"contract": ")");
+	sprintf(body + strlen(body), "%s", execution.execution.contract);
+	sprintf(body + strlen(body), R"(","data": ")");
+	sprintf(body + strlen(body), "%s", base64Data);
 	sprintf(body + strlen(body), R"("}})");
 	sprintf(body + strlen(body), R"(,"senderPubKey": ")");
 	sprintf(body + strlen(body), "%s", base64PublicKey);

@@ -34,13 +34,12 @@ namespace Iotex
             // Signing
             void signMessage(const uint8_t *message, size_t size, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
             void signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
+            void signExecutionAction(Iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE] = nullptr);
 
             // Action execution
             template<typename TAPI>
             ResultCode sendTokenTransferAction(Connection<TAPI>& conn, uint64_t nonce, uint64_t gasLimit, const char* gasPrice, const char* amount, const char* recipient, uint8_t hash[IOTEX_HASH_SIZE])
             {
-                // TODO Get account meta instead of receiving nonce?
-
                 ResponseTypes::ActionCore_Transfer core;
                 core.version = 1;
                 core.gasLimit = gasLimit;
@@ -56,6 +55,25 @@ namespace Iotex
                 signTokenTransferAction(core, signature);
 
                 return conn.api.wallets.sendTokenTransfer(_publicKey, signature, core, hash);
+            }
+
+            template<typename TAPI>
+            ResultCode sendExecutionAction(Connection<TAPI>& conn, uint64_t nonce, uint64_t gasLimit, const char* gasPrice, const char* amount, const char contract[IOTEX_ADDRESS_STRLEN + 1], IotexString data, uint8_t hash[IOTEX_HASH_SIZE])
+            {
+                ResponseTypes::ActionCore_Execution core;
+                core.version = 1;
+                core.gasLimit = gasLimit;
+                core.nonce = nonce;
+                strcpy(core.gasPrice, gasPrice);
+                strcpy(core.execution.amount, amount);
+                strcpy(core.execution.contract, contract);
+                core.execution.data = data;
+
+                // Sign
+                uint8_t signature[IOTEX_SIGNATURE_SIZE];
+                signExecutionAction(core, signature);
+                
+                return conn.api.wallets.sendExecution(_publicKey, signature, core, hash);
             }
 
         private:

@@ -12,7 +12,6 @@
 #include <string.h>
 #include <vector>
 
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -38,16 +37,23 @@ namespace
         return pb_encode_string(stream, (uint8_t*)str, strlen(str));
     }
 
-    bool encode_bytes(pb_ostream_t* stream, const pb_field_t* field, void* const* arg)
+    struct BytesWithLength
+    {
+        size_t size;
+        uint8_t *bytes;
+    } __attribute__ ((packed));
+
+    bool encode_bytes(pb_ostream_t *stream, const pb_field_t *field, void *const *arg)
     {
         if (arg == nullptr)
             return true;
-        const uint8_t *bytes = (const uint8_t *)(*arg);
+
+        const BytesWithLength *args = (BytesWithLength *)(*arg);
 
         if (!pb_encode_tag_for_field(stream, field))
             return false;
 
-        return pb_encode_string(stream, (uint8_t*)bytes, 0);    // Don't encode anything for now, payload should be empty
+        return pb_encode_string(stream, args->bytes, args->size);    // Don't encode anything for now, payload should be empty
     }
 }
 
@@ -153,6 +159,46 @@ int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& tra
     pbCore.action.transfer.recipient.funcs.encode = &encode_string;
     // pbCore.action.transfer.payload.arg = (void*)transfer.transfer.payload.c_str();
     // pbCore.action.transfer.payload.funcs.encode = &encode_bytes;
+
+    pb_ostream_t stream = pb_ostream_from_buffer(encodedCore, sizeof(encodedCore));
+    pb_encode(&stream, ActionCore_fields, &pbCore);
+
+    if(stream.bytes_written > maxOutSize)
+    {
+        return -1;
+    }
+
+    memset(out, 0, maxOutSize);
+    memcpy(out, encodedCore, stream.bytes_written);
+    
+    return stream.bytes_written;
+}
+
+int32_t Encoder::protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& execution, uint8_t* out, size_t maxOutSize)
+{
+    ActionCore pbCore;
+    uint8_t encodedCore[1024];
+
+    pbCore.version = execution.version;
+    pbCore.gasLimit = execution.gasLimit;
+    pbCore.nonce = execution.nonce;
+    pbCore.gasPrice.arg = execution.gasPrice;
+    pbCore.gasPrice.funcs.encode = &encode_string;
+    // pbCore.chainID = transfer.chainId;
+    pbCore.which_action = ActionCore_execution_tag;
+    pbCore.action.execution.amount.arg = execution.execution.amount;
+    pbCore.action.execution.amount.funcs.encode = &encode_string;
+    pbCore.action.execution.contract.arg = execution.execution.contract;
+    pbCore.action.execution.contract.funcs.encode = &encode_string;
+
+    uint8_t data[execution.execution.data.length()/2 + 1] = {0};
+    signer.str2hex(execution.execution.data.c_str(), data, execution.execution.data.length()/2);
+    BytesWithLength bytesWithLength;
+    bytesWithLength.size = execution.execution.data.length() / 2;
+    bytesWithLength.bytes = data;
+
+    pbCore.action.execution.data.arg = &bytesWithLength;
+    pbCore.action.execution.data.funcs.encode = &encode_bytes;
 
     pb_ostream_t stream = pb_ostream_from_buffer(encodedCore, sizeof(encodedCore));
     pb_encode(&stream, ActionCore_fields, &pbCore);

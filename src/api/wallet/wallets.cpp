@@ -71,11 +71,34 @@ ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KE
 	if (ret != ResultCode::SUCCESS)
 		return ret;
 
-	ResponseTypes::SendTokenTransferResponse response;
+	ResponseTypes::SendExecutionResponse response;
 	ret = response.fromJson(rspBody);
 	if (ret != ResultCode::SUCCESS)
 		return ret;
 
 	signer.str2hex(response.hash, hash, IOTEX_HASH_SIZE);
+	return ret;
+}
+
+ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Execution &execution, uint8_t hash[IOTEX_HASH_SIZE])
+{
+	rpc::RpcCallData callData = rpc::Wallets::sendExecution(this->host_, execution, senderPubKey, signature);
+	IotexString rspBody;
+
+	// printf("Wallets::sendExecution: %s\n", callData.body.c_str());
+
+	ResultCode ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
+
+	ResponseTypes::SendExecutionResponse response;
+	ret = response.fromJson(rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
+
+	signer.str2hex(response.hash, hash, IOTEX_HASH_SIZE);
+
+	// printf("Action hash: %s\n", response.hash);
+
 	return ret;
 }
