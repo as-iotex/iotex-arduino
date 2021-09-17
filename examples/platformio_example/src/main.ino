@@ -14,7 +14,7 @@
 #include "account/account.h"
 #include <map>
 #include "secrets.h"
-    #include "commands.h"
+#include "commands.h"
 
 using namespace Iotex;
 using namespace Iotex::api;
