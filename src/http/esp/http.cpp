@@ -44,22 +44,33 @@ namespace Iotex
 					};
 
 					_httpClient.collectHeaders(headerKeys, numberOfHeaders);
+
 					#ifdef DEBUG_HTTP
+						printf("HTTP::post(): Request path: %s\r\n", request);
 						Serial.println("HTTP::post(): Request Body: ");
 						Serial.println(body);
 					#endif
+
 					_httpClient.POST(body);
-					response = _httpClient.getString().c_str();
-					GrpcStatusCode grpcStatus = (GrpcStatusCode) atoi(_httpClient.header("grpc-status").c_str());
+					response = String(_httpClient.getString());
+
+					#ifdef DEBUG_HTTP
+						Serial.print("HTTP::post(): Response Body: ");
+						Serial.println(response);
+					#endif
+
+					GrpcStatusCode grpcStatus = (GrpcStatusCode)atoi(_httpClient.header("grpc-status").c_str());
 					if (grpcStatus != GrpcStatusCode::OK)
 					{
 						response = _httpClient.header("grpc-message").c_str();
 						#ifdef DEBUG_HTTP
-							Serial.printf("HTTP::post(): Grpc message: %s\n", _httpClient.header("grpc-message").c_str());
+							printf("HTTP::post(): Grpc error, message: %s\n", _httpClient.header("grpc-message").c_str());
 						#endif
 						return ResultCode::ERROR_GRPC;
 					}
-					Serial.printf("HTTP::post(): Response body: %s\n", _httpClient.header("grpc-message").c_str());
+					#ifdef DEBUG_HTTP
+						printf("HTTP::post(): Grpc success, message : %s\n", _httpClient.header("grpc-message").c_str());
+					#endif
 					return ResultCode::SUCCESS;
 				}
 
@@ -81,7 +92,7 @@ namespace Iotex
 					{
 						return -1;
 					};
-					int errorCode = _httpClient.POST(body);
+					_httpClient.POST(body);
 					memcpy(rspBuf, _httpClient.getString().c_str(), _httpClient.getString().length());
 					return strlen(rspBuf);
 				}
