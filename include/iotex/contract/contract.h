@@ -21,10 +21,13 @@ namespace Iotex
 
             ResultCode generateCallData(const IotexString &functionName, ParameterValuesDictionary &params, IotexString &out);
 
+            static int32_t generateBytesForParameter(Iotex::abi::ParameterValue param, Iotex::abi::EthereumTypeName type, std::vector<uint8_t>& data);
+            static int32_t generateBytesForSimpleType(Iotex::abi::ParameterValue param, Iotex::abi::EthereumTypeName type, uint8_t buf[32]);
+
             static int32_t generateBytesForUint(const uint8_t *pVal, size_t size, uint8_t *out);
             static int32_t generateBytesForInt(const int8_t *pVal, size_t size, uint8_t* out);
             static int32_t generateBytesForAddress(const uint8_t *pVal, uint8_t* out);
-            static void generateBytesForBool(bool val, uint8_t* out);
+            static int32_t generateBytesForBool(bool val, uint8_t* out);
             static int32_t generateBytesForStaticBytes(uint8_t* pVal, size_t size, uint8_t* out);
             static int32_t generateBytesForBytes(uint8_t* pVal, size_t size, uint8_t* out);
             static int32_t generateBytesForString(char* pVal, size_t size, uint8_t* out);

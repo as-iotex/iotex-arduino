@@ -71,135 +71,20 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
                     return ResultCode::ERROR_BAD_PARAMETER;
                 }
 
-                if (input.type == EthereumTypeName::UINT)
-                {
-                    uint8_t buf[32];
-                    uint32_t bytes;
-                    std::vector<uint8_t> data;
-                    if (params.at(input.name).size <= 8 && params.at(input.name).isBigInt == false)
-                    {
-                        bytes  = generateBytesForUint((const uint8_t*)&(params.at(input.name).value.uint8), params.at(input.name).size, buf);
-                    }
-                    else
-                    {
-                        // TODO For BigInt data is in the bytes union element
-                    }
+                std::vector<uint8_t> data;
+                int32_t bytes = generateBytesForParameter(params.at(input.name), input.type, data);
 
-                    for (int i = 0; i < bytes; i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-                    tailSizes[inputIdx] = bytes;
-                    headsSize += bytes;
+                tailSizes[inputIdx] = bytes;
+                size_t currentHeadSize = 32;
+                // If static array the the header could be more than 32 bytes
+                if (!input.IsDynamic()) currentHeadSize = bytes;
+                headsSize += currentHeadSize;
 
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
+                IotexString valString;
+                ConvertToHexString(data, valString);
                     // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
+                staticHeadsOrDynamicTails.push_back(std::move(data));
 
-                if (input.type == EthereumTypeName::INT)
-                {
-                    uint8_t buf[32];
-                    std::vector<uint8_t> data;
-                    int32_t bytes = generateBytesForInt((int8_t*)params.at(input.name).value.bytes, input.size_bytes, buf);
-                    for (int i = 0; i < bytes; i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-
-                    tailSizes[inputIdx] = bytes;
-                    headsSize += bytes;
-
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
-                
-                if (input.type == EthereumTypeName::BOOL)
-                {
-                    uint8_t buf[32];
-                    std::vector<uint8_t> data;
-                    generateBytesForBool(params.at(input.name).value.boolean, buf);
-                    for (int i = 0; i < sizeof(buf); i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-
-                    tailSizes[inputIdx] = 32;
-                    headsSize += 32;
-
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
-                
-                if (input.type == EthereumTypeName::ADDRESS)
-                {
-                    uint8_t buf[32];
-                    std::vector<uint8_t> data;
-                    int32_t bytes = generateBytesForAddress(params.at(input.name).value.bytes, buf);
-                    for (int i = 0; i < sizeof(buf); i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-
-                    tailSizes[inputIdx] = bytes;
-                    headsSize += bytes;
-
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
-
-                if (input.type == EthereumTypeName::BYTES_DYNAMIC)
-                {
-                    auto &currentParam = params.at(input.name);
-                    size_t size = currentParam.size;
-                    size_t n32ByteGroups = ceil((float)size / 32.0) + 1; // +1 because we have to add the size as an encoded uint
-                    uint8_t buf[n32ByteGroups*32];
-                    std::vector<uint8_t> data;
-                    int32_t bytes = generateBytesForBytes((uint8_t*)currentParam.value.bytes, size, buf);
-                    for (int i = 0; i < sizeof(buf); i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-                    
-                    tailSizes[inputIdx] = bytes;
-                    headsSize += 32;
-
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Tail bytes: %s\n", valString.c_str());
-
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
-
-                if (input.type == EthereumTypeName::STRING)
-                {
-                    auto &currentParam = params.at(input.name);
-                    size_t length = currentParam.value.string->length();
-                    size_t n32ByteGroups = ceil((float)length / 32.0) + 1;  // +1 because we have to add the size as an encoded uint
-                    uint8_t buf[n32ByteGroups*32];
-                    std::vector<uint8_t> data;
-                    int32_t bytes = generateBytesForBytes((uint8_t*)currentParam.value.string->c_str(), length, buf);
-                    for (int i = 0; i < sizeof(buf); i++)
-                    {
-                        data.push_back(buf[i]);
-                    }
-
-                    tailSizes[inputIdx] = bytes;
-                    headsSize += 32;
-
-                    IotexString valString;
-                    ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Tail bytes: %s\n", valString.c_str());
-
-                    staticHeadsOrDynamicTails.push_back(std::move(data));
-                }
             } // for (int inputIdx = 0; inputIdx < function.inputs.size(); inputIdx++)
 
             // Create the dynamic value headers and move to the ouput buffer
@@ -247,6 +132,87 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
     return ResultCode::SUCCESS;
 }
 
+int32_t Iotex::Contract::generateBytesForParameter(Iotex::abi::ParameterValue param, EthereumTypeName type, std::vector<uint8_t>& data)
+{
+    uint32_t bytes;
+    switch(type)
+    {
+        case EthereumTypeName::UINT:
+        case EthereumTypeName::INT:
+        case EthereumTypeName::BOOL:
+        case EthereumTypeName::ADDRESS:
+        {
+            uint8_t buf[32];
+            uint32_t bytes;
+            bytes = generateBytesForSimpleType(param, type, buf);
+            data.insert(data.end(), &buf[0], &buf[sizeof(buf)]);
+            break;
+        }
+        
+        case EthereumTypeName::BYTES_DYNAMIC:
+        case EthereumTypeName::STRING:
+        {
+            size_t size = 0;
+            if (type == EthereumTypeName::BYTES_DYNAMIC) size = param.size;
+            else if (type == EthereumTypeName::STRING) size = param.value.string->length();
+            size_t n32ByteGroups = ceil((float)size / 32.0) + 1; // +1 because we have to add the size as an encoded uint
+            uint8_t buf[n32ByteGroups*32];
+            uint8_t* pVal;
+            if (type == EthereumTypeName::BYTES_DYNAMIC) pVal = param.value.bytes;
+            else if (type == EthereumTypeName::STRING) pVal = (uint8_t*)param.value.string->c_str();
+            bytes = generateBytesForBytes(pVal, size, buf);
+            for (int i = 0; i < bytes; i++)
+            {
+                data.push_back(buf[i]);
+            }
+            break;
+        }
+    }
+    return bytes; 
+}
+
+int32_t Iotex::Contract::generateBytesForSimpleType(Iotex::abi::ParameterValue param, EthereumTypeName type, uint8_t buf[32])
+{
+    int32_t bytes = 0;
+    switch(type)
+    {
+        case EthereumTypeName::UINT:
+        {
+            if (param.size <= 8 && param.isBigInt == false)
+            {
+                bytes = generateBytesForUint((const uint8_t*)&(param.value.uint8), param.size, buf);
+            }
+            else
+            {
+                // TODO For BigInt data is in the bytes union element
+            }
+            break;
+        }
+            
+        case EthereumTypeName::INT:
+        {
+            if (param.size <= 8 && param.isBigInt == false)
+            {
+                bytes = generateBytesForInt((const int8_t*)&(param.value.uint8), param.size, buf);
+            }
+            else
+            {
+                // TODO For BigInt data is in the bytes union element
+            }
+            break;
+        }
+
+        case EthereumTypeName::BOOL:
+            bytes = generateBytesForBool(&(param.value.boolean), buf);
+            break;
+
+        case EthereumTypeName::ADDRESS:
+            bytes = generateBytesForAddress(param.value.bytes, buf);
+            break;
+    }  
+    return bytes;
+}
+
 void Iotex::Contract::ConvertToHexString(std::vector<uint8_t>& data, IotexString& out)
 {
     out = "";
@@ -260,6 +226,8 @@ void Iotex::Contract::ConvertToHexString(std::vector<uint8_t>& data, IotexString
 
 int32_t Iotex::Contract::generateBytesForUint(const uint8_t *pVal, size_t size, uint8_t* out)
 {
+    // TODO generateBytesForInt: Only tested for 8, 16, 32, 64 bit uint
+
     // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForUint of size %d\n", size);
     if (size > 32 || out == nullptr)
         return -1;
@@ -284,25 +252,41 @@ int32_t Iotex::Contract::generateBytesForAddress(const uint8_t *pVal, uint8_t* o
 
 int32_t Iotex::Contract::generateBytesForInt(const int8_t *pVal, size_t size, uint8_t* out)
 {
+    // TODO generateBytesForInt: Only tested for 8, 16, 32, 64 bit int
+
     // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForInt of size %d\n", size);
     if (size > 256 || out == nullptr || (size>8 && size%8))
         return -1;
+
     size_t paddingBytes = 32 - size;
-    memset(out, 0xFF, paddingBytes);
+    bool isNegative = false;
+    if (size == 1)
+        isNegative = *(int8_t*)pVal < 0;
+    else if (size == 2)
+        isNegative = *(int16_t*)pVal < 0;
+    else if (size > 2 && size <= 4)
+        isNegative = *(int32_t*)pVal < 0;
+    else if (size > 4 && size <= 8)
+        isNegative = *(int64_t*)pVal < 0;
+    uint8_t padVal = isNegative ? 0xFF : 0x00;
+
+    memset(out, padVal, paddingBytes);
     for (size_t i = 0; i < size; i++)
     {
         // Swap endianness when copying
         out[paddingBytes + i] = pVal[size-i-1];
     }
+
     return 32;
 }
 
-void Iotex::Contract::generateBytesForBool(bool val, uint8_t* out)
+int32_t Iotex::Contract::generateBytesForBool(bool val, uint8_t* out)
 {
     // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForBool\n");
     memset(out, 0, 32);
     if(val)
         out[31] = 1;
+    return 32;
 }
 
 int32_t Iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size, uint8_t* out)

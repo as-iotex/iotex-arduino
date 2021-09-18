@@ -41,6 +41,11 @@ TEST_F(ContractTests, generateBytesForUint)
     ret = Contract::generateBytesForUint((uint8_t*)&value32, 4, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
     ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000012345678", strBuf);
+    // 64 bit
+    uint64_t value64 = 2459565876494606882;
+    ret = Contract::generateBytesForUint((uint8_t*)&value64, 8, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);   
 }
 
 TEST_F(ContractTests, generateBytesForInt)
@@ -52,6 +57,37 @@ TEST_F(ContractTests, generateBytesForInt)
     int32_t ret = Contract::generateBytesForInt(&value8, 1, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
     ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", strBuf);
+    value8 = -50;
+    ret = Contract::generateBytesForInt(&value8, 1, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffce", strBuf);
+    // 16 bit
+    int16_t value16 = -5000;
+    ret = Contract::generateBytesForInt((int8_t*)&value16, 2, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec78", strBuf);   
+    value16 = 5000;
+    ret = Contract::generateBytesForInt((int8_t*)&value16, 2, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000000001388", strBuf); 
+    // 32 bit
+    int32_t value32 = -572662306;
+    ret = Contract::generateBytesForInt((int8_t*)&value32, 4, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffddddddde", strBuf);   
+    value32 = 572662306;
+    ret = Contract::generateBytesForInt((int8_t*)&value32, 4, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000022222222", strBuf); 
+    // 64 bit
+    int64_t value64 = 2459565876494606882;
+    ret = Contract::generateBytesForInt((int8_t*)&value64, 8, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);   
+    value64 = -2459565876494606882;
+    ret = Contract::generateBytesForInt((int8_t*)&value64, 8, buf);
+    signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffddddddddddddddde", strBuf); 
 }
 
 TEST_F(ContractTests, generateBytesForAddress)

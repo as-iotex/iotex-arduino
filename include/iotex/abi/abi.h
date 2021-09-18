@@ -83,15 +83,16 @@ namespace Iotex
                 IotexString name;
                 EthereumTypeName type;
                 uint32_t size_bytes;
-                // For arrays only
-                EthereumTypeName arrayElementsType;
+                EthereumTypeName arrayType;
+                uint32_t arraySize;
 
                 static ResultCode getTypeAndSizeFromString(IotexString &str, EthereumTypeName& type, uint32_t& size);
                 bool IsDynamic() 
                 {
                     return (
                         type == EthereumTypeName::BYTES_DYNAMIC ||
-                        type == EthereumTypeName::STRING);
+                        type == EthereumTypeName::STRING        ||
+                        type == EthereumTypeName::ARRAY_DYNAMIC );
                 }
 
             private:
