@@ -80,9 +80,9 @@ RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCo
 	sprintf(body + strlen(body), R"({"version": )");
 	sprintf(body + strlen(body), "%d", transfer.version);
 	sprintf(body + strlen(body), R"(,"nonce": ")");
-	sprintf(body + strlen(body), "%llu", transfer.nonce);
+	sprintf(body + strlen(body), "%lu", transfer.nonce);
 	sprintf(body + strlen(body), R"(","gasLimit": ")");
-	sprintf(body + strlen(body), "%llu", transfer.gasLimit);
+	sprintf(body + strlen(body), "%lu", transfer.gasLimit);
 	sprintf(body + strlen(body), R"(","gasPrice": ")");
 	sprintf(body + strlen(body), "%s", transfer.gasPrice);
 	sprintf(body + strlen(body), R"(")");
@@ -113,8 +113,10 @@ RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_E
 	// Base64 encode signature and sender public key
     char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
     char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
-	uint8_t data[execution.execution.data.length() / 2] = {0};
-	char base64Data[sizeof(data)*2] = {0}; // Double the size is enough for a base64 encoded message
+	uint8_t data[execution.execution.data.length() / 2];
+	memset(data, 0, sizeof(data));
+	char base64Data[sizeof(data)*2]; // Double the size is enough for a base64 encoded message
+	memset(base64Data, 0, sizeof(base64Data));
 	encoder.base64_encode(signature, IOTEX_SIGNATURE_SIZE, base64Signature);
 	encoder.base64_encode(senderPubKey, IOTEX_PUBLIC_KEY_SIZE, base64PublicKey);
 	signer.str2hex(execution.execution.data.c_str(), data, sizeof(data));
@@ -126,15 +128,16 @@ RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_E
 	ret.url += "SendAction";
 	
 	// Body
-	char body[1024 + sizeof(base64Data)] = {0}; 	// TODO: Improve max size. 1024 should be enough for most transfers for now
-
+	char body[1024 + sizeof(base64Data)]; 	// TODO: Improve max size. 1024 should be enough for most transfers for now
+	memset(body, 0, sizeof(body));
+	
 	sprintf(body + strlen(body), R"({"action": {"core": )");
 	sprintf(body + strlen(body), R"({"version": )");
 	sprintf(body + strlen(body), "%d", execution.version);
 	sprintf(body + strlen(body), R"(,"nonce": ")");
-	sprintf(body + strlen(body), "%llu", execution.nonce);
+	sprintf(body + strlen(body), "%lu", execution.nonce);
 	sprintf(body + strlen(body), R"(","gasLimit": ")");
-	sprintf(body + strlen(body), "%llu", execution.gasLimit);
+	sprintf(body + strlen(body), "%lu", execution.gasLimit);
 	sprintf(body + strlen(body), R"(","gasPrice": ")");
 	sprintf(body + strlen(body), "%s", execution.gasPrice);
 	sprintf(body + strlen(body), R"(")");

@@ -84,7 +84,7 @@ namespace
 
         /**/
 
-        Iotex::ResultCode post(const char* request, const char* body, IotexString& response)
+        Iotex::ResultCode post(const char* request, const char* body, IotexString& response) override
         {
             // https://curl.haxx.se/libcurl/c/http-post.html
             CURL *curl;
@@ -131,12 +131,12 @@ namespace
                 return ResultCode::SUCCESS;
         };
 
-        int get(const char* request, char* rspBuf, size_t size)
+        int get(const char* request, char* rspBuf, size_t size) override
         {
             return -1;
         }
 
-        int post(const char* request, const char* body, char* rspBuf, size_t size)
+        int post(const char* request, const char* body, char* rspBuf, size_t size) override
         {
             return -1;
         }

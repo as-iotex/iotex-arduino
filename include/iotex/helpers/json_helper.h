@@ -231,7 +231,7 @@ namespace Iotex
                 void appendValueToString(IotexString& out) override
                     {
                         char buf[21] = {0};
-                        sprintf(buf, "%llu", _value.uint64);
+                        sprintf(buf, "%lu", _value.uint64);
                         out += buf;
                     }
         };

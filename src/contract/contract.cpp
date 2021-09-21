@@ -45,7 +45,9 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
     {
         if (function.name == functionName)
         {
-            uint32_t tailSizes[function.inputs.size()] = {0};
+            uint32_t tailSizes[function.inputs.size()];
+            memset(tailSizes, 0, sizeof(tailSizes)/sizeof(tailSizes[0]));
+            
             size_t headsSize = 0;
             std::vector<std::vector<uint8_t>> staticHeadsOrDynamicTails;
 

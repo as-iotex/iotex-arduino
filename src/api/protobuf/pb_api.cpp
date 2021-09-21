@@ -88,6 +88,7 @@ namespace
             case CppType::OBJECT:
             case CppType::BYTES:
             case CppType::ARRAY:
+            case CppType::BIGINT:
                 break;
             }
 

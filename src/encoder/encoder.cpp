@@ -191,7 +191,9 @@ int32_t Encoder::protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& e
     pbCore.action.execution.contract.arg = execution.execution.contract;
     pbCore.action.execution.contract.funcs.encode = &encode_string;
 
-    uint8_t data[execution.execution.data.length()/2 + 1] = {0};
+    uint8_t data[execution.execution.data.length()/2 + 1];
+    memset(data, 0, sizeof(data));
+    
     signer.str2hex(execution.execution.data.c_str(), data, execution.execution.data.length()/2);
     BytesWithLength bytesWithLength;
     bytesWithLength.size = execution.execution.data.length() / 2;

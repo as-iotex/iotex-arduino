@@ -66,6 +66,12 @@ ResultCode Iotex::json::SetValueFromJsonObject(const cJSON* json, reflection::Cp
         case reflection::CppType::UINT64:
             *(uint64_t*)pData = json->valueint;
             break;
+        
+        case reflection::CppType::BIGINT:
+        case reflection::CppType::OBJECT:
+        case reflection::CppType::BYTES:
+        case reflection::CppType::ARRAY:
+            break;
     }
 
     return Iotex::ResultCode::SUCCESS;

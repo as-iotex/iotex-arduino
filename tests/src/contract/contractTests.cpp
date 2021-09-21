@@ -159,7 +159,8 @@ TEST_F(ContractTests, generateFunctionSelector_Uint32AndBool)
     std::vector<uint8_t> out;
     Contract::generateFunctionSelector(function, out);
 
-    char strBuf[out.size() * 2 + 1] = {0};
+    char strBuf[out.size() * 2 + 1];
+    memset(strBuf, 0, sizeof(strBuf));
     signer.hex2str(&out[0], out.size(), strBuf, sizeof(strBuf));
 
     ASSERT_STREQ("cdcd77c0", strBuf);
