@@ -12,3 +12,5 @@ extern/nanopb/tools/*
 encoded_actioncore.bin
 **/secrets.h
 examples/**/.gitignore
+
+Notes.md
