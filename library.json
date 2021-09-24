@@ -13,6 +13,8 @@
         "url": ""
       }
     ],
+    "includeDir": "src",
+    "srcDir": "src",
     "frameworks": "arduino",
     "platforms": [
       "espressif8266",
@@ -23,7 +25,6 @@
         "src/*",
         "include/*",
         "examples/*",
-        "extern/*",
         "*.md",
         "*.json",
         "*.properties",
@@ -38,25 +39,24 @@
     "build": {
         "flags":
         [
-            "-Iinclude/iotex",
-            "-Iextern",
-            "-Iextern/nanopb",
-            "-Iextern/crypto",
-            "-Iextern/cjson",
-            "-Isrc/encoder",
-            "-Iprotobuf/c_files",
-            "-DRAND_PLATFORM_INDEPENDENT"
+            "-I src/extern",
+            "-I src/extern/nanopb",
+            "-I src/extern/crypto",
+            "-I src/extern/cjson",
+            "-I src/encoder",
+            "-I src/protobuf_files/c_files",
+            "-D RAND_PLATFORM_INDEPENDENT"
             
         ],
         "extraScript": "extra_script.py",
         "srcFilter": 
         [
           "+<*>",
-          "+<../protobuf/c_files/*>",
-          "+<../extern/*>",
-          "-<../extern/nanopb/examples/*>",
-          "-<../extern/nanopb/tests/*>",
-          "-<../extern/crypto/aes/aescrypt.c>",
+          "+<protobuf/c_files/*>",
+          "+<extern/*>",
+          "-<extern/crypto/aes/aescrypt.c>",
+          "-<extern/nanopb/examples/*>",
+          "-<extern/nanopb/tests/*>",
           "-<**/os/*>"
         ]
     },
