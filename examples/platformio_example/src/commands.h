@@ -253,7 +253,9 @@ void SendTokenTransfer()
 
     Serial.println("Enter the destination address (eth representation):");
     String destinationAddr = readLineFromSerial();
-    // String destinationAddr = "iotexAddressWithoutIoPrefix"; // Uncomment to use harcoded 
+    destinationAddr.toLowerCase();
+    destinationAddr.replace("0x", "");
+    // String destinationAddr = "iotexAddressWithoutIoPrefix"; // Uncomment to use harcoded
     Serial.println("Destination addr: " + destinationAddr);
 
     Serial.println("Enter the amount in VITA (max 2^64): ");
@@ -338,7 +340,7 @@ void AddData()
     Iotex::ParameterValuesDictionary params;
     ParameterValue paramImei;
     paramImei.value.string = &imei;
-    paramImei.size = ETH_ADDRESS_SIZE;
+    paramImei.size = imei.length();
     params.emplace(std::pair<IotexString, ParameterValue>("imei", paramImei));
     
     ParameterValue paramData;
