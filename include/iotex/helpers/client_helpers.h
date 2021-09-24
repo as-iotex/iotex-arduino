@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <string>
+#include <vector>
 
 #if (defined ARDUINO || defined ESP8266 || defined ESP32)
 
@@ -26,4 +27,26 @@
     #endif
 #endif
 
+
+namespace Iotex
+{
+    namespace helpers
+    {
+        inline void vectorToHexString(std::vector<uint8_t>& data, IotexString& out)
+        {
+            out = "";
+            char charBuf[3] = {0};
+            for (int i = 0; i < data.size(); i++)
+            {
+                sprintf(charBuf, "%02x", data[i]);
+                out += charBuf;
+            }
+        }
+    }
+}
+
+
+
 #endif
+
+

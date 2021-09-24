@@ -31,21 +31,22 @@ namespace Iotex
             static int32_t generateBytesForStaticBytes(uint8_t* pVal, size_t size, uint8_t* out);
             static int32_t generateBytesForBytes(uint8_t* pVal, size_t size, uint8_t* out);
             static int32_t generateBytesForString(char* pVal, size_t size, uint8_t* out);
-            static void generateFunctionSelector(Iotex::abi::FunctionAbi& function, std::vector<uint8_t>& out);
-
-            // TODO Static array (all elements of same type)
-            // TODO Dynamic array (all elements of same type)
+            static int32_t generateBytesForStaticArrayOfStaticElements(Iotex::abi::ParameterValue param, std::vector<uint8_t> &data);
+            static int32_t generateBytesForDynamicArrayOfStaticElements(Iotex::abi::ParameterValue param, std::vector<uint8_t> &data);
+            static int32_t generateBytesForStaticArrayOfDynamicElements(Iotex::abi::ParameterValue param, std::vector<uint8_t> &data);
+            static void generateFunctionSelector(Iotex::abi::FunctionAbi &function, std::vector<uint8_t> &out);
 
             // Not supported:
-            // TODO Static tuple
-            // TODO Dynamic tuple
-            // TODO Array (elements of different type)
+            // Nested arrays
+            // Tuple
+            // Fixed
 
         private:
             std::vector<Iotex::abi::FunctionAbi> _functions;
-
-            void ConvertToHexString(std::vector<uint8_t>& data, IotexString &out);
     };
 }
 
 #endif
+
+
+

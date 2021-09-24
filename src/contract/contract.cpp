@@ -6,6 +6,7 @@
 using namespace Iotex;
 using namespace std;
 using namespace Iotex::abi;
+using namespace Iotex::helpers;
 
 
 static void EndianSwap(uint8_t* pData, uint64_t size)
@@ -53,8 +54,8 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
             // Function selector
             generateFunctionSelector(function, contractData);
-            ConvertToHexString(contractData, out);
-            // IOTEX_DEBUG_F("Iotex::Contract::generateCallData:Function selector:\n%s\n", out.c_str());
+            vectorToHexString(contractData, out);
+            IOTEX_DEBUG_F("Iotex::Contract::generateCallData:Function selector:\n%s\n", out.c_str());
             
             // Params
             for (int inputIdx = 0; inputIdx < function.inputs.size(); inputIdx++)
@@ -62,12 +63,12 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
                 auto &input = function.inputs.at(inputIdx);
                 uint32_t remainingInputs = function.inputs.size() - inputIdx;
 
-                // IOTEX_DEBUG_F("Iotex::Contract::generateCallData: Generating bytes for parameter %s\n", input.name.c_str());
+                IOTEX_DEBUG_F("Iotex::Contract::generateCallData: Generating bytes for parameter %s\n", input.name.c_str());
 
                 // Validate user passed this key in ParameterValuesDictionary
                 if(params.find(input.name) == params.end())
                 {
-                    // IOTEX_DEBUG_F("Iotex::Contract::generateCallData Parameter %s not supplied by user\n", input.name.c_str());
+                    IOTEX_DEBUG_F("Iotex::Contract::generateCallData Parameter %s not supplied by user\n", input.name.c_str());
                     return ResultCode::ERROR_BAD_PARAMETER;
                 }
 
@@ -75,14 +76,12 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
                 int32_t bytes = generateBytesForParameter(params.at(input.name), input.type, data);
 
                 tailSizes[inputIdx] = bytes;
-                size_t currentHeadSize = 32;
-                // If static array the the header could be more than 32 bytes
-                if (!input.IsDynamic()) currentHeadSize = bytes;
+                size_t currentHeadSize =  input.IsDynamic() ? 32 : bytes;
                 headsSize += currentHeadSize;
 
                 IotexString valString;
-                ConvertToHexString(data, valString);
-                    // IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
+                vectorToHexString(data, valString);
+                IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                 staticHeadsOrDynamicTails.push_back(std::move(data));
 
             } // for (int inputIdx = 0; inputIdx < function.inputs.size(); inputIdx++)
@@ -100,17 +99,21 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
                 // If static, copy the tail
                 if (!function.inputs[i].IsDynamic())
                 {
+                    IOTEX_DEBUG_F("Input %d is static\n", i);
                     contractData.insert(contractData.end(), current.begin(), current.end());
                 }
                 // If dynamic, add the header
                 else
                 {
                     uint8_t head[32] = {0};
+                    IOTEX_DEBUG_F("Generating head for input %d:\n", i);
                     generateBytesForUint((uint8_t *)&bytesUntilThisTail, sizeof(bytesUntilThisTail), head);
                     for (auto b = 0; b < 32; b++)
                     {
+                        IOTEX_DEBUG_F("%02x", head[b]);
                         contractData.push_back(head[b]);
-                    }
+                    }                    
+                    IOTEX_DEBUG_F("\r\n");
                 }
             }
 
@@ -125,7 +128,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
             }
 
             // 
-            ConvertToHexString(contractData, out);
+            vectorToHexString(contractData, out);
         }
     }
 
@@ -134,7 +137,7 @@ ResultCode Iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
 int32_t Iotex::Contract::generateBytesForParameter(Iotex::abi::ParameterValue param, EthereumTypeName type, std::vector<uint8_t>& data)
 {
-    uint32_t bytes;
+    size_t bytes;
     switch(type)
     {
         case EthereumTypeName::UINT:
@@ -143,7 +146,6 @@ int32_t Iotex::Contract::generateBytesForParameter(Iotex::abi::ParameterValue pa
         case EthereumTypeName::ADDRESS:
         {
             uint8_t buf[32];
-            uint32_t bytes;
             bytes = generateBytesForSimpleType(param, type, buf);
             data.insert(data.end(), &buf[0], &buf[sizeof(buf)]);
             break;
@@ -167,7 +169,59 @@ int32_t Iotex::Contract::generateBytesForParameter(Iotex::abi::ParameterValue pa
             }
             break;
         }
-    }
+        
+        case EthereumTypeName::BYTES_STATIC:
+        {
+            size_t size = param.size;
+            size_t n32ByteGroups = ceil((float)size / 32.0);
+            uint8_t buf[n32ByteGroups*32];
+            bytes = generateBytesForStaticBytes(param.value.bytes, param.size, buf);
+            IOTEX_DEBUG_F("Iotex::Contract::generateBytesForParameter: Generated %lu bytes for BYTES_STATIC of size %lu\n", bytes, size);
+            for (int i = 0; i < bytes; i++)
+            {
+                data.push_back(buf[i]);
+            }
+            // std::string dataStr;
+            // vectorToHexString(data, dataStr);
+            // IOTEX_DEBUG_F("Bytes: %s\n", dataStr.c_str());
+            break;
+        }
+
+        case EthereumTypeName::ARRAY_STATIC:
+            if (param.size <= 0)
+                break;
+            if (param.value.elements[0].isDynamic())
+            {
+                bytes = generateBytesForStaticArrayOfDynamicElements(param, data);
+            }
+            else
+            {
+                bytes = generateBytesForStaticArrayOfStaticElements(param, data);
+            }
+            break;
+        
+        case EthereumTypeName::ARRAY_DYNAMIC:
+            if (param.size <= 0)
+                break;
+            if (param.value.elements[0].isDynamic())
+            {
+                // TODO
+                IOTEX_DEBUG_F("ERROR: Iotex::Contract::generateBytesForParameter: Dynamic arrays of dynamic elements are not supported\r\n");
+                return -1;
+            }
+            else
+            {
+                bytes = generateBytesForDynamicArrayOfStaticElements(param, data);
+            }
+            break;
+
+
+        case EthereumTypeName::TUPLE_STATIC:
+        case EthereumTypeName::TUPLE_DYNAMIC:
+        default:
+            IOTEX_DEBUG_F("ERROR: Iotex::Contract::generateBytesForParameter: Unsupported type\r\n");
+            break;
+        }
     return bytes; 
 }
 
@@ -213,22 +267,13 @@ int32_t Iotex::Contract::generateBytesForSimpleType(Iotex::abi::ParameterValue p
     return bytes;
 }
 
-void Iotex::Contract::ConvertToHexString(std::vector<uint8_t>& data, IotexString& out)
-{
-    out = "";
-    char charBuf[3] = {0};
-    for (int i = 0; i < data.size(); i++)
-    {
-        sprintf(charBuf, "%02x", data[i]);
-        out += charBuf;
-    }
-}
+
 
 int32_t Iotex::Contract::generateBytesForUint(const uint8_t *pVal, size_t size, uint8_t* out)
 {
-    // TODO generateBytesForInt: Only tested for 8, 16, 32, 64 bit uint
+    // TODO generateBytesForUint: Only tested for 8, 16, 32, 64 bit uint
 
-    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForUint of size %d\n", size);
+    IOTEX_DEBUG_F("Iotex::Contract::generateBytesForUint of size %lu\n", size);
     if (size > 32 || out == nullptr)
         return -1;
     size_t paddingBytes = 32 - size;
@@ -311,7 +356,7 @@ int32_t Iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size,
 
 int32_t Iotex::Contract::generateBytesForBytes(uint8_t* pVal, size_t size, uint8_t* out)
 {
-    // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForBytes of size %d\n", size);
+    IOTEX_DEBUG_F("Iotex::Contract::generateBytesForBytes of size %d\n", size);
     // Encode length
     size_t encodedBytes = generateBytesForUint((const uint8_t *)&size, sizeof(size_t), out);
 
@@ -325,6 +370,84 @@ int32_t Iotex::Contract::generateBytesForString(char* pVal, size_t size, uint8_t
 {
     // IOTEX_DEBUG_F("Iotex::Contract::generateBytesForString of size %d\n", size);
     return generateBytesForBytes((uint8_t*) pVal, size, out);
+}
+
+int32_t Iotex::Contract::generateBytesForStaticArrayOfStaticElements(Iotex::abi::ParameterValue param, std::vector<uint8_t>& data)
+{
+    IOTEX_DEBUG_F("Iotex::Contract::generateBytesForStaticArrayOfStaticElements() of size %d\n", param.size);
+    // Foreach element in the array
+    int bytes = 0;
+    for (size_t i = 0; i < param.size; i++)
+    {
+        ParameterValue thisParam = param.value.elements[i];
+        if (thisParam.type == EthereumTypeName::UNKNOWN)
+        {
+            IOTEX_DEBUG_F("Unknown type for parameter\r\n");
+            return bytes;
+        }
+        bytes += generateBytesForParameter(thisParam, thisParam.type, data);
+        IOTEX_DEBUG_F("Iotex::Contract::generateBytesForStaticArrayOfStaticElements() : Generated %d bytes for param %lu\n", bytes, i);
+    }
+    return bytes;
+}
+
+int32_t Iotex::Contract::generateBytesForDynamicArrayOfStaticElements(Iotex::abi::ParameterValue param, std::vector<uint8_t>& data)
+{
+    IOTEX_DEBUG_F("Iotex::Contract::generateBytesForDynamicArrayOfStaticElements() of size %d\n", param.size);
+    // Encode the size
+    uint8_t buf[32] = {0};
+    size_t bytes = generateBytesForUint((const uint8_t *)&param.size, sizeof(param.size), buf);
+    data.insert(data.end(), &buf[0], &buf[sizeof(buf)]);
+    
+    // Encode the elements now
+    bytes += generateBytesForStaticArrayOfStaticElements(param, data);
+ 
+    return bytes;
+}
+
+int32_t Iotex::Contract::generateBytesForStaticArrayOfDynamicElements(Iotex::abi::ParameterValue param, std::vector<uint8_t> &data)
+{
+    IOTEX_DEBUG_F("Iotex::Contract::generateBytesForDynamicArrayOfDynamicElements() of size %d\n", param.size);
+    size_t headsSizeBytes = 32 * param.size;
+    size_t elementOffsets[param.size];
+    size_t elementTailSizes[param.size];
+    memset(elementTailSizes, 0, param.size);
+    std::vector<uint8_t> encodedElements[param.size];
+    int32_t totalEncodedBytes = 0;
+    // Build each element tail
+    for (int i = 0; i < param.size; i++)
+    {
+        ParameterValue currentElement = param.value.elements[i];
+        elementTailSizes[i] = generateBytesForParameter(currentElement, currentElement.type, encodedElements[i]);
+    }
+    // Build the heads
+    for (int i = 0; i < param.size; i++)
+    {
+        if (i == 0)
+        {
+            elementOffsets[0] = headsSizeBytes;
+        }
+        else
+        {
+            // Offset is the offset to the previous element +  the size of the previous element's tail
+            elementOffsets[i] = elementOffsets[i - 1] + elementTailSizes[i - 1];
+        }
+
+        // Generate this head and push it to the return data
+        uint8_t buf[32] = {0};
+        generateBytesForUint((const uint8_t*)&(elementOffsets[i]), sizeof(size_t), buf);
+        data.insert(data.end(), &buf[0], &buf[sizeof(buf)]);
+        totalEncodedBytes += 32;
+    }
+
+    // Now append the tails
+    for (int i = 0; i < param.size; i++)
+    {
+        data.insert(data.end(), encodedElements[i].begin(), encodedElements[i].end());
+        totalEncodedBytes += encodedElements[i].size();
+    }
+
+    return totalEncodedBytes;
 }
 
 void Iotex::Contract::generateFunctionSelector(Iotex::abi::FunctionAbi& function, std::vector<uint8_t>& out)

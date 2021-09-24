@@ -132,25 +132,25 @@ ResultCode Iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
         IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Error parsing type\r\n");
         return ret;
     }
-    ret = InputOutputAbi::getTypeAndSizeFromString(type, out.type, out.size_bytes);
+    ret = InputOutputAbi::getTypeAndSizeFromString(type, out);
     if (ret != ResultCode::SUCCESS)
     {
         IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Error parsing type %s\r\n", type.c_str());
         return ret;
     }
+
     if (
-        out.type == EthereumTypeName::ARRAY_DYNAMIC
-        || out.type == EthereumTypeName::ARRAY_STATIC
-        || out.type == EthereumTypeName::TUPLE
+         out.type == EthereumTypeName::TUPLE_DYNAMIC
+        || out.type == EthereumTypeName::TUPLE_STATIC
     )
     {
-        // TODO Parse element types
+        IOTEX_DEBUG_F("Iotex::abi::parseInputOutput(): Unsupported type: Tuple\r\n");
+        return ResultCode::ERROR_WRONG_TYPE;
     }
-
     return ResultCode::SUCCESS;
 }
 
-ResultCode Iotex::abi::InputOutputAbi::getTypeAndSizeFromString(IotexString &str, EthereumTypeName& type, uint32_t& size)
+ResultCode Iotex::abi::InputOutputAbi::getTypeAndSizeFromString(IotexString &str, InputOutputAbi& out)
 {
     ResultCode ret = ResultCode::SUCCESS;
     if (str.length() == 0)
@@ -159,66 +159,74 @@ ResultCode Iotex::abi::InputOutputAbi::getTypeAndSizeFromString(IotexString &str
     }
     if (str[0] == '(')
     {
-        type = EthereumTypeName::TUPLE;
+        out.type = EthereumTypeName::TUPLE_STATIC;
+        // TODO Check if tuple is dynamic
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::UINT], strlen(EthereumTypeNameToStringLT[EthereumTypeName::UINT])))
     {
-        type = EthereumTypeName::UINT;
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
+        out.type = EthereumTypeName::UINT;
+        ret = getSizeFromStringAndCheckIfArray(str, out);
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::INT], strlen(EthereumTypeNameToStringLT[EthereumTypeName::INT])))
     {
-        type = EthereumTypeName::INT;
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
+        out.type = EthereumTypeName::INT;
+        ret = getSizeFromStringAndCheckIfArray(str, out);
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::ADDRESS], strlen(EthereumTypeNameToStringLT[EthereumTypeName::ADDRESS])))
     {
-        type = EthereumTypeName::ADDRESS;
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
+        out.type = EthereumTypeName::ADDRESS;
+        ret = getSizeFromStringAndCheckIfArray(str, out);
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::BOOL], strlen(EthereumTypeNameToStringLT[EthereumTypeName::BOOL])))
     {
-        type = EthereumTypeName::BOOL;
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
+        out.type = EthereumTypeName::BOOL;
+        ret = getSizeFromStringAndCheckIfArray(str, out);
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::BYTES_STATIC], strlen(EthereumTypeNameToStringLT[EthereumTypeName::BYTES_STATIC])))
     {
-        if (str.length() == strlen(EthereumTypeNameToStringLT[EthereumTypeName::BYTES_STATIC]))
+        if (str == "bytes")
         {
-            type = EthereumTypeName::BYTES_DYNAMIC;
-        }
+           out.type = EthereumTypeName::BYTES_DYNAMIC; 
+        }        
         else
         {
-            type = EthereumTypeName::BYTES_STATIC;
+            if (memcmp(str.c_str(), "bytes[", strlen("bytes[")) == 0)
+            {
+                out.type = EthereumTypeName::BYTES_DYNAMIC;
+            }
+            else
+            {
+                out.type = EthereumTypeName::BYTES_STATIC;
+            }
+            ret = getSizeFromStringAndCheckIfArray(str, out);
         }
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
     }
     else if (0 == memcmp(str.c_str(), EthereumTypeNameToStringLT[EthereumTypeName::STRING], strlen(EthereumTypeNameToStringLT[EthereumTypeName::STRING])))
     {
-        type = EthereumTypeName::STRING;
-        ret = getSizeFromStringAndCheckIfArray(str, type, size);
+        out.type = EthereumTypeName::STRING;
+        ret = getSizeFromStringAndCheckIfArray(str, out);
     }
 
     return ret;
 }
 
-ResultCode Iotex::abi::InputOutputAbi::getSizeFromStringAndCheckIfArray(IotexString& str, EthereumTypeName& type, uint32_t& size)
+ResultCode Iotex::abi::InputOutputAbi::getSizeFromStringAndCheckIfArray(IotexString& str, InputOutputAbi& out)
 {
     if (
-        (type == EthereumTypeName::UINT || type == EthereumTypeName::INT)
-        && strlen(EthereumTypeNameToStringLT[type]) == str.length())
+        (out.type == EthereumTypeName::UINT || out.type == EthereumTypeName::INT)
+        && strlen(EthereumTypeNameToStringLT[out.type]) == str.length())
     {
-        size = 32;
+        out.size_bytes = 32;
         return ResultCode::SUCCESS;
     }
 
-    const char *pCurr = str.c_str() + strlen(EthereumTypeNameToStringLT[type]);
+    // Char iterator
+    const char *pCurr = str.c_str() + strlen(EthereumTypeNameToStringLT[out.type]);
     
     if (
-        type == EthereumTypeName::UINT 
-        || type == EthereumTypeName::INT
-        || type == EthereumTypeName::BYTES_STATIC
-        || type == EthereumTypeName::ARRAY_STATIC
+        out.type == EthereumTypeName::UINT 
+        || out.type == EthereumTypeName::INT
+        || out.type == EthereumTypeName::BYTES_STATIC
     )
     {
         char sizeBuf[4] = {0};  // Max size for int is 256
@@ -237,7 +245,8 @@ ResultCode Iotex::abi::InputOutputAbi::getSizeFromStringAndCheckIfArray(IotexStr
                 break;
             }
         }
-        size = atoi(sizeBuf)/8;
+        out.size_bytes = out.type == EthereumTypeName::BYTES_STATIC ? atoi(sizeBuf) : atoi(sizeBuf)/8;
+        out.arrayTypeSizeBytes = out.size_bytes;
     }
 
     if (pCurr != str.c_str() + str.length())
@@ -247,11 +256,15 @@ ResultCode Iotex::abi::InputOutputAbi::getSizeFromStringAndCheckIfArray(IotexStr
         {
             if (*pCurr == ']')
             {
-                type = EthereumTypeName::ARRAY_DYNAMIC;
+                out.arrayType = out.type;
+                out.type = EthereumTypeName::ARRAY_DYNAMIC;
             }
             else
             {
-                char buf[24] = {0};
+                out.arrayType = out.type;
+                out.type = EthereumTypeName::ARRAY_STATIC;
+                char buf[str.length()];
+                memset(buf, 0, sizeof(buf));
                 for (int i = 0; i < str.length(); i++)
                 {
                     if (*pCurr == ']')
@@ -264,6 +277,7 @@ ResultCode Iotex::abi::InputOutputAbi::getSizeFromStringAndCheckIfArray(IotexStr
                     // Missing closing ']'
                     return ResultCode::ERROR_BAD_PARAMETER;
                 }
+                out.arraySize = atoi(buf);
             }
         }
     }
@@ -301,9 +315,31 @@ void Iotex::abi::FunctionAbi::getSignature(IotexString &out)
                 }
 
             case EthereumTypeName::BOOL:
-            case EthereumTypeName::BYTES_DYNAMIC:
             case EthereumTypeName::ADDRESS:
             case EthereumTypeName::STRING:
+            case EthereumTypeName::BYTES_DYNAMIC:
+                break;
+
+            case EthereumTypeName::ARRAY_STATIC:    
+            case EthereumTypeName::ARRAY_DYNAMIC:
+                out += EthereumTypeNameToStringLT[input.arrayType];
+                if (input.arrayTypeSizeBytes > 0)
+                {
+                    char buf[32] = {0};
+                    size_t size = input.arrayTypeSizeBytes;
+                    if (input.arrayType == EthereumTypeName::INT || input.arrayType == EthereumTypeName::UINT)
+                        size *= 8;   // Convert to bits for integers
+                    sprintf(buf, "%d", size);
+                    out += buf;
+                }
+                out += '[';
+                if(input.type == EthereumTypeName::ARRAY_STATIC)
+                {
+                    char buf[32] = {0};
+                    sprintf(buf, "%d", input.arraySize);
+                    out += buf;
+                }
+                out += ']';
                 break;
 
             default:

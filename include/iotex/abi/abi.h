@@ -42,7 +42,9 @@ namespace Iotex
             BYTES_DYNAMIC,
             ARRAY_STATIC,
             ARRAY_DYNAMIC,
-            TUPLE
+            TUPLE_STATIC,
+            TUPLE_DYNAMIC,
+            UNKNOWN
         };
 
         // Enum to string lookup tables - Unused for now
@@ -72,7 +74,11 @@ namespace Iotex
             "ufixed",
             "bytes",
             "string",
-            "bytes"
+            "bytes",
+            "",
+            "",
+            "",
+            ""
         };
 
         // Json objects
@@ -84,19 +90,44 @@ namespace Iotex
                 EthereumTypeName type;
                 uint32_t size_bytes;
                 EthereumTypeName arrayType;
+                uint32_t arrayTypeSizeBytes = 0;
                 uint32_t arraySize;
 
-                static ResultCode getTypeAndSizeFromString(IotexString &str, EthereumTypeName& type, uint32_t& size);
+                static ResultCode getTypeAndSizeFromString(IotexString &str, InputOutputAbi& out);
                 bool IsDynamic() 
                 {
+                    bool isDynamic = false;
+                    if (type == EthereumTypeName::BYTES_DYNAMIC)
+                        isDynamic = true;
+                    else if (type == EthereumTypeName::STRING)
+                        isDynamic = true;
+                    else if (type == EthereumTypeName::ARRAY_DYNAMIC)
+                        isDynamic = true;
+                    else if (type == EthereumTypeName::TUPLE_DYNAMIC)
+                        isDynamic = true;
+                    else if (type == EthereumTypeName::ARRAY_STATIC)
+                    {
+                        if (
+                            arrayType == EthereumTypeName::BYTES_DYNAMIC
+                            || arrayType == EthereumTypeName::STRING
+                            || arrayType == EthereumTypeName::ARRAY_DYNAMIC 
+                            || arrayType == EthereumTypeName::TUPLE_DYNAMIC
+                        )
+                        isDynamic = true;
+                    }
+                    return isDynamic;
+                }
+
+                bool isInteger() const
+                {
                     return (
-                        type == EthereumTypeName::BYTES_DYNAMIC ||
-                        type == EthereumTypeName::STRING        ||
-                        type == EthereumTypeName::ARRAY_DYNAMIC );
+                        type == EthereumTypeName::UINT
+                        || type == EthereumTypeName::INT
+                    );
                 }
 
             private:
-                static ResultCode getSizeFromStringAndCheckIfArray(IotexString& str, EthereumTypeName& type, uint32_t& size);
+                static ResultCode getSizeFromStringAndCheckIfArray(IotexString& str, InputOutputAbi& out);
         };
 
         class FunctionAbi
@@ -127,15 +158,29 @@ namespace Iotex
                     uint16_t uint16;
                     uint32_t uint32;
                     uint64_t uint64;
+                    int8_t int8;
+                    int16_t int16;
+                    int32_t int32;
+                    int64_t int64;
                     IotexString *uint256;
                     bool boolean;
-                    char *c_string;
                     IotexString *string;
-                    void *object;
                     uint8_t *bytes;
+                    ParameterValue* elements;   // Array or tuple elements
                 } value;
                 int32_t size = -1;
                 bool isBigInt = false;
+                EthereumTypeName type = EthereumTypeName::UNKNOWN;  // Only used for arrays and tuples. Needs to be set by the user
+            
+                bool isDynamic()
+                {
+                    return (
+                        type == EthereumTypeName::BYTES_DYNAMIC ||
+                        type == EthereumTypeName::STRING        ||
+                        type == EthereumTypeName::ARRAY_DYNAMIC ||
+                        type == EthereumTypeName::TUPLE_DYNAMIC 
+                        );
+                }
         };
     }
 }
