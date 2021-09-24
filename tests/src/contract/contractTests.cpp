@@ -14,11 +14,12 @@ using namespace std;
 using namespace testing;
 using namespace Iotex;
 using namespace Iotex::abi;
+using namespace Iotex::helpers;
 
 class ContractTests : public Test
 {
     void SetUp() override {}
-    
+
     void TearDown() override {}
 };
 
@@ -33,19 +34,19 @@ TEST_F(ContractTests, generateBytesForUint)
     ASSERT_STREQ("00000000000000000000000000000000000000000000000000000000000000f0", strBuf);
     // 16 bit
     uint16_t value16 = 0x1234;
-    ret = Contract::generateBytesForUint((uint8_t*)&value16, 2, buf);
+    ret = Contract::generateBytesForUint((uint8_t *)&value16, 2, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
     ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000000001234", strBuf);
     // 32 bit
     uint32_t value32 = 0x12345678;
-    ret = Contract::generateBytesForUint((uint8_t*)&value32, 4, buf);
+    ret = Contract::generateBytesForUint((uint8_t *)&value32, 4, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
     ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000012345678", strBuf);
     // 64 bit
     uint64_t value64 = 2459565876494606882;
-    ret = Contract::generateBytesForUint((uint8_t*)&value64, 8, buf);
+    ret = Contract::generateBytesForUint((uint8_t *)&value64, 8, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);   
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);
 }
 
 TEST_F(ContractTests, generateBytesForInt)
@@ -63,31 +64,31 @@ TEST_F(ContractTests, generateBytesForInt)
     ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffce", strBuf);
     // 16 bit
     int16_t value16 = -5000;
-    ret = Contract::generateBytesForInt((int8_t*)&value16, 2, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value16, 2, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec78", strBuf);   
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec78", strBuf);
     value16 = 5000;
-    ret = Contract::generateBytesForInt((int8_t*)&value16, 2, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value16, 2, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000000001388", strBuf); 
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000000001388", strBuf);
     // 32 bit
     int32_t value32 = -572662306;
-    ret = Contract::generateBytesForInt((int8_t*)&value32, 4, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value32, 4, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffddddddde", strBuf);   
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffddddddde", strBuf);
     value32 = 572662306;
-    ret = Contract::generateBytesForInt((int8_t*)&value32, 4, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value32, 4, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000022222222", strBuf); 
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000000000000022222222", strBuf);
     // 64 bit
     int64_t value64 = 2459565876494606882;
-    ret = Contract::generateBytesForInt((int8_t*)&value64, 8, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value64, 8, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);   
+    ASSERT_STREQ("0000000000000000000000000000000000000000000000002222222222222222", strBuf);
     value64 = -2459565876494606882;
-    ret = Contract::generateBytesForInt((int8_t*)&value64, 8, buf);
+    ret = Contract::generateBytesForInt((int8_t *)&value64, 8, buf);
     signer.hex2str(buf, sizeof(buf), strBuf, sizeof(strBuf));
-    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffddddddddddddddde", strBuf); 
+    ASSERT_STREQ("ffffffffffffffffffffffffffffffffffffffffffffffffddddddddddddddde", strBuf);
 }
 
 TEST_F(ContractTests, generateBytesForAddress)
@@ -119,7 +120,7 @@ TEST_F(ContractTests, generateBytesForBool)
 
 TEST_F(ContractTests, generateBytesForStaticBytes)
 {
-    uint8_t val[3] = {1,2,3};
+    uint8_t val[3] = {1, 2, 3};
     uint8_t buf[32] = {0xFF};
     char strBuf[65] = {0};
     Contract::generateBytesForStaticBytes(val, 3, buf);
@@ -129,7 +130,7 @@ TEST_F(ContractTests, generateBytesForStaticBytes)
 
 TEST_F(ContractTests, generateBytesForBytes)
 {
-    uint8_t val[3] = {1,2,3};
+    uint8_t val[3] = {1, 2, 3};
     uint8_t buf[128] = {0xFF};
     char strBuf[sizeof(buf) * 2 + 1] = {0};
     size_t encoded = Contract::generateBytesForBytes(val, 3, buf);
@@ -173,10 +174,124 @@ TEST_F(ContractTests, generateBytesForLongString)
     ASSERT_STREQ("000000000000000000000000000000000000000000000000000000000000002d48656c6c6f2c20776f726c6421303030303030303030303030303030303030303030303030303030303030303000000000000000000000000000000000000000", strBuf);
 }
 
+TEST_F(ContractTests, generateBytesForStaticArrayOfStaticElements_Uint8_3)
+{
+    size_t elementsCount = 3;
+    ParameterValue paramElements[elementsCount];
+    for (int i = 0; i < elementsCount; i++)
+    {
+        paramElements[i].size = 1;
+        paramElements[i].type = EthereumTypeName::UINT;
+    }
+    paramElements[0].value.uint8 = 0x01;
+    paramElements[1].value.uint8 = 0x02;
+    paramElements[2].value.uint8 = 0x03;
+
+    ParameterValue paramContainer;
+    paramContainer.size = elementsCount;
+    paramContainer.type = EthereumTypeName::ARRAY_STATIC;
+    paramContainer.value.elements = paramElements;
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    size_t encoded = Contract::generateBytesForStaticArrayOfStaticElements(paramContainer, out);
+    vectorToHexString(out, outStr);
+
+    ASSERT_EQ(elementsCount * 32, encoded);
+    ASSERT_STREQ("000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003", outStr.c_str());
+}
+
+TEST_F(ContractTests, generateBytesForStaticArrayOfStaticElements_Bytes3_2)
+{
+    size_t elementsCount = 2;
+    ParameterValue paramElements[elementsCount];
+    for (int i = 0; i < elementsCount; i++)
+    {
+        paramElements[i].size = 3;
+        paramElements[i].type = EthereumTypeName::BYTES_STATIC;
+    }
+    uint8_t element0Data[] = {'a', 'b', 'c'};
+    uint8_t element1Data[] = {'d', 'e', 'f'};
+    paramElements[0].value.bytes = element0Data;
+    paramElements[1].value.bytes = element1Data;
+
+    ParameterValue paramContainer;
+    paramContainer.size = elementsCount;
+    paramContainer.type = EthereumTypeName::ARRAY_STATIC;
+    paramContainer.value.elements = paramElements;
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    size_t encoded = Contract::generateBytesForStaticArrayOfStaticElements(paramContainer, out);
+    vectorToHexString(out, outStr);
+
+    ASSERT_EQ(elementsCount * 32, encoded);
+    ASSERT_STREQ("61626300000000000000000000000000000000000000000000000000000000006465660000000000000000000000000000000000000000000000000000000000", outStr.c_str());
+}
+
+TEST_F(ContractTests, generateBytesForStaticArrayOfDynamicElements_String3)
+{
+    size_t elementsCount = 3;
+    ParameterValue paramElements[elementsCount];
+    for (int i = 0; i < elementsCount; i++)
+    {
+        paramElements[i].size = 3;
+        paramElements[i].type = EthereumTypeName::STRING;
+    }
+    std::string element0Data = "one";
+    std::string element1Data = "two";
+    std::string element2Data = "three";
+    paramElements[0].value.string = &element0Data;
+    paramElements[1].value.string = &element1Data;
+    paramElements[2].value.string = &element2Data;
+
+    ParameterValue paramContainer;
+    paramContainer.size = elementsCount;
+    paramContainer.type = EthereumTypeName::ARRAY_STATIC;
+    paramContainer.value.elements = paramElements;
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    size_t encoded = Contract::generateBytesForStaticArrayOfDynamicElements(paramContainer, out);
+    vectorToHexString(out, outStr);
+
+    char expected[] = "000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000000036f6e650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000374776f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000057468726565000000000000000000000000000000000000000000000000000000";
+    ASSERT_EQ(strlen(expected) / 2, encoded);
+    ASSERT_STREQ(expected, outStr.c_str());
+}
+
+TEST_F(ContractTests, generateBytesForDynamicArrayOfStaticElementsElements_Uint32_2)
+{
+    size_t elementsCount = 2;
+    ParameterValue paramElements[elementsCount];
+    for (int i = 0; i < elementsCount; i++)
+    {
+        paramElements[i].size = 4;
+        paramElements[i].type = EthereumTypeName::UINT;
+    }
+    paramElements[0].value.uint32 = 1;
+    paramElements[1].value.uint32 = 2;
+
+    ParameterValue paramContainer;
+    paramContainer.size = elementsCount;
+    paramContainer.type = EthereumTypeName::ARRAY_DYNAMIC;
+    paramContainer.value.elements = paramElements;
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    size_t encoded = Contract::generateBytesForDynamicArrayOfStaticElements(paramContainer, out);
+    vectorToHexString(out, outStr);
+
+    char expected[] = "000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002";
+    // ASSERT_EQ(strlen(expected)/2, encoded);
+    ASSERT_STREQ(expected, outStr.c_str());
+}
 
 
 
-// generateFunctionSelector
+
+
+// --------------------- generateFunctionSelector ------------------------------
 
 TEST_F(ContractTests, generateFunctionSelector_Uint32AndBool)
 {
@@ -202,11 +317,75 @@ TEST_F(ContractTests, generateFunctionSelector_Uint32AndBool)
     ASSERT_STREQ("cdcd77c0", strBuf);
 }
 
+TEST_F(ContractTests, generateFunctionSelector_Uint8AndStringArray)
+{
+    FunctionAbi function;
+    function.name = "testArray";
+    InputOutputAbi input;
+    input.name = "inputName";
+    input.size_bytes = 1;
+    input.type = EthereumTypeName::UINT;
+    function.inputs.push_back(input);
+    InputOutputAbi input2;
+    input2.name = "inputName";
+    input2.type = EthereumTypeName::ARRAY_DYNAMIC;
+    input2.arrayType = EthereumTypeName::STRING;
+    function.inputs.push_back(input2);
+
+    std::vector<uint8_t> out;
+    Contract::generateFunctionSelector(function, out);
+
+    char strBuf[out.size() * 2 + 1];
+    memset(strBuf, 0, sizeof(strBuf));
+    signer.hex2str(&out[0], out.size(), strBuf, sizeof(strBuf));
+
+    ASSERT_STREQ("1b38b109", strBuf);
+}
+
+TEST_F(ContractTests, generateFunctionSelector_StaticArray_Uint8)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::ARRAY_STATIC;
+    input.arraySize = 2;
+    input.arrayType = EthereumTypeName::UINT;
+    input.arrayTypeSizeBytes = 1;
+    function.inputs.push_back(input);
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    Contract::generateFunctionSelector(function, out);
+
+    vectorToHexString(out, outStr);
+    ASSERT_STREQ("eacdca49", outStr.c_str());
+}
+
+TEST_F(ContractTests, generateFunctionSelector_DynamicArray_Uint8)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::ARRAY_DYNAMIC;
+    input.arraySize = 2;
+    input.arrayType = EthereumTypeName::UINT;
+    input.arrayTypeSizeBytes = 1;
+    function.inputs.push_back(input);
+
+    std::vector<uint8_t> out;
+    std::string outStr;
+    Contract::generateFunctionSelector(function, out);
+
+    vectorToHexString(out, outStr);
+    ASSERT_STREQ("1119273c", outStr.c_str());
+}
 
 
 
+// --------------------- generateCallData ------------------------------
 
-// generateCallData
 TEST_F(ContractTests, generateCallData_Uint32AndBool)
 {
     FunctionAbi function;
@@ -220,7 +399,7 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     input2.name = "input2";
     input2.type = EthereumTypeName::BOOL;
     function.inputs.push_back(input2);
-    
+
     std::vector<Iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
 
@@ -239,8 +418,183 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     contract.generateCallData(function.name, params, out);
 
     std::string expected = "";
-    expected += "cdcd77c0";     // Function selector
-    expected += "0000000000000000000000000000000000000000000000000000000000000045";     // Param 1
-    expected += "0000000000000000000000000000000000000000000000000000000000000001";     // Param 2
+    expected += "cdcd77c0";                                                         // Function selector
+    expected += "0000000000000000000000000000000000000000000000000000000000000045"; // Param 1
+    expected += "0000000000000000000000000000000000000000000000000000000000000001"; // Param 2
     ASSERT_STREQ(expected.c_str(), out.c_str());
+}
+
+TEST_F(ContractTests, generateCallData_Int32)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.size_bytes = 4;
+    input.type = EthereumTypeName::INT;
+    function.inputs.push_back(input);
+
+    std::vector<Iotex::abi::FunctionAbi> functions;
+    functions.push_back(function);
+    Contract contract(functions);
+
+    ParameterValue param1;
+    param1.value.int32 = -77;
+    param1.size = 4;
+
+    ParameterValuesDictionary params;
+    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+
+    std::string out;
+    contract.generateCallData(function.name, params, out);
+
+    char expected[] = "42b9220affffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb3";
+    ASSERT_STREQ(expected, out.c_str());
+}
+
+TEST_F(ContractTests, generateCallData_Bool)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::BOOL;
+    function.inputs.push_back(input);
+
+    std::vector<Iotex::abi::FunctionAbi> functions;
+    functions.push_back(function);
+    Contract contract(functions);
+
+    ParameterValue param1;
+    param1.value.boolean = true;
+
+    ParameterValuesDictionary params;
+    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+
+    std::string out;
+    contract.generateCallData(function.name, params, out);
+
+    char expected[] = "551a8c310000000000000000000000000000000000000000000000000000000000000001";
+    ASSERT_STREQ(expected, out.c_str());
+}
+
+TEST_F(ContractTests, generateCallData_StaticArray_Uint8)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::ARRAY_STATIC;
+    input.arraySize = 2;
+    input.arrayType = EthereumTypeName::UINT;
+    input.arrayTypeSizeBytes = 1;
+    function.inputs.push_back(input);
+
+    std::vector<Iotex::abi::FunctionAbi> functions;
+    functions.push_back(function);
+    Contract contract(functions);
+
+    ParameterValue paramElements[2];
+    for (int i = 0; i < 2; i++)
+    {
+        paramElements[i].size = 1;
+        paramElements[i].type = EthereumTypeName::UINT;
+    }
+    paramElements[0].value.uint32 = 1;
+    paramElements[1].value.uint32 = 2;
+
+    ParameterValue paramContainer;
+    paramContainer.size = 2;
+    paramContainer.type = EthereumTypeName::ARRAY_STATIC;
+    paramContainer.value.elements = paramElements;
+
+    ParameterValuesDictionary params;
+    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+
+    std::string out;
+    contract.generateCallData(function.name, params, out);
+
+    char expected[] = "eacdca4900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002";
+    ASSERT_STREQ(expected, out.c_str());
+}
+
+TEST_F(ContractTests, generateCallData_StaticArray_String)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::ARRAY_STATIC;
+    input.arraySize = 2;
+    input.arrayType = EthereumTypeName::STRING;
+    function.inputs.push_back(input);
+
+    std::vector<Iotex::abi::FunctionAbi> functions;
+    functions.push_back(function);
+    Contract contract(functions);
+
+    ParameterValue paramElements[2];
+    for (int i = 0; i < 2; i++)
+    {
+        paramElements[i].type = EthereumTypeName::STRING;
+    }
+    std::string value1 = "a";
+    std::string value2 = "b";
+    paramElements[0].value.string = &value1;
+    paramElements[1].value.string = &value2;
+
+    ParameterValue paramContainer;
+    paramContainer.size = 2;
+    paramContainer.type = EthereumTypeName::ARRAY_STATIC;
+    paramContainer.value.elements = paramElements;
+
+    ParameterValuesDictionary params;
+    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+
+    std::string out;
+    contract.generateCallData(function.name, params, out);
+
+    char expected[] = "d4e955920000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001610000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016200000000000000000000000000000000000000000000000000000000000000";
+    ASSERT_STREQ(expected, out.c_str());
+}
+
+TEST_F(ContractTests, generateCallData_DynamicArray_Uint8)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "input1";
+    input.type = EthereumTypeName::ARRAY_DYNAMIC;
+    input.arraySize = 2;
+    input.arrayTypeSizeBytes = 1;
+    input.arrayType = EthereumTypeName::UINT;
+    function.inputs.push_back(input);
+
+    std::vector<Iotex::abi::FunctionAbi> functions;
+    functions.push_back(function);
+    Contract contract(functions);
+
+    ParameterValue paramElements[2];
+    for (int i = 0; i < 2; i++)
+    {
+        paramElements[i].type = EthereumTypeName::UINT;
+    }
+    paramElements[0].value.uint8 = 1;
+    paramElements[0].size = 1;
+    paramElements[1].value.uint8 = 2;
+    paramElements[1].size = 1;
+
+    ParameterValue paramContainer;
+    paramContainer.size = 2;
+    paramContainer.type = EthereumTypeName::ARRAY_DYNAMIC;
+    paramContainer.value.elements = paramElements;
+
+    ParameterValuesDictionary params;
+    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+
+    std::string out;
+    contract.generateCallData(function.name, params, out);
+
+    char expected[] = "1119273c0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002";
+    ASSERT_STREQ(expected, out.c_str());
 }

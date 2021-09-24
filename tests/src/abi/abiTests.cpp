@@ -23,7 +23,11 @@ class AbiTests : public Test
 
 };
 
-// Uint
+
+
+
+
+// --------------------- parseInputOutput  ------------------------------
 
 TEST_F(AbiTests, ParseInputOutput_UintX)
 {
@@ -67,7 +71,6 @@ TEST_F(AbiTests, ParseInputOutput_Uint)
     cJSON_Delete(input);
 }
 
-// Int
 TEST_F(AbiTests, ParseInputOutput_IntX)
 {
     std::vector<std::string> sizesStr;
@@ -110,11 +113,6 @@ TEST_F(AbiTests, ParseInputOutput_Int)
     cJSON_Delete(input);
 }
 
-
-
-
-// Address
-
 TEST_F(AbiTests, ParseInputOutput_Address)
 {
     cJSON *input = cJSON_CreateObject();
@@ -129,11 +127,6 @@ TEST_F(AbiTests, ParseInputOutput_Address)
     cJSON_Delete(input);
 }
 
-
-
-
-// Bool
-
 TEST_F(AbiTests, ParseInputOutput_Bool)
 {
     cJSON *input = cJSON_CreateObject();
@@ -147,11 +140,6 @@ TEST_F(AbiTests, ParseInputOutput_Bool)
     ASSERT_EQ(EthereumTypeName::BOOL, parsedInput.type);
     cJSON_Delete(input);
 }
-
-
-
-
-// Static bytes
 
 TEST_F(AbiTests, ParseInputOutput_StaticBytes)
 {
@@ -175,15 +163,10 @@ TEST_F(AbiTests, ParseInputOutput_StaticBytes)
         ASSERT_EQ(result, ResultCode::SUCCESS);
         ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
         ASSERT_EQ(EthereumTypeName::BYTES_STATIC, parsedInput.type);
-        ASSERT_EQ(sizes[i]/8, parsedInput.size_bytes);
+        ASSERT_EQ(sizes[i], parsedInput.size_bytes);
         cJSON_Delete(input);
     }
 }
-
-
-
-
-// Dynamic bytes
 
 TEST_F(AbiTests, ParseInputOutput_DynamicBytes)
 {
@@ -199,11 +182,6 @@ TEST_F(AbiTests, ParseInputOutput_DynamicBytes)
     cJSON_Delete(input);
 }
 
-
-
-
-// String
-
 TEST_F(AbiTests, ParseInputOutput_String)
 {
     cJSON *input = cJSON_CreateObject();
@@ -218,13 +196,43 @@ TEST_F(AbiTests, ParseInputOutput_String)
     cJSON_Delete(input);
 }
 
+TEST_F(AbiTests, ParseInputOutput_DynamicArrayOfDynamicBytes)
+{
+    cJSON *input = cJSON_CreateObject();
+    cJSON_AddStringToObject(input, "name", "inputName");
+    cJSON_AddStringToObject(input, "type", "bytes[]");
+    InputOutputAbi parsedInput;
+    ResultCode result = parseInputOutput(input, parsedInput);
+
+    ASSERT_EQ(result, ResultCode::SUCCESS);
+    ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
+    ASSERT_EQ(EthereumTypeName::ARRAY_DYNAMIC, parsedInput.type);
+    ASSERT_EQ(EthereumTypeName::BYTES_DYNAMIC, parsedInput.arrayType);
+    cJSON_Delete(input);
+}
+
+TEST_F(AbiTests, ParseInputOutput_DynamicArrayOfStaticBytes)
+{
+    cJSON *input = cJSON_CreateObject();
+    cJSON_AddStringToObject(input, "name", "inputName");
+    cJSON_AddStringToObject(input, "type", "bytes5[]");
+    InputOutputAbi parsedInput;
+    ResultCode result = parseInputOutput(input, parsedInput);
+
+    ASSERT_EQ(result, ResultCode::SUCCESS);
+    ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
+    ASSERT_EQ(EthereumTypeName::ARRAY_DYNAMIC, parsedInput.type);
+    ASSERT_EQ(EthereumTypeName::BYTES_STATIC, parsedInput.arrayType);
+    ASSERT_EQ(5, parsedInput.arrayTypeSizeBytes);
+    cJSON_Delete(input);
+}
+
 
 // TODO Arrays, tuples, fixed, ufixed
 
 
 
-
-// Get signature
+// --------------------- getSignature ------------------------------
 
 TEST_F(AbiTests, FunctionAbi_GetSignature_Uint)
 {
@@ -304,6 +312,59 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_Bytes)
     ASSERT_STREQ(expected.c_str(), buf.c_str());
 }
 
+TEST_F(AbiTests, FunctionAbi_GetSignature_StaticArrayOfDynamicBytes)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "inputName";
+    input.type = EthereumTypeName::ARRAY_STATIC;
+    input.arrayType = EthereumTypeName::BYTES_DYNAMIC;
+    input.arraySize = 3;
+    function.inputs.push_back(input);
+
+    std::string buf;
+    std::string expected = R"(functionName(bytes[3]))";
+    function.getSignature(buf);
+    ASSERT_STREQ(expected.c_str(), buf.c_str());
+}
+
+TEST_F(AbiTests, FunctionAbi_GetSignature_StaticArrayOfStaticBytes)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "inputName";
+    input.type = EthereumTypeName::ARRAY_STATIC;
+    input.arrayType = EthereumTypeName::BYTES_DYNAMIC;
+    input.arrayTypeSizeBytes = 5;
+    input.arraySize = 3;
+    function.inputs.push_back(input);
+
+    std::string buf;
+    std::string expected = R"(functionName(bytes5[3]))";
+    function.getSignature(buf);
+    ASSERT_STREQ(expected.c_str(), buf.c_str());
+}
+
+TEST_F(AbiTests, FunctionAbi_GetSignature_DynamicArrayOfStaticBytes)
+{
+    FunctionAbi function;
+    function.name = "functionName";
+    InputOutputAbi input;
+    input.name = "inputName";
+    input.type = EthereumTypeName::ARRAY_DYNAMIC;
+    input.arrayType = EthereumTypeName::BYTES_STATIC;
+    input.arrayTypeSizeBytes = 5;
+    input.arraySize = 3;
+    function.inputs.push_back(input);
+
+    std::string buf;
+    std::string expected = R"(functionName(bytes5[]))";
+    function.getSignature(buf);
+    ASSERT_STREQ(expected.c_str(), buf.c_str());
+}
+
 TEST_F(AbiTests, FunctionAbi_GetSignature_IntAndUintAndBytesAndBytes10AndBool)
 {
     FunctionAbi function;
@@ -340,4 +401,10 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_IntAndUintAndBytesAndBytes10AndBool)
 
 
 
-// TODO Tuple, fixed, ufixed, array
+
+// --------------------- getSizeFromStringAndCheckIfArray ------------------------------
+
+TEST_F(AbiTests, FunctionAbi_getSizeFromStringAndCheckIfArray_Uint8)
+{
+
+}
