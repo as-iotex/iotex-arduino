@@ -30,7 +30,7 @@
 
 #include <string.h>
 #include <stdint.h>
-#include "sha2.h"
+#include "extern/crypto/sha2.h"
 #include "memzero.h"
 
 /*

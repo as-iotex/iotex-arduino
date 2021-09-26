@@ -5,9 +5,9 @@
 extern "C" {
 #endif
 
-#include "crypto/sha3.h"        // For keccak256
-#include "crypto/secp256k1.h"
-#include "crypto/ecdsa.h"
+#include "extern/crypto/sha3.h"        // For keccak256
+#include "extern/crypto/secp256k1.h"
+#include "extern/crypto/ecdsa.h"
 
 #ifdef	__cplusplus
 }

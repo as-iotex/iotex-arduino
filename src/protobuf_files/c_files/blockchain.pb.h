@@ -3,7 +3,7 @@
 
 #ifndef PB_BLOCKCHAIN_PB_H_INCLUDED
 #define PB_BLOCKCHAIN_PB_H_INCLUDED
-#include <pb.h>
+#include <extern/nanopb/pb.h>
 #include "action.pb.h"
 #include "timestamp.pb.h"
 

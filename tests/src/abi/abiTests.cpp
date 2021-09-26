@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "cjson/cJSON.h"
+#include "extern/cjson/cJSON.h"
 #include "helpers/json_helper.h"
 #include "abi/abi.h"
 

@@ -23,7 +23,7 @@
 #include "hmac_drbg.h"
 #include <string.h>
 #include "memzero.h"
-#include "sha2.h"
+#include "extern/crypto/sha2.h"
 
 static void update_k(HMAC_DRBG_CTX *ctx, uint8_t domain, const uint8_t *data1,
                      size_t len1, const uint8_t *data2, size_t len2) {

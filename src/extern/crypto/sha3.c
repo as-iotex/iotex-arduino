@@ -20,7 +20,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "sha3.h"
+#include "extern/crypto/sha3.h"
 #include "memzero.h"
 
 #define I64(x) x##LL

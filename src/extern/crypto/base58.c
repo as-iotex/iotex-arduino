@@ -26,7 +26,7 @@
 #include <string.h>
 #include "memzero.h"
 #include "ripemd160.h"
-#include "sha2.h"
+#include "extern/crypto/sha2.h"
 
 const char b58digits_ordered[] =
     "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";

@@ -4,7 +4,7 @@
 #include "helpers/client_helpers.h"
 #include "result_codes.h"
 #include "helpers/json_helper.h"
-#include "cjson/cJSON.h"
+#include "extern/cjson/cJSON.h"
 #include <vector>
 
 namespace Iotex

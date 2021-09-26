@@ -37,8 +37,8 @@
 #include "hmac.h"
 #include "nist256p1.h"
 #include "secp256k1.h"
-#include "sha2.h"
-#include "sha3.h"
+#include "extern/crypto/sha2.h"
+#include "extern/crypto/sha3.h"
 #if USE_KECCAK
 #include "ed25519-donna/ed25519-keccak.h"
 #endif

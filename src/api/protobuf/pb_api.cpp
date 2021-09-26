@@ -1,5 +1,5 @@
 #include "protobuf/pb_api.h"
-#include "cjson/cJSON.h"
+#include "extern/cjson/cJSON.h"
 
 using namespace Iotex;
 using namespace Iotex::ResponseTypes;

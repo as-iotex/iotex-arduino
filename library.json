@@ -52,11 +52,11 @@
         "srcFilter": 
         [
           "+<*>",
-          "+<protobuf/c_files/*>",
-          "+<extern/*>",
-          "-<extern/crypto/aes/aescrypt.c>",
-          "-<extern/nanopb/examples/*>",
-          "-<extern/nanopb/tests/*>",
+          "+<src/protobuf/c_files/*>",
+          "+<src/extern/*>",
+          "-<src/extern/crypto/aes/aescrypt.c>",
+          "-<src/extern/nanopb/examples/*>",
+          "-<src/extern/nanopb/tests/*>",
           "-<**/os/*>"
         ]
     },

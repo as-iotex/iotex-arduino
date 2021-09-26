@@ -3,10 +3,10 @@
 
 #include "bech32.h"
 
-#include "nanopb/pb_common.h"
-#include "nanopb/pb_encode.h"
-#include "nanopb/pb_decode.h"
-#include "action.pb.h"
+#include "extern/nanopb/pb_common.h"
+#include "extern/nanopb/pb_encode.h"
+#include "extern/nanopb/pb_decode.h"
+#include "protobuf_files/c_files/action.pb.h"
 
 #include <string>
 #include <string.h>
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#include "base64/base64.h"
+#include "extern/base64/base64.h"
 
 #ifdef	__cplusplus
 }

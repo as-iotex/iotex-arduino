@@ -6,7 +6,7 @@
 #include "result_codes.h"
 #include <string.h>
 #include <string>
-#include "cjson/cJSON.h"
+#include "extern/cjson/cJSON.h"
 
 namespace Iotex
 {
