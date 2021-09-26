@@ -1,5 +1,5 @@
 {
-    "name": "iotex-arduino",
+    "name": "iotex-client",
     "description": "Library to interact with the Iotex bockchain from Arduino boards",
     "repository": {
       "type": "git",
