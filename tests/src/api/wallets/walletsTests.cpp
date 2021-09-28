@@ -8,9 +8,9 @@
 
 using namespace std;
 using namespace testing;
-using namespace Iotex;
-using namespace Iotex::api;
-using namespace Iotex::ResponseTypes;
+using namespace iotex;
+using namespace iotex::api;
+using namespace iotex::ResponseTypes;
 
 namespace 
 {

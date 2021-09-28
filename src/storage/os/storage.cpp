@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <cstring>
 
-using namespace Iotex;
+using namespace iotex;
 
 // Define global object
 Storage storage;

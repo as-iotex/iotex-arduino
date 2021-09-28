@@ -1,21 +1,21 @@
 #include "helpers/json_helper.h"
 
-using namespace Iotex;
-using namespace Iotex::json;
+using namespace iotex;
+using namespace iotex::json;
 
-ResultCode Iotex::json::SetValueFromJsonObject(const cJSON* json, reflection::CppType type, void* pData, size_t max_size)
+ResultCode iotex::json::SetValueFromJsonObject(const cJSON* json, reflection::CppType type, void* pData, size_t max_size)
 {
     // Validate type and size
     switch(type)
     {
         case reflection::CppType::OBJECT:
             if(!cJSON_IsObject(json))
-                {return Iotex::ResultCode::ERROR_JSON_PARSE;}
+                {return iotex::ResultCode::ERROR_JSON_PARSE;}
             break;
         
         case reflection::CppType::BOOLEAN:
             if(!cJSON_IsBool(json))
-                {return Iotex::ResultCode::ERROR_JSON_PARSE;}
+                {return iotex::ResultCode::ERROR_JSON_PARSE;}
             break;
 
         case reflection::CppType::C_STRING:
@@ -29,11 +29,11 @@ ResultCode Iotex::json::SetValueFromJsonObject(const cJSON* json, reflection::Cp
         case reflection::CppType::UINT32:
         case reflection::CppType::UINT64:
             if(!cJSON_IsNumber(json))
-                {return Iotex::ResultCode::ERROR_JSON_PARSE;}
+                {return iotex::ResultCode::ERROR_JSON_PARSE;}
             break;
 
         default:
-            return Iotex::ResultCode::ERROR_JSON_PARSE;
+            return iotex::ResultCode::ERROR_JSON_PARSE;
         }
 
     // Set the value
@@ -74,5 +74,5 @@ ResultCode Iotex::json::SetValueFromJsonObject(const cJSON* json, reflection::Cp
             break;
     }
 
-    return Iotex::ResultCode::SUCCESS;
+    return iotex::ResultCode::SUCCESS;
 }

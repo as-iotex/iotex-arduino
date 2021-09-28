@@ -4,7 +4,7 @@
 #include "helpers/client_helpers.h"
 #include <string>
 
-namespace Iotex
+namespace iotex
 {
 	namespace 
 	{
@@ -32,6 +32,6 @@ namespace Iotex
 			int _port = -1;
 	};  // class Host 
 
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

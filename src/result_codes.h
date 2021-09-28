@@ -1,7 +1,7 @@
 #ifndef IOTEX_RESULT_CODES_H
 #define IOTEX_RESULT_CODES_H
 
-namespace Iotex
+namespace iotex
 {
     enum class ResultCode
     {

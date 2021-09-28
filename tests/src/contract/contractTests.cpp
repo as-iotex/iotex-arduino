@@ -12,9 +12,9 @@
 
 using namespace std;
 using namespace testing;
-using namespace Iotex;
-using namespace Iotex::abi;
-using namespace Iotex::helpers;
+using namespace iotex;
+using namespace iotex::abi;
+using namespace iotex::helpers;
 
 class ContractTests : public Test
 {
@@ -400,7 +400,7 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     input2.type = EthereumTypeName::BOOL;
     function.inputs.push_back(input2);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
 
     Contract contract(functions);
@@ -412,8 +412,8 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     param2.value.boolean = true;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input2"), (const ParameterValue)param2));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input2"), (const ParameterValue)param2));
     std::string out;
     contract.generateCallData(function.name, params, out);
 
@@ -434,7 +434,7 @@ TEST_F(ContractTests, generateCallData_Int32)
     input.type = EthereumTypeName::INT;
     function.inputs.push_back(input);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
     Contract contract(functions);
 
@@ -443,7 +443,7 @@ TEST_F(ContractTests, generateCallData_Int32)
     param1.size = 4;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -461,7 +461,7 @@ TEST_F(ContractTests, generateCallData_Bool)
     input.type = EthereumTypeName::BOOL;
     function.inputs.push_back(input);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
     Contract contract(functions);
 
@@ -469,7 +469,7 @@ TEST_F(ContractTests, generateCallData_Bool)
     param1.value.boolean = true;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -490,7 +490,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_Uint8)
     input.arrayTypeSizeBytes = 1;
     function.inputs.push_back(input);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
     Contract contract(functions);
 
@@ -509,7 +509,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_Uint8)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -529,7 +529,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_String)
     input.arrayType = EthereumTypeName::STRING;
     function.inputs.push_back(input);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
     Contract contract(functions);
 
@@ -549,7 +549,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_String)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -570,7 +570,7 @@ TEST_F(ContractTests, generateCallData_DynamicArray_Uint8)
     input.arrayType = EthereumTypeName::UINT;
     function.inputs.push_back(input);
 
-    std::vector<Iotex::abi::FunctionAbi> functions;
+    std::vector<iotex::abi::FunctionAbi> functions;
     functions.push_back(function);
     Contract contract(functions);
 
@@ -590,7 +590,7 @@ TEST_F(ContractTests, generateCallData_DynamicArray_Uint8)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const Iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
 
     std::string out;
     contract.generateCallData(function.name, params, out);

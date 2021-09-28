@@ -2,9 +2,9 @@
 #include "api/wallet/wallets.h"
 #include "signer/signer.h"
 
-using namespace Iotex;
-using namespace Iotex::api;
-using namespace Iotex::ResponseTypes;
+using namespace iotex;
+using namespace iotex::api;
+using namespace iotex::ResponseTypes;
 
 ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 {

@@ -15,7 +15,7 @@
 #include "result_codes.h"
 #include "helpers/json_helper.h"
 
-namespace Iotex 
+namespace iotex 
 {
   /**
    * @namespace		ResponseTypes	  Protobuf response messages mapped to c structs that might support reflection and JSON serialization/deserialization

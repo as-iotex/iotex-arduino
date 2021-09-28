@@ -9,7 +9,7 @@
 #include "result_codes.h"
 #include "protobuf/pb_api.h"
 
-namespace Iotex
+namespace iotex
 {
     class Encoder
     {
@@ -40,6 +40,6 @@ namespace Iotex
 }
 
 // Declare global encoder
-extern Iotex::Encoder encoder;
+extern iotex::Encoder encoder;
 
 #endif

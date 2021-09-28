@@ -4,7 +4,7 @@
 #include "storage/storage.h"
 #include "EEPROM.h"
 
-using namespace Iotex;
+using namespace iotex;
 
 // Define global object
 Storage storage;

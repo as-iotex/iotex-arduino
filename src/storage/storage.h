@@ -6,7 +6,7 @@
 #include "result_codes.h"
 #include "constants.h"
 
-namespace Iotex
+namespace iotex
 {
     class Storage
     {
@@ -29,6 +29,6 @@ namespace Iotex
 }
 
 // Declare global object
-extern Iotex::Storage storage;
+extern iotex::Storage storage;
 
 #endif

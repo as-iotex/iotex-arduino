@@ -1,10 +1,10 @@
 #include "protobuf/pb_api.h"
 #include "extern/cjson/cJSON.h"
 
-using namespace Iotex;
-using namespace Iotex::ResponseTypes;
-using namespace Iotex::api;
-using namespace Iotex::reflection;
+using namespace iotex;
+using namespace iotex::ResponseTypes;
+using namespace iotex::api;
+using namespace iotex::reflection;
 
 namespace
 {

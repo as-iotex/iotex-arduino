@@ -4,7 +4,7 @@
 #include "host/host.h"
 #include "http/http.h"
 
-namespace Iotex 
+namespace iotex 
 {
 	namespace api 
 	{
@@ -25,6 +25,6 @@ namespace Iotex
 		};	// class Abstract
 
 	}  // namespace api
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

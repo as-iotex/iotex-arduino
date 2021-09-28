@@ -12,9 +12,9 @@
 #include "contract/contract.h"
 #include "helpers/client_helpers.h"
 
-using namespace Iotex;
-using namespace Iotex::api;
-using namespace Iotex::abi;
-using namespace Iotex::ResponseTypes;
+using namespace iotex;
+using namespace iotex::api;
+using namespace iotex::abi;
+using namespace iotex::ResponseTypes;
 
 #endif

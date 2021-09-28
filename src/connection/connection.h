@@ -6,7 +6,7 @@
 #include "host/host.h"
 #include "http/http.h"
 
-namespace Iotex 
+namespace iotex 
 {
     template <typename TAPI>
     class Connection
@@ -24,6 +24,6 @@ namespace Iotex
             };
     };
     
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

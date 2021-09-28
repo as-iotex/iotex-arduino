@@ -10,7 +10,7 @@
 #include <algorithm>    // std::min
 #include <ctype.h>  // is_digit
 
-using namespace Iotex;
+using namespace iotex;
 
 namespace 
 { 
@@ -84,7 +84,7 @@ namespace
 
         /**/
 
-        Iotex::ResultCode post(const char* request, const char* body, IotexString& response) override
+        iotex::ResultCode post(const char* request, const char* body, IotexString& response) override
         {
             // https://curl.haxx.se/libcurl/c/http-post.html
             CURL *curl;
@@ -147,7 +147,7 @@ namespace
 /**
  * HTTP Object Factory
  **/
-std::unique_ptr<IHTTP> Iotex::makeHTTP() 
+std::unique_ptr<IHTTP> iotex::makeHTTP() 
 {
     return std::unique_ptr<IHTTP>(new PlatformHTTP());
 }

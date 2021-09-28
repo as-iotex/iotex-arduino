@@ -10,7 +10,7 @@
 #include "signer/signer.h"
 #include "connection/connection.h"
 
-namespace Iotex
+namespace iotex
 {
     class Account
     {
@@ -33,8 +33,8 @@ namespace Iotex
 
             // Signing
             void signMessage(const uint8_t *message, size_t size, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
-            void signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
-            void signExecutionAction(Iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE] = nullptr);
+            void signTokenTransferAction(iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
+            void signExecutionAction(iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE] = nullptr);
 
             // Action execution
             template<typename TAPI>

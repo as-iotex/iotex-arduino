@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stddef.h"
 
-namespace Iotex
+namespace iotex
 {
     class Random
     {
@@ -14,6 +14,6 @@ namespace Iotex
 }
 
 // Declare global object
-extern Iotex::Random randomGenerator;
+extern iotex::Random randomGenerator;
 
 #endif

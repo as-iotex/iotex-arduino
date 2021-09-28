@@ -5,7 +5,7 @@
 #include "http/http.h"
 #include "constants.h"
 
-namespace Iotex 
+namespace iotex 
 {
     namespace api 
     {
@@ -21,6 +21,6 @@ namespace Iotex
         };
 
     }  // namespace api
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

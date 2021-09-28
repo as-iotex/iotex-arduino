@@ -3,7 +3,7 @@
 
 #include <vector>
 
-using namespace Iotex;
+using namespace iotex;
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ void Account::signMessage(const uint8_t *message, size_t size, uint8_t signature
     _pSigner->signMessage(message, size, _privateKey, signature);
 }
 
-void Account::signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE])
+void Account::signTokenTransferAction(iotex::ResponseTypes::ActionCore_Transfer &transfer, uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
     uint8_t encodedCore[1024] = {0};
     size_t encodedCoreSize = encoder.protobuf_encodeTransfer(transfer, encodedCore, sizeof(encodedCore));
@@ -94,7 +94,7 @@ void Account::signTokenTransferAction(Iotex::ResponseTypes::ActionCore_Transfer 
     signer.signHash(hash, _privateKey, signature);
 }
 
-void Account::signExecutionAction(Iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE])
+void Account::signExecutionAction(iotex::ResponseTypes::ActionCore_Execution &execution, uint8_t signature[IOTEX_SIGNATURE_SIZE], uint8_t hash[IOTEX_HASH_SIZE])
 {
     uint8_t encodedCore[1024] = {0};
     size_t encodedCoreSize = encoder.protobuf_encodeExecution(execution, encodedCore, sizeof(encodedCore));

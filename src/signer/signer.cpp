@@ -13,7 +13,7 @@ extern "C" {
 }
 #endif
 
-using namespace Iotex;
+using namespace iotex;
 
 Signer signer;
 

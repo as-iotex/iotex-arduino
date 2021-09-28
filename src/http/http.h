@@ -6,7 +6,7 @@
 #include "result_codes.h"
 #include "helpers/client_helpers.h"
 
-namespace Iotex
+namespace iotex
 {
     enum GrpcStatusCode
     {
@@ -45,7 +45,7 @@ namespace Iotex
         virtual ~IHTTP() {}
 
         virtual IotexString get(const char* request) = 0;
-        virtual Iotex::ResultCode post(const char* request, const char* body, IotexString& response) = 0;
+        virtual iotex::ResultCode post(const char* request, const char* body, IotexString& response) = 0;
 
         virtual int get(const char *request, char *rspBuf, size_t size) { return -1; };
         virtual int post(const char *request, const char *body, char *rspBuf, size_t size) { return -1; };
@@ -65,6 +65,6 @@ namespace Iotex
 
     std::unique_ptr<IHTTP> makeHTTP();
     
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

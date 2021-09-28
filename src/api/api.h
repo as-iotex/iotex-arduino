@@ -6,7 +6,7 @@
 #include "api/abstract.h"
 #include "api/wallet/wallets.h"
 
-namespace Iotex
+namespace iotex
 {
 	class Api : public api::Abstract 
 	{
@@ -17,6 +17,6 @@ namespace Iotex
 			wallets(_host, *_http) {}
 	};	// class Api
 	
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

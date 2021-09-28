@@ -12,7 +12,7 @@
 
 #include "helpers/client_helpers.h"
 
-namespace Iotex 
+namespace iotex 
 {
 	namespace 
 	{
@@ -33,7 +33,7 @@ namespace Iotex
 					return _httpClient.getString().c_str();
 				}
 
-				Iotex::ResultCode post(const char* request, const char *body, IotexString& response) override 
+				iotex::ResultCode post(const char* request, const char *body, IotexString& response) override 
 				{
 					const char * headerKeys[] = {"grpc-status", "grpc-message"} ;
 					const size_t numberOfHeaders = 2;
@@ -135,4 +135,4 @@ namespace Iotex
 		return std::unique_ptr<IHTTP>(new PlatformHTTP());
 	}
 
-}  // namespace Iotex
+}  // namespace iotex

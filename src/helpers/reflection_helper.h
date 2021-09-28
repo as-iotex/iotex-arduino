@@ -1,7 +1,7 @@
 #ifndef IOTEX_REFLECTION_HELPER_H
 #define IOTEX_REFLECTION_HELPER_H
 
-namespace Iotex
+namespace iotex
 {
     namespace reflection
     {

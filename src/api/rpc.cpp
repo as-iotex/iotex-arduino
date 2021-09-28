@@ -6,7 +6,7 @@
 #include <numeric>
 #include <string>
 
-using namespace Iotex::api::rpc;
+using namespace iotex::api::rpc;
 
 namespace 
 {

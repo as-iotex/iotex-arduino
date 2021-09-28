@@ -7,7 +7,7 @@
 #include "extern/cjson/cJSON.h"
 #include <vector>
 
-namespace Iotex
+namespace iotex
 {
     namespace abi
     {

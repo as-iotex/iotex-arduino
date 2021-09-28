@@ -8,7 +8,7 @@
 #include <string>
 #include "extern/cjson/cJSON.h"
 
-namespace Iotex
+namespace iotex
 {
     namespace json
     {
@@ -277,7 +277,7 @@ namespace Iotex
                 {}
         };
 
-        Iotex::ResultCode SetValueFromJsonObject(const cJSON* json, reflection::CppType type, void* pData, size_t max_size = 0);
+        iotex::ResultCode SetValueFromJsonObject(const cJSON* json, reflection::CppType type, void* pData, size_t max_size = 0);
     }
 };
     

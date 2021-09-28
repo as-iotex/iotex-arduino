@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 
-namespace Iotex
+namespace iotex
 {
     namespace api
     {
@@ -48,6 +48,6 @@ namespace Iotex
         }; // class Wallets : public IWallets
 
     }  // namespace api
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

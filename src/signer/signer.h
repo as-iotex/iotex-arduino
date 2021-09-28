@@ -7,7 +7,7 @@
 #include "result_codes.h"
 
 
-namespace Iotex
+namespace iotex
 {
     class Signer
     {
@@ -34,6 +34,6 @@ namespace Iotex
     };
 }
 
-extern Iotex::Signer signer;
+extern iotex::Signer signer;
 
 #endif

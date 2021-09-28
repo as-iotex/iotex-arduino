@@ -3,7 +3,7 @@
 
 #include "ESP8266TrueRandom.h"
 
-using namespace Iotex;
+using namespace iotex;
 
 Random randomGenerator;
 

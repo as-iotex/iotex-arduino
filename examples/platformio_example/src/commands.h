@@ -13,12 +13,12 @@
 #include "erc20Abi.h"
 #include "addDataAbi.h"
 
-using namespace Iotex;
-using namespace Iotex::abi;
+using namespace iotex;
+using namespace iotex::abi;
 
 const uint32_t IOTEX_ACCOUNT_EEPROM_ADDRESS = 0;
 
-extern Iotex::Connection<Iotex::Api> connection;
+extern iotex::Connection<iotex::Api> connection;
 typedef void (*commandFxn)(void);
 static std::map < int, std::pair<String, commandFxn>> functionsMap;
 
@@ -31,23 +31,23 @@ void printhex(uint8_t* data, int length)
     Serial.println();
 }
 
-void printResult(Iotex::ResultCode code)
+void printResult(iotex::ResultCode code)
 {
     switch(code)
     {
-        case Iotex::ResultCode::SUCCESS:
+        case iotex::ResultCode::SUCCESS:
             Serial.println("SUCCESS");
             break;
-        case Iotex::ResultCode::ERROR_HTTP:
+        case iotex::ResultCode::ERROR_HTTP:
             Serial.println("ERROR_HTTP");
             break;
-        case Iotex::ResultCode::ERROR_JSON_PARSE:
+        case iotex::ResultCode::ERROR_JSON_PARSE:
             Serial.println("ERROR_JSON_PARSE");
             break;
-        case Iotex::ResultCode::ERROR_UNKNOWN:
+        case iotex::ResultCode::ERROR_UNKNOWN:
             Serial.println("ERROR_UNKNOWN");
             break;
-        case Iotex::ResultCode::ERROR_GRPC:
+        case iotex::ResultCode::ERROR_GRPC:
             Serial.println("ERROR_GRPC");
             break;
         default:
@@ -79,10 +79,10 @@ void GetBalance()
     Serial.println("Executing command GetBalance");
     Serial.println("Enter the iotex address: ");
     String accountStr = readLineFromSerial();
-    Iotex::ResultCode result = connection.api.wallets.getBalance(accountStr.c_str(), balance);
+    iotex::ResultCode result = connection.api.wallets.getBalance(accountStr.c_str(), balance);
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Balance:");
         Serial.println(balance.c_str());
@@ -95,11 +95,11 @@ void GetAccountMeta()
     Serial.println("Executing command GetAccountMeta");
     Serial.println("Enter the iotex address: ");
     String accountStr = readLineFromSerial();
-    Iotex::ResponseTypes::AccountMeta accountMeta;
-    Iotex::ResultCode result = connection.api.wallets.getAccount(accountStr.c_str(), accountMeta);
+    iotex::ResponseTypes::AccountMeta accountMeta;
+    iotex::ResultCode result = connection.api.wallets.getAccount(accountStr.c_str(), accountMeta);
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Balance:");
         Serial.println(accountMeta.balance);
@@ -120,11 +120,11 @@ void GetTransactionByHash()
     Serial.println("Executing command GetTransactionByHash");
     Serial.println("Enter the hash: ");
     String input = readLineFromSerial();
-    Iotex::ResponseTypes::ActionInfo_Transfer data;
-    Iotex::ResultCode result = connection.api.wallets.getTransactionByHash(input.c_str(), data);
+    iotex::ResponseTypes::ActionInfo_Transfer data;
+    iotex::ResultCode result = connection.api.wallets.getTransactionByHash(input.c_str(), data);
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Signature:");
         Serial.println(data.action.signature);
@@ -149,7 +149,7 @@ void CreateAccount()
         randomGenerator.fillRandom(privKey, sizeof(privKey));
     }
     uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE] = {0};
-    Iotex::Account account(privKey);
+    iotex::Account account(privKey);
     Serial.println("Account created:");
     Serial.print("Private key: ");
     account.getPrivateKey(buffer);
@@ -224,16 +224,16 @@ void SendTransfer()
     String amount = readLineFromSerial();
     Serial.println("Amount: " + amount);
 
-    Iotex::Account originAccount(pk);
-    Iotex::ResponseTypes::AccountMeta accMeta;
+    iotex::Account originAccount(pk);
+    iotex::ResponseTypes::AccountMeta accMeta;
     char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
-    Iotex::ResultCode result = originAccount.sendTokenTransferAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", amount.c_str(), destinationAddr.c_str(), hash);
+    iotex::ResultCode result = originAccount.sendTokenTransferAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", amount.c_str(), destinationAddr.c_str(), hash);
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
         printhex(hash, IOTEX_HASH_SIZE);
@@ -264,15 +264,15 @@ void SendTokenTransfer()
     uint64_t nAmount = strtoull(amount.c_str(), NULL, 10);
     Serial.println("Amount: " + amount);
 
-    Iotex::Account originAccount(pk);
-    Iotex::ResponseTypes::AccountMeta accMeta;
+    iotex::Account originAccount(pk);
+    iotex::ResponseTypes::AccountMeta accMeta;
     char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
 
     // Contruct the action
-    Iotex::ParameterValuesDictionary params;
+    iotex::ParameterValuesDictionary params;
     ParameterValue paramTo;
     uint8_t toAddress[ETH_ADDRESS_SIZE];
     signer.str2hex(destinationAddr.c_str(), toAddress, ETH_ADDRESS_SIZE);
@@ -292,11 +292,11 @@ void SendTokenTransfer()
     contract.generateCallData("transfer", params, callData);
     Serial.printf("Calling contract with data: 0x%s\r\n", callData.c_str());
 
-    Iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", vitaTokenAddress, callData, hash);
+    iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", vitaTokenAddress, callData, hash);
 
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
         printhex(hash, IOTEX_HASH_SIZE);
@@ -330,14 +330,14 @@ void AddData()
     Serial.println("Signature: " + signature);
 
     // Create the account
-    Iotex::Account originAccount(pk);
-    Iotex::ResponseTypes::AccountMeta accMeta;
+    iotex::Account originAccount(pk);
+    iotex::ResponseTypes::AccountMeta accMeta;
     char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
 
     // Contruct the action
-    Iotex::ParameterValuesDictionary params;
+    iotex::ParameterValuesDictionary params;
     ParameterValue paramImei;
     paramImei.value.string = &imei;
     paramImei.size = imei.length();
@@ -368,11 +368,11 @@ void AddData()
     Serial.printf("Calling contract with data: 0x%s\r\n", callData.c_str());
 
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
-    Iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", contractAddress, callData, hash);
+    iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", contractAddress, callData, hash);
 
     Serial.print("Result : ");
     printResult(result);
-    if (result == Iotex::ResultCode::SUCCESS)
+    if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
         printhex(hash, IOTEX_HASH_SIZE);

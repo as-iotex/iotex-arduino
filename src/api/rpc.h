@@ -8,7 +8,7 @@
 #include "host/host.h"
 #include "protobuf/pb_api.h"
 
-namespace Iotex 
+namespace iotex 
 {
 	namespace api 
 	{
@@ -32,6 +32,6 @@ namespace Iotex
 
 		}  // namespace rpc
 	}  // namespace api
-}  // namespace Iotex
+}  // namespace iotex
 
 #endif

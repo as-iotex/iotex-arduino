@@ -3,7 +3,7 @@
 
 #include "esp_system.h"
 
-using namespace Iotex;
+using namespace iotex;
 
 Random randomGenerator;
 

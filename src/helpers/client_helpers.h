@@ -28,7 +28,7 @@
 #endif
 
 
-namespace Iotex
+namespace iotex
 {
     namespace helpers
     {

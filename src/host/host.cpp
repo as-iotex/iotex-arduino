@@ -5,7 +5,7 @@
 #include <string>
 #include <string.h>
 
-using namespace Iotex;
+using namespace iotex;
 
 Host::Host(const char* hostname, int port, const char* baseUrl)
 {
