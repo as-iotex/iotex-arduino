@@ -329,7 +329,7 @@ void iotex::abi::FunctionAbi::getSignature(IotexString &out)
                     size_t size = input.arrayTypeSizeBytes;
                     if (input.arrayType == EthereumTypeName::INT || input.arrayType == EthereumTypeName::UINT)
                         size *= 8;   // Convert to bits for integers
-                    sprintf(buf, "%d", size);
+                    sprintf(buf, "%zu", size);
                     out += buf;
                 }
                 out += '[';

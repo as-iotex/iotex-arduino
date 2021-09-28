@@ -356,7 +356,7 @@ int32_t iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size,
 
 int32_t iotex::Contract::generateBytesForBytes(uint8_t* pVal, size_t size, uint8_t* out)
 {
-    IOTEX_DEBUG_F("iotex::Contract::generateBytesForBytes of size %d\n", size);
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForBytes of size %zu\n", size);
     // Encode length
     size_t encodedBytes = generateBytesForUint((const uint8_t *)&size, sizeof(size_t), out);
 
