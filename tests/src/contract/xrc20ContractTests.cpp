@@ -24,7 +24,7 @@ class Xrc20ContractTests : public Test
 
         void TearDown() override {}
 
-        char addressStr[ETH_ADDRESS_STRLEN] = "f55000ebcf4ec082256be18f4cc491d2a469ff61";
+        char addressStr[ETH_ADDRESS_STRLEN+1] = "f55000ebcf4ec082256be18f4cc491d2a469ff61";
         uint8_t address[ETH_ADDRESS_SIZE] = {0};
 };
 

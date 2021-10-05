@@ -14,7 +14,7 @@ class SignerTests : public Test
 
         void TearDown() override {}
 
-        char addressStr[ETH_ADDRESS_STRLEN];
+        char addressStr[ETH_ADDRESS_STRLEN+1];
 };
 
 // --------------------- str2hex ------------------------------

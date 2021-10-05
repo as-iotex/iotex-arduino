@@ -1,5 +1,6 @@
 #include "account/account.h"
 #include "api/wallet/wallets.h"
+#include "helpers/client_helpers.h"
 
 #include <vector>
 
@@ -51,15 +52,15 @@ Account::Account(Random* pRandomGenerator, Encoder* pEncoder, Signer* pSigner, u
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-void Account::getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN])
+void Account::getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN+1])
 {
     
-    memcpy(buffer, _iotexAddr.c_str(), IOTEX_ADDRESS_STRLEN);
+    memcpy(buffer, _iotexAddr.c_str(), IOTEX_ADDRESS_STRLEN+1);
 }
 
-void Account::getEthereumAddress(char buffer[IOTEX_ADDRESS_STRLEN])
+void Account::getEthereumAddress(char buffer[ETH_ADDRESS_STRLEN+1])
 {
-    memcpy(buffer, _ethAddr.c_str(), ETH_ADDRESS_STRLEN);
+    memcpy(buffer, _ethAddr.c_str(), ETH_ADDRESS_STRLEN+1);
 }
 
 void Account::getPublicKey(uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE])
@@ -101,6 +102,8 @@ void Account::signExecutionAction(iotex::ResponseTypes::ActionCore_Execution &ex
 
     uint8_t h[IOTEX_HASH_SIZE] = {0};
     signer.getHash(encodedCore, encodedCoreSize, h);
+    IOTEX_DEBUG_F("Account::signExecutionAction(): Signing hash: ");
+    IOTEX_DEBUG_HEX_BUF(h, IOTEX_HASH_SIZE);
 
     if (hash)
     {

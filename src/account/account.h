@@ -26,10 +26,10 @@ namespace iotex
             Account(uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE]);
 
             // Getters
-            void getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN]);
-            void getEthereumAddress(char buffer[IOTEX_ADDRESS_STRLEN]);
-            void getPublicKey(uint8_t buffer[IOTEX_ADDRESS_STRLEN]);
-            void getPrivateKey(uint8_t buffer[IOTEX_ADDRESS_STRLEN]);
+            void getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN+1]);
+            void getEthereumAddress(char buffer[IOTEX_ADDRESS_STRLEN+1]);
+            void getPublicKey(uint8_t buffer[IOTEX_ADDRESS_STRLEN+1]);
+            void getPrivateKey(uint8_t buffer[IOTEX_ADDRESS_STRLEN+1]);
 
             // Signing
             void signMessage(const uint8_t *message, size_t size, uint8_t signature[IOTEX_SIGNATURE_SIZE]);
