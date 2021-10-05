@@ -23,8 +23,9 @@
 
 #include "rand.h"
 
-#ifndef RAND_PLATFORM_INDEPENDENT
+#ifdef NO_RAND
 
+#error "NO_RAND"
 #pragma message( \
     "NOT SUITABLE FOR PRODUCTION USE! Replace random32() function with your own secure code.")
 
@@ -48,7 +49,7 @@ uint32_t random32(void) {
   return seed;
 }
 
-#endif /* RAND_PLATFORM_INDEPENDENT */
+#endif /* NO_RAND */
 
 //
 // The following code is platform independent

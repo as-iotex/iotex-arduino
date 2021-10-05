@@ -85,7 +85,6 @@ target_include_directories(iotex-antenna-arduino
 target_compile_definitions(iotex-antenna-arduino
     PUBLIC OS
     PUBLIC _DEBUG_HTTP_
-    PUBLIC RAND_PLATFORM_INDEPENDENT
     # PUBLIC ARDUINO
 )
 
