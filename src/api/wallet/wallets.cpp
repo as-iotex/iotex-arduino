@@ -1,6 +1,7 @@
 
 #include "api/wallet/wallets.h"
 #include "signer/signer.h"
+#include "helpers/client_helpers.h"
 
 using namespace iotex;
 using namespace iotex::api;
@@ -8,8 +9,10 @@ using namespace iotex::ResponseTypes;
 
 ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 {
+	IOTEX_DEBUG_F("Wallets::getAccount(): Address %s\r\n", address);
 	rpc::RpcCallData callData = rpc::Wallets::getAccount(this->host_, address);
 	IotexString rspBody;
+	IOTEX_DEBUG_F("Wallets::getAccount(): Post\r\n");
 	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if (ret != ResultCode::SUCCESS)
 	{
@@ -17,6 +20,7 @@ ResultCode Wallets::getAccount(const char *const address, AccountMeta& data)
 	}
 
 	ResponseTypes::GetAccountResponse resp;
+	IOTEX_DEBUG_F("Wallets::getAccount(): FromJson\r\n");
 	ret = resp.fromJson(rspBody);
 	if (ret != ResultCode::SUCCESS)
 		return ret;

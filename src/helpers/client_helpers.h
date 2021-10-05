@@ -18,10 +18,12 @@
 
 #define IotexString String
 #define IOTEX_DEBUG_F(fmt, ...) Serial.printf(fmt, ##__VA_ARGS__)
+#define IOTEX_DEBUG_HEX_BUF(buf, length) iotex::helpers::printHex(buf, length)
 
 #else
     #define IotexString std::string
     #define IOTEX_DEBUG_F(fmt, ...) printf(fmt, ##__VA_ARGS__)
+    #define IOTEX_DEBUG_HEX_BUF(buf, length) iotex::helpers::printHex(buf, length)
     #ifndef OS
         #define OS
     #endif
@@ -41,6 +43,15 @@ namespace iotex
                 sprintf(charBuf, "%02x", data[i]);
                 out += charBuf;
             }
+        }
+        
+        inline void printHex(uint8_t* data, int length)
+        {
+            for (uint8_t i = 0; i < length; i++)
+            {
+                IOTEX_DEBUG_F("%02x", data[i]);
+            }
+            IOTEX_DEBUG_F("\r\n");
         }
     }
 }

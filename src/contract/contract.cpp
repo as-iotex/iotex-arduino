@@ -283,23 +283,26 @@ int32_t iotex::Contract::generateBytesForUint(const uint8_t *pVal, size_t size, 
         // Swap endianness when copying
         out[paddingBytes + i] = pVal[size-i-1];
     }
+    IOTEX_DEBUG_HEX_BUF(out, 32);
     return 32;
 }
 
 int32_t iotex::Contract::generateBytesForAddress(const uint8_t *pVal, uint8_t* out)
 {
-    // IOTEX_DEBUG_F("iotex::Contract::generateBytesForAddress\n");
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForAddress\n");
     uint8_t address[20];
     memcpy(address, pVal, 20);
     EndianSwap(address, 20);
-    return generateBytesForUint(address, 20, out);
+    int32_t ret = generateBytesForUint(address, 20, out);
+    IOTEX_DEBUG_HEX_BUF(out, ret);
+    return ret;
 }
 
 int32_t iotex::Contract::generateBytesForInt(const int8_t *pVal, size_t size, uint8_t* out)
 {
     // TODO generateBytesForInt: Only tested for 8, 16, 32, 64 bit int
 
-    // IOTEX_DEBUG_F("iotex::Contract::generateBytesForInt of size %d\n", size);
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForInt of size %d\n", size);
     if (size > 256 || out == nullptr || (size>8 && size%8))
         return -1;
 
@@ -321,22 +324,23 @@ int32_t iotex::Contract::generateBytesForInt(const int8_t *pVal, size_t size, ui
         // Swap endianness when copying
         out[paddingBytes + i] = pVal[size-i-1];
     }
-
+    IOTEX_DEBUG_HEX_BUF(out, 32);
     return 32;
 }
 
 int32_t iotex::Contract::generateBytesForBool(bool val, uint8_t* out)
 {
-    // IOTEX_DEBUG_F("iotex::Contract::generateBytesForBool\n");
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForBool\n");
     memset(out, 0, 32);
     if(val)
         out[31] = 1;
+    IOTEX_DEBUG_HEX_BUF(out, 32);
     return 32;
 }
 
 int32_t iotex::Contract::generateBytesForStaticBytes(uint8_t* pVal, size_t size, uint8_t* out)
 {
-    // IOTEX_DEBUG_F("iotex::Contract::generateBytesForStaticBytes of size %d\n", size);
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForStaticBytes of size %d\n", size);
     // Get number of 32 byte groups
     size_t n32ByteGroups = ceil((float)size / 32.0);
     // Get padding bytes
@@ -362,13 +366,13 @@ int32_t iotex::Contract::generateBytesForBytes(uint8_t* pVal, size_t size, uint8
 
     // Encode actual bytes
     encodedBytes += generateBytesForStaticBytes(pVal, size, out + encodedBytes);
-
+    IOTEX_DEBUG_HEX_BUF(out, encodedBytes);
     return encodedBytes;
 }
 
 int32_t iotex::Contract::generateBytesForString(char* pVal, size_t size, uint8_t* out)
 {
-    // IOTEX_DEBUG_F("iotex::Contract::generateBytesForString of size %d\n", size);
+    IOTEX_DEBUG_F("iotex::Contract::generateBytesForString of size %d\n", size);
     return generateBytesForBytes((uint8_t*) pVal, size, out);
 }
 

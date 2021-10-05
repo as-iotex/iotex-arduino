@@ -13,6 +13,8 @@ extern "C" {
 }
 #endif
 
+#include "helpers/client_helpers.h"
+
 using namespace iotex;
 
 Signer signer;
@@ -94,10 +96,13 @@ ResultCode Signer::signHash(const uint8_t hash[IOTEX_HASH_SIZE],
                          const uint8_t private_key[IOTEX_PRIVATE_KEY_SIZE],
                          uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
+    IOTEX_DEBUG_F("Signer::signHash():\r\n");
     if (ecdsa_sign_digest(&secp256k1, private_key, hash, signature, signature + 64, NULL) != 0)
     {
+        IOTEX_DEBUG_F("Signer::signHash() Error signing hash\r\n");
         return ResultCode::ERROR_SIGNATURE;
     }
+    IOTEX_DEBUG_F("Signer::signHash(): SUCCESS\r\n");
     return ResultCode::SUCCESS;
 }
 
@@ -140,6 +145,7 @@ ResultCode Signer::hex2str(const uint8_t *hex, size_t hex_size, char *str, size_
     const uint8_t *end = it + hex_size;
 
     if (str_size < hex_size * 2) {
+        IOTEX_DEBUG_F("Signer::hex2str(): Size too small. Need at least %lu but is %lu\r\n", hex_size * 2, str_size);
         return ResultCode::ERROR_BAD_PARAMETER;
     }
 
