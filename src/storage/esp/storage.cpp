@@ -1,4 +1,4 @@
-#ifdef ESP32
+#if defined(ESP32) || defined(ESP8266)
 
 #include "helpers/client_helpers.h"
 #include "storage/storage.h"
