@@ -2,6 +2,7 @@
 #include "protobuf/pb_api.h"
 
 using namespace iotex;
+using namespace iotex::abi;
 using namespace iotex::reflection;
 using namespace iotex::json;
 
@@ -344,9 +345,55 @@ void iotex::abi::FunctionAbi::getSignature(IotexString &out)
 
             default:
                 IOTEX_DEBUG_F("Type not supported\r\n");
+                break;
         }
 
         if (i < inputs.size() - 1) out += ',';
     }
     out += ')';
+}
+
+ParameterValue iotex::abi::MakeParamUint(uint64_t value)
+{
+    ParameterValue param;
+    param.size = sizeof(uint64_t);
+    param.value.uint64 = value;
+    param.type = EthereumTypeName::UINT;
+    return param;
+}
+
+ParameterValue iotex::abi::MakeParamInt(int64_t value)
+{
+    ParameterValue param;
+    param.size = sizeof(int64_t);
+    param.value.int64 = value;
+    param.type = EthereumTypeName::INT;
+    return param;
+}
+
+ParameterValue iotex::abi::MakeParamString(IotexString& value)
+{
+    ParameterValue param;
+    param.size = value.length();
+    param.value.string = &value;
+    param.type = EthereumTypeName::STRING;
+    return param;
+}
+
+ParameterValue iotex::abi::MakeParamAddress(uint8_t value[ETH_ADDRESS_SIZE])
+{
+    ParameterValue param;
+    param.value.bytes = value;
+    param.size = ETH_ADDRESS_SIZE;
+    param.type = EthereumTypeName::ADDRESS;
+    return param;
+}
+
+ParameterValue iotex::abi::MakeParamBytes(uint8_t value[], size_t size, bool dynamic = false)
+{
+    ParameterValue param;
+    param.value.bytes = value;
+    param.size = size;
+    param.type = dynamic ? EthereumTypeName::BYTES_DYNAMIC : EthereumTypeName::BYTES_STATIC;
+    return param;
 }

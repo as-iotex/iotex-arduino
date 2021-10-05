@@ -3,6 +3,7 @@
 
 #include "helpers/client_helpers.h"
 #include "result_codes.h"
+#include "constants.h"
 #include "helpers/json_helper.h"
 #include "extern/cjson/cJSON.h"
 #include <vector>
@@ -170,7 +171,7 @@ namespace iotex
                 } value;
                 int32_t size = -1;
                 bool isBigInt = false;
-                EthereumTypeName type = EthereumTypeName::UNKNOWN;  // Only used for arrays and tuples. Needs to be set by the user
+                EthereumTypeName type = EthereumTypeName::UNKNOWN;
             
                 bool isDynamic()
                 {
@@ -182,6 +183,12 @@ namespace iotex
                         );
                 }
         };
+
+        ParameterValue MakeParamUint(uint64_t value);
+        ParameterValue MakeParamInt(int64_t value);
+        ParameterValue MakeParamString(IotexString &value);
+        ParameterValue MakeParamAddress(uint8_t value[ETH_ADDRESS_SIZE]);
+        ParameterValue MakeParamBytes(uint8_t value[], size_t size, bool dynamic);
     }
 }
 
