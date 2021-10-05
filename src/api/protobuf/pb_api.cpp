@@ -192,13 +192,9 @@ ResultCode GetAccountResponse::fromJson(IotexString jsonString)
     return ret;
 }
 
-ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
+ResultCode GetActionResponse_Transfer::fromJson(IotexString& jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;
-    
-    // Clear fields
-    this->actionInfo.empty();
-    this->total = "0";
 
     cJSON *data = cJSON_Parse(jsonString.c_str());
     if (data == NULL)
@@ -207,27 +203,17 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
         return ResultCode::ERROR_JSON_PARSE;
     }
 
-    // Set Total
-    const cJSON* total = cJSON_GetObjectItemCaseSensitive(data, "total");
-    ret = SetValueFromJsonObject(total, CppType::STRING, (void *)&(this->total));
-    if (ret != ResultCode::SUCCESS)
-    {
-        cJSON_Delete(data);
-        return ret;
-    }
-
-    // Set ActionInfo
-    ActionInfo_Transfer actionInfoResponse;
-    memset(actionInfoResponse.actHash, 0, sizeof(actionInfoResponse.actHash));
-    memset(actionInfoResponse.blkHash, 0, sizeof(actionInfoResponse.blkHash));
-    memset(actionInfoResponse.timestamp, 0, sizeof(actionInfoResponse.timestamp));
-    memset(actionInfoResponse.sender, 0, sizeof(actionInfoResponse.sender));
-    memset(actionInfoResponse.gasFee, 0, sizeof(actionInfoResponse.gasFee));
-    memset(actionInfoResponse.action.senderPublicKey, 0, sizeof(actionInfoResponse.action.senderPublicKey));
-    memset(actionInfoResponse.action.signature, 0, sizeof(actionInfoResponse.action.signature));
-    memset(actionInfoResponse.action.core.gasPrice, 0, sizeof(actionInfoResponse.action.core.gasPrice));
-    memset(actionInfoResponse.action.core.transfer.amount, 0, sizeof(actionInfoResponse.action.core.transfer.amount));
-    memset(actionInfoResponse.action.core.transfer.recipient, 0, sizeof(actionInfoResponse.action.core.transfer.recipient));
+    // Clear fields
+    memset(actionInfo.actHash, 0, sizeof(actionInfo.actHash));
+    memset(actionInfo.blkHash, 0, sizeof(actionInfo.blkHash));
+    memset(actionInfo.timestamp, 0, sizeof(actionInfo.timestamp));
+    memset(actionInfo.sender, 0, sizeof(actionInfo.sender));
+    memset(actionInfo.gasFee, 0, sizeof(actionInfo.gasFee));
+    memset(actionInfo.action.senderPublicKey, 0, sizeof(actionInfo.action.senderPublicKey));
+    memset(actionInfo.action.signature, 0, sizeof(actionInfo.action.signature));
+    memset(actionInfo.action.core.gasPrice, 0, sizeof(actionInfo.action.core.gasPrice));
+    memset(actionInfo.action.core.transfer.amount, 0, sizeof(actionInfo.action.core.transfer.amount));
+    memset(actionInfo.action.core.transfer.recipient, 0, sizeof(actionInfo.action.core.transfer.recipient));
 
     const cJSON *actionInfoArray = cJSON_GetObjectItemCaseSensitive(data, "actionInfo");
     if (!cJSON_IsArray(actionInfoArray))
@@ -236,15 +222,15 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
         return ResultCode::ERROR_JSON_PARSE;
     }
     
-    const cJSON *actionInfo = cJSON_GetArrayItem(actionInfoArray, 0);
-    if (!cJSON_IsObject(actionInfo))
+    const cJSON *pActionInfoJson = cJSON_GetArrayItem(actionInfoArray, 0);
+    if (!cJSON_IsObject(pActionInfoJson))
     {
         cJSON_Delete(data);
         return ResultCode::ERROR_JSON_PARSE;
     }
 
     // Action data and core
-    const cJSON* action = cJSON_GetObjectItemCaseSensitive(actionInfo, "action");
+    const cJSON* action = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "action");
     if (!cJSON_IsObject(action))
     {
         cJSON_Delete(data);
@@ -265,7 +251,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     
     // Action - Sender public key
     const cJSON* senderPubKey = cJSON_GetObjectItemCaseSensitive(action, "senderPubKey");
-    ret = SetValueFromJsonObject(senderPubKey, CppType::C_STRING, (void *)&(actionInfoResponse.action.senderPublicKey), IOTEX_PUBLIC_KEY_STRLEN);
+    ret = SetValueFromJsonObject(senderPubKey, CppType::C_STRING, (void *)&(actionInfo.action.senderPublicKey), IOTEX_PUBLIC_KEY_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -274,7 +260,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
 
     // Action - Signature
     const cJSON* signature = cJSON_GetObjectItemCaseSensitive(action, "signature");
-    ret = SetValueFromJsonObject(signature, CppType::C_STRING, (void *)&(actionInfoResponse.action.signature), IOTEX_SIGNATURE_STRLEN);
+    ret = SetValueFromJsonObject(signature, CppType::C_STRING, (void *)&(actionInfo.action.signature), IOTEX_SIGNATURE_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -283,7 +269,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
 
     // Action - core - version
     const cJSON* version = cJSON_GetObjectItemCaseSensitive(core, "version");
-    ret = SetValueFromJsonObject(version, CppType::UINT32, (void *)&(actionInfoResponse.action.core.version));
+    ret = SetValueFromJsonObject(version, CppType::UINT32, (void *)&(actionInfo.action.core.version));
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -301,7 +287,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
         cJSON_Delete(data);
         return ret;
     }
-    actionInfoResponse.action.core.nonce = atol(buf.c_str());
+    actionInfo.action.core.nonce = atol(buf.c_str());
 
     // Action - core - gasLimit
     const cJSON* gasLimit = cJSON_GetObjectItemCaseSensitive(core, "gasLimit");
@@ -313,11 +299,11 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
         cJSON_Delete(data);
         return ret;
     }
-    actionInfoResponse.action.core.gasLimit = atol(buf.c_str());
+    actionInfo.action.core.gasLimit = atol(buf.c_str());
 
     // Action - core - gasPrice
     const cJSON* gasPrice = cJSON_GetObjectItemCaseSensitive(core, "gasPrice");
-    ret = SetValueFromJsonObject(gasPrice, CppType::C_STRING, (void *)&(actionInfoResponse.action.core.gasPrice), IOTEX_MAX_BALANCE_STRLEN);
+    ret = SetValueFromJsonObject(gasPrice, CppType::C_STRING, (void *)&(actionInfo.action.core.gasPrice), IOTEX_MAX_BALANCE_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -326,7 +312,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
 
     // Action - core - transfer - amount
     const cJSON* amount = cJSON_GetObjectItemCaseSensitive(transfer, "amount");
-    ret = SetValueFromJsonObject(amount, CppType::C_STRING, (void *)&(actionInfoResponse.action.core.transfer.amount), IOTEX_MAX_BALANCE_STRLEN);
+    ret = SetValueFromJsonObject(amount, CppType::C_STRING, (void *)&(actionInfo.action.core.transfer.amount), IOTEX_MAX_BALANCE_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -335,7 +321,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
 
     // Action - core - transfer - recipient
     const cJSON* recipient = cJSON_GetObjectItemCaseSensitive(transfer, "recipient");
-    ret = SetValueFromJsonObject(recipient, CppType::C_STRING, (void *)&(actionInfoResponse.action.core.transfer.recipient), IOTEX_ADDRESS_STRLEN);
+    ret = SetValueFromJsonObject(recipient, CppType::C_STRING, (void *)&(actionInfo.action.core.transfer.recipient), IOTEX_ADDRESS_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -344,7 +330,7 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
   
     // Action - core - transfer - payload
     const cJSON* payload = cJSON_GetObjectItemCaseSensitive(transfer, "payload");
-    ret = SetValueFromJsonObject(payload, CppType::STRING, (void *)&(actionInfoResponse.action.core.transfer.payload));
+    ret = SetValueFromJsonObject(payload, CppType::STRING, (void *)&(actionInfo.action.core.transfer.payload));
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -352,8 +338,8 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
 
     // Action hash
-    const cJSON* actHash = cJSON_GetObjectItemCaseSensitive(actionInfo, "actHash");
-    ret = SetValueFromJsonObject(actHash, CppType::C_STRING, (void *)&(actionInfoResponse.actHash), IOTEX_HASH_STRLEN);
+    const cJSON* actHash = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "actHash");
+    ret = SetValueFromJsonObject(actHash, CppType::C_STRING, (void *)&(actionInfo.actHash), IOTEX_HASH_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -361,8 +347,8 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
 
     // Blk hash
-    const cJSON* blkHash = cJSON_GetObjectItemCaseSensitive(actionInfo, "blkHash");
-    ret = SetValueFromJsonObject(blkHash, CppType::C_STRING, (void *)&(actionInfoResponse.blkHash), IOTEX_HASH_STRLEN);
+    const cJSON* blkHash = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "blkHash");
+    ret = SetValueFromJsonObject(blkHash, CppType::C_STRING, (void *)&(actionInfo.blkHash), IOTEX_HASH_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -370,8 +356,8 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
 
     // Timestamp
-    const cJSON* timestamp = cJSON_GetObjectItemCaseSensitive(actionInfo, "timestamp");
-    ret = SetValueFromJsonObject(timestamp, CppType::C_STRING, (void *)&(actionInfoResponse.timestamp), IOTEX_TIMESTAMP_STRLEN);
+    const cJSON* timestamp = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "timestamp");
+    ret = SetValueFromJsonObject(timestamp, CppType::C_STRING, (void *)&(actionInfo.timestamp), IOTEX_TIMESTAMP_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -379,8 +365,8 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
 
     // Blk height
-    const cJSON* blkHeight = cJSON_GetObjectItemCaseSensitive(actionInfo, "blkHeight");
-    ret = SetValueFromJsonObject(blkHeight, CppType::STRING, (void *)&(actionInfoResponse.blkHeight));
+    const cJSON* blkHeight = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "blkHeight");
+    ret = SetValueFromJsonObject(blkHeight, CppType::STRING, (void *)&(actionInfo.blkHeight));
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -388,8 +374,8 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
     
     // Sender
-    const cJSON* sender = cJSON_GetObjectItemCaseSensitive(actionInfo, "sender");
-    ret = SetValueFromJsonObject(sender, CppType::C_STRING, (void *)&(actionInfoResponse.sender), IOTEX_ADDRESS_STRLEN);
+    const cJSON* sender = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "sender");
+    ret = SetValueFromJsonObject(sender, CppType::C_STRING, (void *)&(actionInfo.sender), IOTEX_ADDRESS_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
@@ -397,16 +383,13 @@ ResultCode GetActionsResponse_Transfer::fromJson(IotexString jsonString)
     }
     
     // GasFee
-    const cJSON* gasFee = cJSON_GetObjectItemCaseSensitive(actionInfo, "gasFee");
-    ret = SetValueFromJsonObject(gasFee, CppType::C_STRING, (void *)&(actionInfoResponse.gasFee), IOTEX_MAX_BALANCE_STRLEN);
+    const cJSON* gasFee = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "gasFee");
+    ret = SetValueFromJsonObject(gasFee, CppType::C_STRING, (void *)&(actionInfo.gasFee), IOTEX_MAX_BALANCE_STRLEN);
     if (ret != ResultCode::SUCCESS)
     {
         cJSON_Delete(data);
         return ret;
     }
-
-    // Store
-    this->actionInfo.push_back(actionInfoResponse);
     
     cJSON_Delete(data);
 

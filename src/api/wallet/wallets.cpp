@@ -54,12 +54,12 @@ ResultCode Wallets::getTransactionByHash(const char *const address, ResponseType
 	{
 		return ret;
 	}
-	ResponseTypes::GetActionsResponse_Transfer response;
+	ResponseTypes::GetActionResponse_Transfer response;
 	ret = response.fromJson(rspBody);
 	if (ret != ResultCode::SUCCESS)
 		return ret;
 
-	action = response.actionInfo.at(0);
+	action = response.actionInfo;
 	return ret;
 }
 

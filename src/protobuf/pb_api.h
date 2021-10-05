@@ -131,14 +131,13 @@ namespace iotex
         BlockIdentifier blockIdentifier;
     };
 
-    struct GetActionsResponse_Transfer
+    struct GetActionResponse_Transfer
     {
       public:
-        ResultCode fromJson(IotexString jsonString);
+        ResultCode fromJson(IotexString& jsonString);
 
       public:
-        IotexString total;
-        std::vector<ActionInfo_Transfer> actionInfo;
+        ActionInfo_Transfer actionInfo;
     };
     
     struct SendExecutionResponse
