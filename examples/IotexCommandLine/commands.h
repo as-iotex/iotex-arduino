@@ -150,7 +150,7 @@ void CreateAccount()
     Serial.print("Public key: ");
     account.getPublicKey(buffer);
     printhex(buffer, IOTEX_PUBLIC_KEY_SIZE);
-    Serial.print("Iotex address: ");
+    Serial.print("IoTeX address: ");
     account.getIotexAddress((char*)buffer);
     Serial.println((char*)buffer);
     Serial.print("Eth address: ");

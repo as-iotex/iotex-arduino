@@ -1,6 +1,6 @@
 {
-    "name": "iotex-client",
-    "description": "Library to interact with the Iotex bockchain from Arduino boards",
+    "name": "IoTeX-client",
+    "description": "Library to interact with the IoTeX bockchain from Arduino boards",
     "repository": {
       "type": "git",
       "url": ""
@@ -8,7 +8,7 @@
     "version": "0.0.1",
     "authors": [
       {
-        "name": "iotex",
+        "name": "IoTeX",
         "email": "",
         "url": ""
       }

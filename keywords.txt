@@ -7,8 +7,10 @@
 #######################################
 
 Iotex	KEYWORD1
-api	KEYWORD1
+IoTeX	KEYWORD1
+iotex	KEYWORD1
 
+api	KEYWORD1
 Api	KEYWORD1
 
 Wallets	KEYWORD1
@@ -19,6 +21,10 @@ Host	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
+#######################################
+
+#######################################
+# Structures (KEYWORD3)
 #######################################
 
 ######################################
