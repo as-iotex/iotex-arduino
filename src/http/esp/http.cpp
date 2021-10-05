@@ -106,7 +106,7 @@ namespace iotex
 				bool Initialize(const char* path)
 				{
 					_httpClient.setReuse(true);
-					_httpClient.setTimeout(3000);
+					_httpClient.setTimeout(10000);
 					_httpClient.addHeader("Content-Type", "application/json");
 					String url = "http://";
 					url += path;
