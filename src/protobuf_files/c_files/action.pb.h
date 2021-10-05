@@ -15,273 +15,18 @@ typedef enum _Encoding {
     Encoding_ETHEREUM_RLP = 1 
 } Encoding;
 
-typedef enum _RewardType { 
-    RewardType_BlockReward = 0, 
-    RewardType_EpochReward = 1 
-} RewardType;
-
 /* Struct definitions */
-/* Candidates and list of candidates */
-typedef struct _Candidate { 
-    pb_callback_t address; 
-    pb_callback_t votes; 
-    pb_callback_t pubKey; 
-    pb_callback_t rewardAddress; 
-} Candidate;
-
-typedef struct _CandidateBasicInfo { 
-    pb_callback_t name; 
-    pb_callback_t operatorAddress; 
-    pb_callback_t rewardAddress; 
-} CandidateBasicInfo;
-
-typedef struct _CandidateList { 
-    pb_callback_t candidates; 
-} CandidateList;
-
-typedef struct _ClaimFromRewardingFund { 
-    pb_callback_t amount; 
-    pb_callback_t data; 
-} ClaimFromRewardingFund;
-
-/* plum main chain APIs */
-typedef struct _CreatePlumChain { 
-    char dummy_field;
-} CreatePlumChain;
-
-typedef struct _DepositToRewardingFund { 
-    pb_callback_t amount; 
-    pb_callback_t data; 
-} DepositToRewardingFund;
-
-/* Deprecated */
-typedef struct _EvmTransfer { 
-    pb_callback_t amount; 
-    pb_callback_t from; 
-    pb_callback_t to; 
-} EvmTransfer;
-
-/* Deprecated */
-typedef struct _EvmTransferList { 
-    pb_callback_t evmTransfers; 
-} EvmTransferList;
-
 typedef struct _Execution { 
     pb_callback_t amount; 
     pb_callback_t contract; 
     pb_callback_t data; 
 } Execution;
 
-/* Deprecated */
-typedef struct _Logs { 
-    pb_callback_t logs; 
-} Logs;
-
-typedef struct _MerkleRoot { 
-    pb_callback_t name; 
-    pb_callback_t value; 
-} MerkleRoot;
-
-typedef struct _PlumCreateDeposit { 
-    pb_callback_t subChainAddress; 
-    pb_callback_t amount; 
-    pb_callback_t recipient; 
-} PlumCreateDeposit;
-
-typedef struct _PlumPutBlock_RootsEntry { 
-    pb_callback_t key; 
-    pb_callback_t value; 
-} PlumPutBlock_RootsEntry;
-
-typedef struct _TerminatePlumChain { 
-    pb_callback_t subChainAddress; 
-} TerminatePlumChain;
-
 typedef struct _Transfer { 
     /* used by state-based model */
     pb_callback_t amount; 
     pb_callback_t recipient; /* bytes payload = 3; // Unused */
 } Transfer;
-
-/* Deprecated */
-typedef struct _ActionEvmTransfer { 
-    pb_callback_t actionHash; 
-    uint64_t numEvmTransfers; 
-    pb_callback_t evmTransfers; 
-} ActionEvmTransfer;
-
-typedef struct _BlockEvmTransfer { 
-    uint64_t blockHeight; 
-    uint64_t numEvmTransfers; 
-    pb_callback_t actionEvmTransfers; 
-} BlockEvmTransfer;
-
-typedef struct _CandidateRegister { 
-    bool has_candidate;
-    CandidateBasicInfo candidate; 
-    pb_callback_t stakedAmount; 
-    uint32_t stakedDuration; 
-    bool autoStake; 
-    pb_callback_t ownerAddress; /* if ownerAddress is absent, owner of candidate is the sender */
-    pb_callback_t payload; 
-} CandidateRegister;
-
-typedef struct _CreateDeposit { 
-    uint32_t chainID; 
-    pb_callback_t amount; 
-    pb_callback_t recipient; 
-} CreateDeposit;
-
-typedef struct _GrantReward { 
-    RewardType type; 
-    uint64_t height; 
-} GrantReward;
-
-typedef struct _Log { 
-    pb_callback_t contractAddress; 
-    pb_callback_t topics; 
-    pb_callback_t data; 
-    uint64_t blkHeight; 
-    pb_callback_t actHash; 
-    uint32_t index; 
-    pb_callback_t blkHash; 
-} Log;
-
-typedef struct _PlumChallengeExit { 
-    pb_callback_t subChainAddress; 
-    uint64_t coinID; 
-    pb_callback_t challengeTransfer; 
-    pb_callback_t challengeTransferBlockProof; 
-    uint64_t challengeTransferBlockHeight; 
-} PlumChallengeExit;
-
-/* plum sub chain APIs */
-typedef struct _PlumFinalizeExit { 
-    pb_callback_t subChainAddress; 
-    uint64_t coinID; 
-} PlumFinalizeExit;
-
-typedef struct _PlumPutBlock { 
-    pb_callback_t subChainAddress; 
-    uint64_t height; 
-    pb_callback_t roots; 
-} PlumPutBlock;
-
-typedef struct _PlumResponseChallengeExit { 
-    pb_callback_t subChainAddress; 
-    uint64_t coinID; 
-    pb_callback_t challengeTransfer; 
-    pb_callback_t responseTransfer; 
-    pb_callback_t responseTransferBlockProof; 
-    uint64_t previousTransferBlockHeight; 
-} PlumResponseChallengeExit;
-
-typedef struct _PlumSettleDeposit { 
-    uint64_t coinID; 
-} PlumSettleDeposit;
-
-typedef struct _PlumStartExit { 
-    pb_callback_t subChainAddress; 
-    pb_callback_t previousTransfer; 
-    pb_callback_t previousTransferBlockProof; 
-    uint64_t previousTransferBlockHeight; 
-    pb_callback_t exitTransfer; 
-    pb_callback_t exitTransferBlockProof; 
-    uint64_t exitTransferBlockHeight; 
-} PlumStartExit;
-
-typedef struct _PlumTransfer { 
-    uint64_t coinID; 
-    pb_callback_t denomination; 
-    pb_callback_t owner; 
-    pb_callback_t recipient; 
-} PlumTransfer;
-
-typedef struct _PutBlock { 
-    pb_callback_t subChainAddress; 
-    uint64_t height; 
-    pb_callback_t roots; 
-} PutBlock;
-
-typedef struct _PutPollResult { 
-    uint64_t height; 
-    bool has_candidates;
-    CandidateList candidates; 
-} PutPollResult;
-
-typedef struct _Receipt { 
-    uint64_t status; 
-    uint64_t blkHeight; 
-    pb_callback_t actHash; 
-    uint64_t gasConsumed; 
-    pb_callback_t contractAddress; 
-    pb_callback_t logs; 
-    pb_callback_t executionRevertMsg; 
-} Receipt;
-
-typedef struct _SettleDeposit { 
-    pb_callback_t amount; 
-    pb_callback_t recipient; 
-    uint64_t index; 
-} SettleDeposit;
-
-/* add the amount of bucket */
-typedef struct _StakeAddDeposit { 
-    uint64_t bucketIndex; 
-    pb_callback_t amount; 
-    pb_callback_t payload; 
-} StakeAddDeposit;
-
-/* move the bucket to vote for another candidate or transfer the ownership of bucket to another voters */
-typedef struct _StakeChangeCandidate { 
-    uint64_t bucketIndex; 
-    pb_callback_t candidateName; 
-    pb_callback_t payload; 
-} StakeChangeCandidate;
-
-/* create stake */
-typedef struct _StakeCreate { 
-    pb_callback_t candidateName; 
-    pb_callback_t stakedAmount; 
-    uint32_t stakedDuration; 
-    bool autoStake; 
-    pb_callback_t payload; 
-} StakeCreate;
-
-/* unstake or withdraw */
-typedef struct _StakeReclaim { 
-    uint64_t bucketIndex; 
-    pb_callback_t payload; 
-} StakeReclaim;
-
-/* restake the duration and autoStake flag of bucket */
-typedef struct _StakeRestake { 
-    uint64_t bucketIndex; 
-    uint32_t stakedDuration; 
-    bool autoStake; 
-    pb_callback_t payload; 
-} StakeRestake;
-
-typedef struct _StakeTransferOwnership { 
-    uint64_t bucketIndex; 
-    pb_callback_t voterAddress; 
-    pb_callback_t payload; 
-} StakeTransferOwnership;
-
-typedef struct _StartSubChain { 
-    /* TODO: chainID chould be assigned by system and returned via a receipt */
-    uint32_t chainID; 
-    pb_callback_t securityDeposit; 
-    pb_callback_t operationDeposit; 
-    uint64_t startHeight; 
-    uint64_t parentHeightOffset; 
-} StartSubChain;
-
-typedef struct _StopSubChain { 
-    uint32_t chainID; 
-    uint64_t stopHeight; 
-    pb_callback_t subChainAddress; 
-} StopSubChain;
 
 typedef struct _ActionCore { 
     uint32_t version; 
@@ -292,34 +37,6 @@ typedef struct _ActionCore {
     union {
         Transfer transfer;
         Execution execution;
-        StartSubChain startSubChain;
-        StopSubChain stopSubChain;
-        PutBlock putBlock;
-        CreateDeposit createDeposit;
-        SettleDeposit settleDeposit;
-        CreatePlumChain createPlumChain;
-        TerminatePlumChain terminatePlumChain;
-        PlumPutBlock plumPutBlock;
-        PlumCreateDeposit plumCreateDeposit;
-        PlumStartExit plumStartExit;
-        PlumChallengeExit plumChallengeExit;
-        PlumResponseChallengeExit plumResponseChallengeExit;
-        PlumFinalizeExit plumFinalizeExit;
-        PlumSettleDeposit plumSettleDeposit;
-        PlumTransfer plumTransfer;
-        DepositToRewardingFund depositToRewardingFund;
-        ClaimFromRewardingFund claimFromRewardingFund;
-        GrantReward grantReward;
-        StakeCreate stakeCreate;
-        StakeReclaim stakeUnstake;
-        StakeReclaim stakeWithdraw;
-        StakeAddDeposit stakeAddDeposit;
-        StakeRestake stakeRestake;
-        StakeChangeCandidate stakeChangeCandidate;
-        StakeTransferOwnership stakeTransferOwnership;
-        CandidateRegister candidateRegister;
-        CandidateBasicInfo candidateUpdate;
-        PutPollResult putPollResult;
     } action; 
 } ActionCore;
 
@@ -337,10 +54,6 @@ typedef struct _Action {
 #define _Encoding_MAX Encoding_ETHEREUM_RLP
 #define _Encoding_ARRAYSIZE ((Encoding)(Encoding_ETHEREUM_RLP+1))
 
-#define _RewardType_MIN RewardType_BlockReward
-#define _RewardType_MAX RewardType_EpochReward
-#define _RewardType_ARRAYSIZE ((RewardType)(RewardType_EpochReward+1))
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -348,250 +61,26 @@ extern "C" {
 
 /* Initializer values for message structs */
 #define Transfer_init_default                    {{{NULL}, NULL}, {{NULL}, NULL}}
-#define Candidate_init_default                   {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateList_init_default               {{{NULL}, NULL}}
-#define PutPollResult_init_default               {0, false, CandidateList_init_default}
 #define Execution_init_default                   {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeCreate_init_default                 {{{NULL}, NULL}, {{NULL}, NULL}, 0, 0, {{NULL}, NULL}}
-#define StakeReclaim_init_default                {0, {{NULL}, NULL}}
-#define StakeAddDeposit_init_default             {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeRestake_init_default                {0, 0, 0, {{NULL}, NULL}}
-#define StakeChangeCandidate_init_default        {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeTransferOwnership_init_default      {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateBasicInfo_init_default          {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateRegister_init_default           {false, CandidateBasicInfo_init_default, {{NULL}, NULL}, 0, 0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StartSubChain_init_default               {0, {{NULL}, NULL}, {{NULL}, NULL}, 0, 0}
-#define StopSubChain_init_default                {0, 0, {{NULL}, NULL}}
-#define MerkleRoot_init_default                  {{{NULL}, NULL}, {{NULL}, NULL}}
-#define PutBlock_init_default                    {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define CreateDeposit_init_default               {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define SettleDeposit_init_default               {{{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define CreatePlumChain_init_default             {0}
-#define TerminatePlumChain_init_default          {{{NULL}, NULL}}
-#define PlumPutBlock_init_default                {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define PlumPutBlock_RootsEntry_init_default     {{{NULL}, NULL}, {{NULL}, NULL}}
-#define PlumCreateDeposit_init_default           {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define PlumStartExit_init_default               {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumChallengeExit_init_default           {{{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumResponseChallengeExit_init_default   {{{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumFinalizeExit_init_default            {{{NULL}, NULL}, 0}
-#define PlumSettleDeposit_init_default           {0}
-#define PlumTransfer_init_default                {0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActionCore_init_default                  {0, 0, 0, {{NULL}, NULL}, 0, {Transfer_init_default}}
 #define Action_init_default                      {false, ActionCore_init_default, {{NULL}, NULL}, {{NULL}, NULL}, _Encoding_MIN}
-#define Receipt_init_default                     {0, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define Log_init_default                         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define Logs_init_default                        {{{NULL}, NULL}}
-#define EvmTransfer_init_default                 {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define EvmTransferList_init_default             {{{NULL}, NULL}}
-#define ActionEvmTransfer_init_default           {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define BlockEvmTransfer_init_default            {0, 0, {{NULL}, NULL}}
-#define DepositToRewardingFund_init_default      {{{NULL}, NULL}, {{NULL}, NULL}}
-#define ClaimFromRewardingFund_init_default      {{{NULL}, NULL}, {{NULL}, NULL}}
-#define GrantReward_init_default                 {_RewardType_MIN, 0}
 #define Transfer_init_zero                       {{{NULL}, NULL}, {{NULL}, NULL}}
-#define Candidate_init_zero                      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateList_init_zero                  {{{NULL}, NULL}}
-#define PutPollResult_init_zero                  {0, false, CandidateList_init_zero}
 #define Execution_init_zero                      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeCreate_init_zero                    {{{NULL}, NULL}, {{NULL}, NULL}, 0, 0, {{NULL}, NULL}}
-#define StakeReclaim_init_zero                   {0, {{NULL}, NULL}}
-#define StakeAddDeposit_init_zero                {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeRestake_init_zero                   {0, 0, 0, {{NULL}, NULL}}
-#define StakeChangeCandidate_init_zero           {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StakeTransferOwnership_init_zero         {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateBasicInfo_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define CandidateRegister_init_zero              {false, CandidateBasicInfo_init_zero, {{NULL}, NULL}, 0, 0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define StartSubChain_init_zero                  {0, {{NULL}, NULL}, {{NULL}, NULL}, 0, 0}
-#define StopSubChain_init_zero                   {0, 0, {{NULL}, NULL}}
-#define MerkleRoot_init_zero                     {{{NULL}, NULL}, {{NULL}, NULL}}
-#define PutBlock_init_zero                       {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define CreateDeposit_init_zero                  {0, {{NULL}, NULL}, {{NULL}, NULL}}
-#define SettleDeposit_init_zero                  {{{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define CreatePlumChain_init_zero                {0}
-#define TerminatePlumChain_init_zero             {{{NULL}, NULL}}
-#define PlumPutBlock_init_zero                   {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define PlumPutBlock_RootsEntry_init_zero        {{{NULL}, NULL}, {{NULL}, NULL}}
-#define PlumCreateDeposit_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define PlumStartExit_init_zero                  {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumChallengeExit_init_zero              {{{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumResponseChallengeExit_init_zero      {{{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0}
-#define PlumFinalizeExit_init_zero               {{{NULL}, NULL}, 0}
-#define PlumSettleDeposit_init_zero              {0}
-#define PlumTransfer_init_zero                   {0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActionCore_init_zero                     {0, 0, 0, {{NULL}, NULL}, 0, {Transfer_init_zero}}
 #define Action_init_zero                         {false, ActionCore_init_zero, {{NULL}, NULL}, {{NULL}, NULL}, _Encoding_MIN}
-#define Receipt_init_zero                        {0, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define Log_init_zero                            {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define Logs_init_zero                           {{{NULL}, NULL}}
-#define EvmTransfer_init_zero                    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
-#define EvmTransferList_init_zero                {{{NULL}, NULL}}
-#define ActionEvmTransfer_init_zero              {{{NULL}, NULL}, 0, {{NULL}, NULL}}
-#define BlockEvmTransfer_init_zero               {0, 0, {{NULL}, NULL}}
-#define DepositToRewardingFund_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}}
-#define ClaimFromRewardingFund_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}}
-#define GrantReward_init_zero                    {_RewardType_MIN, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
-#define Candidate_address_tag                    1
-#define Candidate_votes_tag                      2
-#define Candidate_pubKey_tag                     3
-#define Candidate_rewardAddress_tag              4
-#define CandidateBasicInfo_name_tag              1
-#define CandidateBasicInfo_operatorAddress_tag   2
-#define CandidateBasicInfo_rewardAddress_tag     3
-#define CandidateList_candidates_tag             1
-#define ClaimFromRewardingFund_amount_tag        1
-#define ClaimFromRewardingFund_data_tag          2
-#define DepositToRewardingFund_amount_tag        1
-#define DepositToRewardingFund_data_tag          2
-#define EvmTransfer_amount_tag                   1
-#define EvmTransfer_from_tag                     2
-#define EvmTransfer_to_tag                       3
-#define EvmTransferList_evmTransfers_tag         1
 #define Execution_amount_tag                     1
 #define Execution_contract_tag                   2
 #define Execution_data_tag                       3
-#define Logs_logs_tag                            1
-#define MerkleRoot_name_tag                      1
-#define MerkleRoot_value_tag                     2
-#define PlumCreateDeposit_subChainAddress_tag    1
-#define PlumCreateDeposit_amount_tag             2
-#define PlumCreateDeposit_recipient_tag          3
-#define PlumPutBlock_RootsEntry_key_tag          1
-#define PlumPutBlock_RootsEntry_value_tag        2
-#define TerminatePlumChain_subChainAddress_tag   1
 #define Transfer_amount_tag                      1
 #define Transfer_recipient_tag                   2
-#define ActionEvmTransfer_actionHash_tag         1
-#define ActionEvmTransfer_numEvmTransfers_tag    2
-#define ActionEvmTransfer_evmTransfers_tag       3
-#define BlockEvmTransfer_blockHeight_tag         1
-#define BlockEvmTransfer_numEvmTransfers_tag     2
-#define BlockEvmTransfer_actionEvmTransfers_tag  3
-#define CandidateRegister_candidate_tag          1
-#define CandidateRegister_stakedAmount_tag       2
-#define CandidateRegister_stakedDuration_tag     3
-#define CandidateRegister_autoStake_tag          4
-#define CandidateRegister_ownerAddress_tag       5
-#define CandidateRegister_payload_tag            6
-#define CreateDeposit_chainID_tag                1
-#define CreateDeposit_amount_tag                 2
-#define CreateDeposit_recipient_tag              3
-#define GrantReward_type_tag                     1
-#define GrantReward_height_tag                   2
-#define Log_contractAddress_tag                  1
-#define Log_topics_tag                           2
-#define Log_data_tag                             3
-#define Log_blkHeight_tag                        4
-#define Log_actHash_tag                          5
-#define Log_index_tag                            6
-#define Log_blkHash_tag                          7
-#define PlumChallengeExit_subChainAddress_tag    1
-#define PlumChallengeExit_coinID_tag             2
-#define PlumChallengeExit_challengeTransfer_tag  3
-#define PlumChallengeExit_challengeTransferBlockProof_tag 4
-#define PlumChallengeExit_challengeTransferBlockHeight_tag 5
-#define PlumFinalizeExit_subChainAddress_tag     1
-#define PlumFinalizeExit_coinID_tag              2
-#define PlumPutBlock_subChainAddress_tag         1
-#define PlumPutBlock_height_tag                  2
-#define PlumPutBlock_roots_tag                   3
-#define PlumResponseChallengeExit_subChainAddress_tag 1
-#define PlumResponseChallengeExit_coinID_tag     2
-#define PlumResponseChallengeExit_challengeTransfer_tag 3
-#define PlumResponseChallengeExit_responseTransfer_tag 4
-#define PlumResponseChallengeExit_responseTransferBlockProof_tag 5
-#define PlumResponseChallengeExit_previousTransferBlockHeight_tag 6
-#define PlumSettleDeposit_coinID_tag             1
-#define PlumStartExit_subChainAddress_tag        1
-#define PlumStartExit_previousTransfer_tag       2
-#define PlumStartExit_previousTransferBlockProof_tag 3
-#define PlumStartExit_previousTransferBlockHeight_tag 4
-#define PlumStartExit_exitTransfer_tag           5
-#define PlumStartExit_exitTransferBlockProof_tag 6
-#define PlumStartExit_exitTransferBlockHeight_tag 7
-#define PlumTransfer_coinID_tag                  1
-#define PlumTransfer_denomination_tag            2
-#define PlumTransfer_owner_tag                   3
-#define PlumTransfer_recipient_tag               4
-#define PutBlock_subChainAddress_tag             1
-#define PutBlock_height_tag                      2
-#define PutBlock_roots_tag                       3
-#define PutPollResult_height_tag                 1
-#define PutPollResult_candidates_tag             2
-#define Receipt_status_tag                       1
-#define Receipt_blkHeight_tag                    2
-#define Receipt_actHash_tag                      3
-#define Receipt_gasConsumed_tag                  4
-#define Receipt_contractAddress_tag              5
-#define Receipt_logs_tag                         6
-#define Receipt_executionRevertMsg_tag           7
-#define SettleDeposit_amount_tag                 1
-#define SettleDeposit_recipient_tag              2
-#define SettleDeposit_index_tag                  3
-#define StakeAddDeposit_bucketIndex_tag          1
-#define StakeAddDeposit_amount_tag               2
-#define StakeAddDeposit_payload_tag              3
-#define StakeChangeCandidate_bucketIndex_tag     1
-#define StakeChangeCandidate_candidateName_tag   2
-#define StakeChangeCandidate_payload_tag         3
-#define StakeCreate_candidateName_tag            1
-#define StakeCreate_stakedAmount_tag             2
-#define StakeCreate_stakedDuration_tag           3
-#define StakeCreate_autoStake_tag                4
-#define StakeCreate_payload_tag                  5
-#define StakeReclaim_bucketIndex_tag             1
-#define StakeReclaim_payload_tag                 2
-#define StakeRestake_bucketIndex_tag             1
-#define StakeRestake_stakedDuration_tag          2
-#define StakeRestake_autoStake_tag               3
-#define StakeRestake_payload_tag                 4
-#define StakeTransferOwnership_bucketIndex_tag   1
-#define StakeTransferOwnership_voterAddress_tag  2
-#define StakeTransferOwnership_payload_tag       3
-#define StartSubChain_chainID_tag                1
-#define StartSubChain_securityDeposit_tag        2
-#define StartSubChain_operationDeposit_tag       3
-#define StartSubChain_startHeight_tag            4
-#define StartSubChain_parentHeightOffset_tag     5
-#define StopSubChain_chainID_tag                 1
-#define StopSubChain_stopHeight_tag              2
-#define StopSubChain_subChainAddress_tag         3
 #define ActionCore_version_tag                   1
 #define ActionCore_nonce_tag                     2
 #define ActionCore_gasLimit_tag                  3
 #define ActionCore_gasPrice_tag                  4
 #define ActionCore_transfer_tag                  10
 #define ActionCore_execution_tag                 12
-#define ActionCore_startSubChain_tag             13
-#define ActionCore_stopSubChain_tag              14
-#define ActionCore_putBlock_tag                  15
-#define ActionCore_createDeposit_tag             16
-#define ActionCore_settleDeposit_tag             17
-#define ActionCore_createPlumChain_tag           18
-#define ActionCore_terminatePlumChain_tag        19
-#define ActionCore_plumPutBlock_tag              20
-#define ActionCore_plumCreateDeposit_tag         21
-#define ActionCore_plumStartExit_tag             22
-#define ActionCore_plumChallengeExit_tag         23
-#define ActionCore_plumResponseChallengeExit_tag 24
-#define ActionCore_plumFinalizeExit_tag          25
-#define ActionCore_plumSettleDeposit_tag         26
-#define ActionCore_plumTransfer_tag              27
-#define ActionCore_depositToRewardingFund_tag    30
-#define ActionCore_claimFromRewardingFund_tag    31
-#define ActionCore_grantReward_tag               32
-#define ActionCore_stakeCreate_tag               40
-#define ActionCore_stakeUnstake_tag              41
-#define ActionCore_stakeWithdraw_tag             42
-#define ActionCore_stakeAddDeposit_tag           43
-#define ActionCore_stakeRestake_tag              44
-#define ActionCore_stakeChangeCandidate_tag      45
-#define ActionCore_stakeTransferOwnership_tag    46
-#define ActionCore_candidateRegister_tag         47
-#define ActionCore_candidateUpdate_tag           48
-#define ActionCore_putPollResult_tag             50
 #define Action_core_tag                          1
 #define Action_senderPubKey_tag                  2
 #define Action_signature_tag                     3
@@ -604,27 +93,6 @@ X(a, CALLBACK, SINGULAR, STRING,   recipient,         2)
 #define Transfer_CALLBACK pb_default_field_callback
 #define Transfer_DEFAULT NULL
 
-#define Candidate_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   address,           1) \
-X(a, CALLBACK, SINGULAR, BYTES,    votes,             2) \
-X(a, CALLBACK, SINGULAR, BYTES,    pubKey,            3) \
-X(a, CALLBACK, SINGULAR, STRING,   rewardAddress,     4)
-#define Candidate_CALLBACK pb_default_field_callback
-#define Candidate_DEFAULT NULL
-
-#define CandidateList_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  candidates,        1)
-#define CandidateList_CALLBACK pb_default_field_callback
-#define CandidateList_DEFAULT NULL
-#define CandidateList_candidates_MSGTYPE Candidate
-
-#define PutPollResult_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   height,            1) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  candidates,        2)
-#define PutPollResult_CALLBACK NULL
-#define PutPollResult_DEFAULT NULL
-#define PutPollResult_candidates_MSGTYPE CandidateList
-
 #define Execution_FIELDLIST(X, a) \
 X(a, CALLBACK, SINGULAR, STRING,   amount,            1) \
 X(a, CALLBACK, SINGULAR, STRING,   contract,          2) \
@@ -632,259 +100,17 @@ X(a, CALLBACK, SINGULAR, BYTES,    data,              3)
 #define Execution_CALLBACK pb_default_field_callback
 #define Execution_DEFAULT NULL
 
-#define StakeCreate_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   candidateName,     1) \
-X(a, CALLBACK, SINGULAR, STRING,   stakedAmount,      2) \
-X(a, STATIC,   SINGULAR, UINT32,   stakedDuration,    3) \
-X(a, STATIC,   SINGULAR, BOOL,     autoStake,         4) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           5)
-#define StakeCreate_CALLBACK pb_default_field_callback
-#define StakeCreate_DEFAULT NULL
-
-#define StakeReclaim_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   bucketIndex,       1) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           2)
-#define StakeReclaim_CALLBACK pb_default_field_callback
-#define StakeReclaim_DEFAULT NULL
-
-#define StakeAddDeposit_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   bucketIndex,       1) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            2) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           3)
-#define StakeAddDeposit_CALLBACK pb_default_field_callback
-#define StakeAddDeposit_DEFAULT NULL
-
-#define StakeRestake_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   bucketIndex,       1) \
-X(a, STATIC,   SINGULAR, UINT32,   stakedDuration,    2) \
-X(a, STATIC,   SINGULAR, BOOL,     autoStake,         3) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           4)
-#define StakeRestake_CALLBACK pb_default_field_callback
-#define StakeRestake_DEFAULT NULL
-
-#define StakeChangeCandidate_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   bucketIndex,       1) \
-X(a, CALLBACK, SINGULAR, STRING,   candidateName,     2) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           3)
-#define StakeChangeCandidate_CALLBACK pb_default_field_callback
-#define StakeChangeCandidate_DEFAULT NULL
-
-#define StakeTransferOwnership_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   bucketIndex,       1) \
-X(a, CALLBACK, SINGULAR, STRING,   voterAddress,      2) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           3)
-#define StakeTransferOwnership_CALLBACK pb_default_field_callback
-#define StakeTransferOwnership_DEFAULT NULL
-
-#define CandidateBasicInfo_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
-X(a, CALLBACK, SINGULAR, STRING,   operatorAddress,   2) \
-X(a, CALLBACK, SINGULAR, STRING,   rewardAddress,     3)
-#define CandidateBasicInfo_CALLBACK pb_default_field_callback
-#define CandidateBasicInfo_DEFAULT NULL
-
-#define CandidateRegister_FIELDLIST(X, a) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  candidate,         1) \
-X(a, CALLBACK, SINGULAR, STRING,   stakedAmount,      2) \
-X(a, STATIC,   SINGULAR, UINT32,   stakedDuration,    3) \
-X(a, STATIC,   SINGULAR, BOOL,     autoStake,         4) \
-X(a, CALLBACK, SINGULAR, STRING,   ownerAddress,      5) \
-X(a, CALLBACK, SINGULAR, BYTES,    payload,           6)
-#define CandidateRegister_CALLBACK pb_default_field_callback
-#define CandidateRegister_DEFAULT NULL
-#define CandidateRegister_candidate_MSGTYPE CandidateBasicInfo
-
-#define StartSubChain_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT32,   chainID,           1) \
-X(a, CALLBACK, SINGULAR, STRING,   securityDeposit,   2) \
-X(a, CALLBACK, SINGULAR, STRING,   operationDeposit,   3) \
-X(a, STATIC,   SINGULAR, UINT64,   startHeight,       4) \
-X(a, STATIC,   SINGULAR, UINT64,   parentHeightOffset,   5)
-#define StartSubChain_CALLBACK pb_default_field_callback
-#define StartSubChain_DEFAULT NULL
-
-#define StopSubChain_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT32,   chainID,           1) \
-X(a, STATIC,   SINGULAR, UINT64,   stopHeight,        2) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   3)
-#define StopSubChain_CALLBACK pb_default_field_callback
-#define StopSubChain_DEFAULT NULL
-
-#define MerkleRoot_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
-X(a, CALLBACK, SINGULAR, BYTES,    value,             2)
-#define MerkleRoot_CALLBACK pb_default_field_callback
-#define MerkleRoot_DEFAULT NULL
-
-#define PutBlock_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, STATIC,   SINGULAR, UINT64,   height,            2) \
-X(a, CALLBACK, REPEATED, MESSAGE,  roots,             3)
-#define PutBlock_CALLBACK pb_default_field_callback
-#define PutBlock_DEFAULT NULL
-#define PutBlock_roots_MSGTYPE MerkleRoot
-
-#define CreateDeposit_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT32,   chainID,           1) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            2) \
-X(a, CALLBACK, SINGULAR, STRING,   recipient,         3)
-#define CreateDeposit_CALLBACK pb_default_field_callback
-#define CreateDeposit_DEFAULT NULL
-
-#define SettleDeposit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            1) \
-X(a, CALLBACK, SINGULAR, STRING,   recipient,         2) \
-X(a, STATIC,   SINGULAR, UINT64,   index,             3)
-#define SettleDeposit_CALLBACK pb_default_field_callback
-#define SettleDeposit_DEFAULT NULL
-
-#define CreatePlumChain_FIELDLIST(X, a) \
-
-#define CreatePlumChain_CALLBACK NULL
-#define CreatePlumChain_DEFAULT NULL
-
-#define TerminatePlumChain_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1)
-#define TerminatePlumChain_CALLBACK pb_default_field_callback
-#define TerminatePlumChain_DEFAULT NULL
-
-#define PlumPutBlock_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, STATIC,   SINGULAR, UINT64,   height,            2) \
-X(a, CALLBACK, REPEATED, MESSAGE,  roots,             3)
-#define PlumPutBlock_CALLBACK pb_default_field_callback
-#define PlumPutBlock_DEFAULT NULL
-#define PlumPutBlock_roots_MSGTYPE PlumPutBlock_RootsEntry
-
-#define PlumPutBlock_RootsEntry_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   key,               1) \
-X(a, CALLBACK, SINGULAR, BYTES,    value,             2)
-#define PlumPutBlock_RootsEntry_CALLBACK pb_default_field_callback
-#define PlumPutBlock_RootsEntry_DEFAULT NULL
-
-#define PlumCreateDeposit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            2) \
-X(a, CALLBACK, SINGULAR, STRING,   recipient,         3)
-#define PlumCreateDeposit_CALLBACK pb_default_field_callback
-#define PlumCreateDeposit_DEFAULT NULL
-
-#define PlumStartExit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, CALLBACK, SINGULAR, BYTES,    previousTransfer,   2) \
-X(a, CALLBACK, SINGULAR, BYTES,    previousTransferBlockProof,   3) \
-X(a, STATIC,   SINGULAR, UINT64,   previousTransferBlockHeight,   4) \
-X(a, CALLBACK, SINGULAR, BYTES,    exitTransfer,      5) \
-X(a, CALLBACK, SINGULAR, BYTES,    exitTransferBlockProof,   6) \
-X(a, STATIC,   SINGULAR, UINT64,   exitTransferBlockHeight,   7)
-#define PlumStartExit_CALLBACK pb_default_field_callback
-#define PlumStartExit_DEFAULT NULL
-
-#define PlumChallengeExit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, STATIC,   SINGULAR, UINT64,   coinID,            2) \
-X(a, CALLBACK, SINGULAR, BYTES,    challengeTransfer,   3) \
-X(a, CALLBACK, SINGULAR, BYTES,    challengeTransferBlockProof,   4) \
-X(a, STATIC,   SINGULAR, UINT64,   challengeTransferBlockHeight,   5)
-#define PlumChallengeExit_CALLBACK pb_default_field_callback
-#define PlumChallengeExit_DEFAULT NULL
-
-#define PlumResponseChallengeExit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, STATIC,   SINGULAR, UINT64,   coinID,            2) \
-X(a, CALLBACK, SINGULAR, BYTES,    challengeTransfer,   3) \
-X(a, CALLBACK, SINGULAR, BYTES,    responseTransfer,   4) \
-X(a, CALLBACK, SINGULAR, BYTES,    responseTransferBlockProof,   5) \
-X(a, STATIC,   SINGULAR, UINT64,   previousTransferBlockHeight,   6)
-#define PlumResponseChallengeExit_CALLBACK pb_default_field_callback
-#define PlumResponseChallengeExit_DEFAULT NULL
-
-#define PlumFinalizeExit_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   subChainAddress,   1) \
-X(a, STATIC,   SINGULAR, UINT64,   coinID,            2)
-#define PlumFinalizeExit_CALLBACK pb_default_field_callback
-#define PlumFinalizeExit_DEFAULT NULL
-
-#define PlumSettleDeposit_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   coinID,            1)
-#define PlumSettleDeposit_CALLBACK NULL
-#define PlumSettleDeposit_DEFAULT NULL
-
-#define PlumTransfer_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   coinID,            1) \
-X(a, CALLBACK, SINGULAR, BYTES,    denomination,      2) \
-X(a, CALLBACK, SINGULAR, STRING,   owner,             3) \
-X(a, CALLBACK, SINGULAR, STRING,   recipient,         4)
-#define PlumTransfer_CALLBACK pb_default_field_callback
-#define PlumTransfer_DEFAULT NULL
-
 #define ActionCore_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   version,           1) \
 X(a, STATIC,   SINGULAR, UINT64,   nonce,             2) \
 X(a, STATIC,   SINGULAR, UINT64,   gasLimit,          3) \
 X(a, CALLBACK, SINGULAR, STRING,   gasPrice,          4) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (action,transfer,action.transfer),  10) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,execution,action.execution),  12) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,startSubChain,action.startSubChain),  13) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stopSubChain,action.stopSubChain),  14) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,putBlock,action.putBlock),  15) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,createDeposit,action.createDeposit),  16) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,settleDeposit,action.settleDeposit),  17) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,createPlumChain,action.createPlumChain),  18) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,terminatePlumChain,action.terminatePlumChain),  19) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumPutBlock,action.plumPutBlock),  20) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumCreateDeposit,action.plumCreateDeposit),  21) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumStartExit,action.plumStartExit),  22) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumChallengeExit,action.plumChallengeExit),  23) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumResponseChallengeExit,action.plumResponseChallengeExit),  24) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumFinalizeExit,action.plumFinalizeExit),  25) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumSettleDeposit,action.plumSettleDeposit),  26) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,plumTransfer,action.plumTransfer),  27) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,depositToRewardingFund,action.depositToRewardingFund),  30) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,claimFromRewardingFund,action.claimFromRewardingFund),  31) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,grantReward,action.grantReward),  32) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeCreate,action.stakeCreate),  40) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeUnstake,action.stakeUnstake),  41) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeWithdraw,action.stakeWithdraw),  42) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeAddDeposit,action.stakeAddDeposit),  43) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeRestake,action.stakeRestake),  44) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeChangeCandidate,action.stakeChangeCandidate),  45) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,stakeTransferOwnership,action.stakeTransferOwnership),  46) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,candidateRegister,action.candidateRegister),  47) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,candidateUpdate,action.candidateUpdate),  48) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (action,putPollResult,action.putPollResult),  50)
+X(a, STATIC,   ONEOF,    MESSAGE,  (action,execution,action.execution),  12)
 #define ActionCore_CALLBACK pb_default_field_callback
 #define ActionCore_DEFAULT NULL
 #define ActionCore_action_transfer_MSGTYPE Transfer
 #define ActionCore_action_execution_MSGTYPE Execution
-#define ActionCore_action_startSubChain_MSGTYPE StartSubChain
-#define ActionCore_action_stopSubChain_MSGTYPE StopSubChain
-#define ActionCore_action_putBlock_MSGTYPE PutBlock
-#define ActionCore_action_createDeposit_MSGTYPE CreateDeposit
-#define ActionCore_action_settleDeposit_MSGTYPE SettleDeposit
-#define ActionCore_action_createPlumChain_MSGTYPE CreatePlumChain
-#define ActionCore_action_terminatePlumChain_MSGTYPE TerminatePlumChain
-#define ActionCore_action_plumPutBlock_MSGTYPE PlumPutBlock
-#define ActionCore_action_plumCreateDeposit_MSGTYPE PlumCreateDeposit
-#define ActionCore_action_plumStartExit_MSGTYPE PlumStartExit
-#define ActionCore_action_plumChallengeExit_MSGTYPE PlumChallengeExit
-#define ActionCore_action_plumResponseChallengeExit_MSGTYPE PlumResponseChallengeExit
-#define ActionCore_action_plumFinalizeExit_MSGTYPE PlumFinalizeExit
-#define ActionCore_action_plumSettleDeposit_MSGTYPE PlumSettleDeposit
-#define ActionCore_action_plumTransfer_MSGTYPE PlumTransfer
-#define ActionCore_action_depositToRewardingFund_MSGTYPE DepositToRewardingFund
-#define ActionCore_action_claimFromRewardingFund_MSGTYPE ClaimFromRewardingFund
-#define ActionCore_action_grantReward_MSGTYPE GrantReward
-#define ActionCore_action_stakeCreate_MSGTYPE StakeCreate
-#define ActionCore_action_stakeUnstake_MSGTYPE StakeReclaim
-#define ActionCore_action_stakeWithdraw_MSGTYPE StakeReclaim
-#define ActionCore_action_stakeAddDeposit_MSGTYPE StakeAddDeposit
-#define ActionCore_action_stakeRestake_MSGTYPE StakeRestake
-#define ActionCore_action_stakeChangeCandidate_MSGTYPE StakeChangeCandidate
-#define ActionCore_action_stakeTransferOwnership_MSGTYPE StakeTransferOwnership
-#define ActionCore_action_candidateRegister_MSGTYPE CandidateRegister
-#define ActionCore_action_candidateUpdate_MSGTYPE CandidateBasicInfo
-#define ActionCore_action_putPollResult_MSGTYPE PutPollResult
 
 #define Action_FIELDLIST(X, a) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  core,              1) \
@@ -895,212 +121,22 @@ X(a, STATIC,   SINGULAR, UENUM,    encoding,          4)
 #define Action_DEFAULT NULL
 #define Action_core_MSGTYPE ActionCore
 
-#define Receipt_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   status,            1) \
-X(a, STATIC,   SINGULAR, UINT64,   blkHeight,         2) \
-X(a, CALLBACK, SINGULAR, BYTES,    actHash,           3) \
-X(a, STATIC,   SINGULAR, UINT64,   gasConsumed,       4) \
-X(a, CALLBACK, SINGULAR, STRING,   contractAddress,   5) \
-X(a, CALLBACK, REPEATED, MESSAGE,  logs,              6) \
-X(a, CALLBACK, SINGULAR, STRING,   executionRevertMsg,   7)
-#define Receipt_CALLBACK pb_default_field_callback
-#define Receipt_DEFAULT NULL
-#define Receipt_logs_MSGTYPE Log
-
-#define Log_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   contractAddress,   1) \
-X(a, CALLBACK, REPEATED, BYTES,    topics,            2) \
-X(a, CALLBACK, SINGULAR, BYTES,    data,              3) \
-X(a, STATIC,   SINGULAR, UINT64,   blkHeight,         4) \
-X(a, CALLBACK, SINGULAR, BYTES,    actHash,           5) \
-X(a, STATIC,   SINGULAR, UINT32,   index,             6) \
-X(a, CALLBACK, SINGULAR, BYTES,    blkHash,           7)
-#define Log_CALLBACK pb_default_field_callback
-#define Log_DEFAULT NULL
-
-#define Logs_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  logs,              1)
-#define Logs_CALLBACK pb_default_field_callback
-#define Logs_DEFAULT NULL
-#define Logs_logs_MSGTYPE Log
-
-#define EvmTransfer_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, BYTES,    amount,            1) \
-X(a, CALLBACK, SINGULAR, STRING,   from,              2) \
-X(a, CALLBACK, SINGULAR, STRING,   to,                3)
-#define EvmTransfer_CALLBACK pb_default_field_callback
-#define EvmTransfer_DEFAULT NULL
-
-#define EvmTransferList_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  evmTransfers,      1)
-#define EvmTransferList_CALLBACK pb_default_field_callback
-#define EvmTransferList_DEFAULT NULL
-#define EvmTransferList_evmTransfers_MSGTYPE EvmTransfer
-
-#define ActionEvmTransfer_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, BYTES,    actionHash,        1) \
-X(a, STATIC,   SINGULAR, UINT64,   numEvmTransfers,   2) \
-X(a, CALLBACK, REPEATED, MESSAGE,  evmTransfers,      3)
-#define ActionEvmTransfer_CALLBACK pb_default_field_callback
-#define ActionEvmTransfer_DEFAULT NULL
-#define ActionEvmTransfer_evmTransfers_MSGTYPE EvmTransfer
-
-#define BlockEvmTransfer_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UINT64,   blockHeight,       1) \
-X(a, STATIC,   SINGULAR, UINT64,   numEvmTransfers,   2) \
-X(a, CALLBACK, REPEATED, MESSAGE,  actionEvmTransfers,   3)
-#define BlockEvmTransfer_CALLBACK pb_default_field_callback
-#define BlockEvmTransfer_DEFAULT NULL
-#define BlockEvmTransfer_actionEvmTransfers_MSGTYPE ActionEvmTransfer
-
-#define DepositToRewardingFund_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            1) \
-X(a, CALLBACK, SINGULAR, BYTES,    data,              2)
-#define DepositToRewardingFund_CALLBACK pb_default_field_callback
-#define DepositToRewardingFund_DEFAULT NULL
-
-#define ClaimFromRewardingFund_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   amount,            1) \
-X(a, CALLBACK, SINGULAR, BYTES,    data,              2)
-#define ClaimFromRewardingFund_CALLBACK pb_default_field_callback
-#define ClaimFromRewardingFund_DEFAULT NULL
-
-#define GrantReward_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UENUM,    type,              1) \
-X(a, STATIC,   SINGULAR, UINT64,   height,            2)
-#define GrantReward_CALLBACK NULL
-#define GrantReward_DEFAULT NULL
-
 extern const pb_msgdesc_t Transfer_msg;
-extern const pb_msgdesc_t Candidate_msg;
-extern const pb_msgdesc_t CandidateList_msg;
-extern const pb_msgdesc_t PutPollResult_msg;
 extern const pb_msgdesc_t Execution_msg;
-extern const pb_msgdesc_t StakeCreate_msg;
-extern const pb_msgdesc_t StakeReclaim_msg;
-extern const pb_msgdesc_t StakeAddDeposit_msg;
-extern const pb_msgdesc_t StakeRestake_msg;
-extern const pb_msgdesc_t StakeChangeCandidate_msg;
-extern const pb_msgdesc_t StakeTransferOwnership_msg;
-extern const pb_msgdesc_t CandidateBasicInfo_msg;
-extern const pb_msgdesc_t CandidateRegister_msg;
-extern const pb_msgdesc_t StartSubChain_msg;
-extern const pb_msgdesc_t StopSubChain_msg;
-extern const pb_msgdesc_t MerkleRoot_msg;
-extern const pb_msgdesc_t PutBlock_msg;
-extern const pb_msgdesc_t CreateDeposit_msg;
-extern const pb_msgdesc_t SettleDeposit_msg;
-extern const pb_msgdesc_t CreatePlumChain_msg;
-extern const pb_msgdesc_t TerminatePlumChain_msg;
-extern const pb_msgdesc_t PlumPutBlock_msg;
-extern const pb_msgdesc_t PlumPutBlock_RootsEntry_msg;
-extern const pb_msgdesc_t PlumCreateDeposit_msg;
-extern const pb_msgdesc_t PlumStartExit_msg;
-extern const pb_msgdesc_t PlumChallengeExit_msg;
-extern const pb_msgdesc_t PlumResponseChallengeExit_msg;
-extern const pb_msgdesc_t PlumFinalizeExit_msg;
-extern const pb_msgdesc_t PlumSettleDeposit_msg;
-extern const pb_msgdesc_t PlumTransfer_msg;
 extern const pb_msgdesc_t ActionCore_msg;
 extern const pb_msgdesc_t Action_msg;
-extern const pb_msgdesc_t Receipt_msg;
-extern const pb_msgdesc_t Log_msg;
-extern const pb_msgdesc_t Logs_msg;
-extern const pb_msgdesc_t EvmTransfer_msg;
-extern const pb_msgdesc_t EvmTransferList_msg;
-extern const pb_msgdesc_t ActionEvmTransfer_msg;
-extern const pb_msgdesc_t BlockEvmTransfer_msg;
-extern const pb_msgdesc_t DepositToRewardingFund_msg;
-extern const pb_msgdesc_t ClaimFromRewardingFund_msg;
-extern const pb_msgdesc_t GrantReward_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define Transfer_fields &Transfer_msg
-#define Candidate_fields &Candidate_msg
-#define CandidateList_fields &CandidateList_msg
-#define PutPollResult_fields &PutPollResult_msg
 #define Execution_fields &Execution_msg
-#define StakeCreate_fields &StakeCreate_msg
-#define StakeReclaim_fields &StakeReclaim_msg
-#define StakeAddDeposit_fields &StakeAddDeposit_msg
-#define StakeRestake_fields &StakeRestake_msg
-#define StakeChangeCandidate_fields &StakeChangeCandidate_msg
-#define StakeTransferOwnership_fields &StakeTransferOwnership_msg
-#define CandidateBasicInfo_fields &CandidateBasicInfo_msg
-#define CandidateRegister_fields &CandidateRegister_msg
-#define StartSubChain_fields &StartSubChain_msg
-#define StopSubChain_fields &StopSubChain_msg
-#define MerkleRoot_fields &MerkleRoot_msg
-#define PutBlock_fields &PutBlock_msg
-#define CreateDeposit_fields &CreateDeposit_msg
-#define SettleDeposit_fields &SettleDeposit_msg
-#define CreatePlumChain_fields &CreatePlumChain_msg
-#define TerminatePlumChain_fields &TerminatePlumChain_msg
-#define PlumPutBlock_fields &PlumPutBlock_msg
-#define PlumPutBlock_RootsEntry_fields &PlumPutBlock_RootsEntry_msg
-#define PlumCreateDeposit_fields &PlumCreateDeposit_msg
-#define PlumStartExit_fields &PlumStartExit_msg
-#define PlumChallengeExit_fields &PlumChallengeExit_msg
-#define PlumResponseChallengeExit_fields &PlumResponseChallengeExit_msg
-#define PlumFinalizeExit_fields &PlumFinalizeExit_msg
-#define PlumSettleDeposit_fields &PlumSettleDeposit_msg
-#define PlumTransfer_fields &PlumTransfer_msg
 #define ActionCore_fields &ActionCore_msg
 #define Action_fields &Action_msg
-#define Receipt_fields &Receipt_msg
-#define Log_fields &Log_msg
-#define Logs_fields &Logs_msg
-#define EvmTransfer_fields &EvmTransfer_msg
-#define EvmTransferList_fields &EvmTransferList_msg
-#define ActionEvmTransfer_fields &ActionEvmTransfer_msg
-#define BlockEvmTransfer_fields &BlockEvmTransfer_msg
-#define DepositToRewardingFund_fields &DepositToRewardingFund_msg
-#define ClaimFromRewardingFund_fields &ClaimFromRewardingFund_msg
-#define GrantReward_fields &GrantReward_msg
 
 /* Maximum encoded size of messages (where known) */
 /* Transfer_size depends on runtime parameters */
-/* Candidate_size depends on runtime parameters */
-/* CandidateList_size depends on runtime parameters */
-/* PutPollResult_size depends on runtime parameters */
 /* Execution_size depends on runtime parameters */
-/* StakeCreate_size depends on runtime parameters */
-/* StakeReclaim_size depends on runtime parameters */
-/* StakeAddDeposit_size depends on runtime parameters */
-/* StakeRestake_size depends on runtime parameters */
-/* StakeChangeCandidate_size depends on runtime parameters */
-/* StakeTransferOwnership_size depends on runtime parameters */
-/* CandidateBasicInfo_size depends on runtime parameters */
-/* CandidateRegister_size depends on runtime parameters */
-/* StartSubChain_size depends on runtime parameters */
-/* StopSubChain_size depends on runtime parameters */
-/* MerkleRoot_size depends on runtime parameters */
-/* PutBlock_size depends on runtime parameters */
-/* CreateDeposit_size depends on runtime parameters */
-/* SettleDeposit_size depends on runtime parameters */
-/* TerminatePlumChain_size depends on runtime parameters */
-/* PlumPutBlock_size depends on runtime parameters */
-/* PlumPutBlock_RootsEntry_size depends on runtime parameters */
-/* PlumCreateDeposit_size depends on runtime parameters */
-/* PlumStartExit_size depends on runtime parameters */
-/* PlumChallengeExit_size depends on runtime parameters */
-/* PlumResponseChallengeExit_size depends on runtime parameters */
-/* PlumFinalizeExit_size depends on runtime parameters */
-/* PlumTransfer_size depends on runtime parameters */
 /* ActionCore_size depends on runtime parameters */
 /* Action_size depends on runtime parameters */
-/* Receipt_size depends on runtime parameters */
-/* Log_size depends on runtime parameters */
-/* Logs_size depends on runtime parameters */
-/* EvmTransfer_size depends on runtime parameters */
-/* EvmTransferList_size depends on runtime parameters */
-/* ActionEvmTransfer_size depends on runtime parameters */
-/* BlockEvmTransfer_size depends on runtime parameters */
-/* DepositToRewardingFund_size depends on runtime parameters */
-/* ClaimFromRewardingFund_size depends on runtime parameters */
-#define CreatePlumChain_size                     0
-#define GrantReward_size                         13
-#define PlumSettleDeposit_size                   11
 
 #ifdef __cplusplus
 } /* extern "C" */

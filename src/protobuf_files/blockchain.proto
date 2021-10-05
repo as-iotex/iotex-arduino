@@ -13,86 +13,7 @@ option java_multiple_files = true;
 option java_package = "com.github.iotexproject.grpc.types";
 
 import "action.proto";
-// import "proto/types/endorsement.proto";
 import "timestamp.proto";
-
-// header of a block
-message BlockHeader {
-  BlockHeaderCore core = 1;
-  bytes producerPubkey = 2;
-  bytes signature = 3;
-}
-
-message BlockHeaderCore {
-  uint32 version = 1;
-  uint64 height = 2;
-  google.protobuf.Timestamp timestamp = 3;
-  bytes prevBlockHash = 4;
-  bytes txRoot = 5;
-  bytes deltaStateDigest = 6;
-  bytes receiptRoot = 7;
-  bytes logsBloom = 8;
-}
-
-// footer of a block
-// message BlockFooter {
-//   repeated Endorsement endorsements = 1;
-//   google.protobuf.Timestamp timestamp = 2;
-// }
-
-// body of a block
-// message BlockBody {
-//   repeated Action actions = 1;
-// }
-
-// block consists of header followed by transactions
-// hash of current block can be computed from header hence not stored
-// message Block {
-//   BlockHeader header = 1;
-//   BlockBody body = 2;
-//   BlockFooter footer = 3;
-// }
-
-// Receipts consists of a collection of recepit
-// message Receipts {
-//   repeated Receipt receipts = 1;
-// }
-
-message EpochData {
-  uint64 num = 1;
-  uint64 height = 2;
-  uint64 gravityChainStartHeight = 3;
-}
-
-// Blockchain Metadata
-message ChainMeta {
-  uint64 height = 1;
-  int64 numActions = 2;
-  int64 tps = 3;
-  EpochData epoch = 4;
-  float tpsFloat = 5;
-}
-
-// Block Metadata
-message BlockMeta {
-  string hash = 1;
-  uint64 height = 2;
-  google.protobuf.Timestamp timestamp = 3;
-  int64 numActions = 4;
-  string producerAddress = 5;
-  string transferAmount = 6;
-  string txRoot = 7;
-  string receiptRoot = 8;
-  string deltaStateDigest = 9;
-  string logsBloom = 10;
-  string previousBlockHash = 11;
-}
-
-// BlockIdentifier Metadata
-message BlockIdentifier {
-  string hash = 1;
-  uint64 height = 2;
-}
 
 // Account Metadata
 message AccountMeta {
@@ -103,12 +24,3 @@ message AccountMeta {
   uint64 numActions = 5;
   bool isContract = 6;
 }
-
-// message BlockStore {
-//   Block block = 1;
-//   repeated Receipt receipts = 2;
-// }
-
-// message BlockStores {
-//   repeated BlockStore blockStores = 1;
-// }

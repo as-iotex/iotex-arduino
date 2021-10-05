@@ -9,128 +9,13 @@
 PB_BIND(Transfer, Transfer, AUTO)
 
 
-PB_BIND(Candidate, Candidate, AUTO)
-
-
-PB_BIND(CandidateList, CandidateList, AUTO)
-
-
-PB_BIND(PutPollResult, PutPollResult, AUTO)
-
-
 PB_BIND(Execution, Execution, AUTO)
-
-
-PB_BIND(StakeCreate, StakeCreate, AUTO)
-
-
-PB_BIND(StakeReclaim, StakeReclaim, AUTO)
-
-
-PB_BIND(StakeAddDeposit, StakeAddDeposit, AUTO)
-
-
-PB_BIND(StakeRestake, StakeRestake, AUTO)
-
-
-PB_BIND(StakeChangeCandidate, StakeChangeCandidate, AUTO)
-
-
-PB_BIND(StakeTransferOwnership, StakeTransferOwnership, AUTO)
-
-
-PB_BIND(CandidateBasicInfo, CandidateBasicInfo, AUTO)
-
-
-PB_BIND(CandidateRegister, CandidateRegister, AUTO)
-
-
-PB_BIND(StartSubChain, StartSubChain, AUTO)
-
-
-PB_BIND(StopSubChain, StopSubChain, AUTO)
-
-
-PB_BIND(MerkleRoot, MerkleRoot, AUTO)
-
-
-PB_BIND(PutBlock, PutBlock, AUTO)
-
-
-PB_BIND(CreateDeposit, CreateDeposit, AUTO)
-
-
-PB_BIND(SettleDeposit, SettleDeposit, AUTO)
-
-
-PB_BIND(CreatePlumChain, CreatePlumChain, AUTO)
-
-
-PB_BIND(TerminatePlumChain, TerminatePlumChain, AUTO)
-
-
-PB_BIND(PlumPutBlock, PlumPutBlock, AUTO)
-
-
-PB_BIND(PlumPutBlock_RootsEntry, PlumPutBlock_RootsEntry, AUTO)
-
-
-PB_BIND(PlumCreateDeposit, PlumCreateDeposit, AUTO)
-
-
-PB_BIND(PlumStartExit, PlumStartExit, AUTO)
-
-
-PB_BIND(PlumChallengeExit, PlumChallengeExit, AUTO)
-
-
-PB_BIND(PlumResponseChallengeExit, PlumResponseChallengeExit, AUTO)
-
-
-PB_BIND(PlumFinalizeExit, PlumFinalizeExit, AUTO)
-
-
-PB_BIND(PlumSettleDeposit, PlumSettleDeposit, AUTO)
-
-
-PB_BIND(PlumTransfer, PlumTransfer, AUTO)
 
 
 PB_BIND(ActionCore, ActionCore, AUTO)
 
 
 PB_BIND(Action, Action, AUTO)
-
-
-PB_BIND(Receipt, Receipt, AUTO)
-
-
-PB_BIND(Log, Log, AUTO)
-
-
-PB_BIND(Logs, Logs, AUTO)
-
-
-PB_BIND(EvmTransfer, EvmTransfer, AUTO)
-
-
-PB_BIND(EvmTransferList, EvmTransferList, AUTO)
-
-
-PB_BIND(ActionEvmTransfer, ActionEvmTransfer, AUTO)
-
-
-PB_BIND(BlockEvmTransfer, BlockEvmTransfer, AUTO)
-
-
-PB_BIND(DepositToRewardingFund, DepositToRewardingFund, AUTO)
-
-
-PB_BIND(ClaimFromRewardingFund, ClaimFromRewardingFund, AUTO)
-
-
-PB_BIND(GrantReward, GrantReward, AUTO)
-
 
 
 
