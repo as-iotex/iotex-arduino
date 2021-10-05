@@ -67,6 +67,7 @@ add_library(iotex-antenna-arduino STATIC
         src/abi/abi.cpp
         src/helpers/json_helper.cpp
         src/contract/contract.cpp
+        src/contract/xrc20Contract.cpp
 )
 
 target_include_directories(iotex-antenna-arduino 

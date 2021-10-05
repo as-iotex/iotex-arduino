@@ -10,6 +10,7 @@
 #include "random/random.h"
 #include "storage/storage.h"
 #include "contract/contract.h"
+#include "contract/xrc20Contract.h"
 #include "helpers/client_helpers.h"
 
 using namespace iotex;

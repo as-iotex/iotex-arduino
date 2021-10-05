@@ -41,6 +41,7 @@ set (IOTEX_UNIT_TESTS_SOURCES
     src/api/wallets/walletsTests.cpp
     src/abi/abiTests.cpp
     src/contract/contractTests.cpp
+    src/contract/xrc20ContractTests.cpp
     src/account/accountTests_Execution.cpp
     src/account/accountTests_Integration.cpp
     src/signer/signerTests.cpp
