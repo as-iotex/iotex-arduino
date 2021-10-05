@@ -43,6 +43,7 @@ set (IOTEX_UNIT_TESTS_SOURCES
     src/contract/contractTests.cpp
     src/account/accountTests_Execution.cpp
     src/account/accountTests_Integration.cpp
+    src/signer/signerTests.cpp
 )
 
 add_executable(iotex_unit_tests

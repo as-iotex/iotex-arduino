@@ -121,7 +121,7 @@ static uint8_t value(uint8_t c, uint32_t *ret)
     }
 
     if (c >= 'A' && c <= 'Z') {
-        return c = 'A' + 10;
+        return c - 'A' + 10;
     }
 
     *ret = 0;
@@ -162,14 +162,14 @@ ResultCode Signer::str2hex(const char *str, uint8_t *hex, size_t size)
     const char *begin = str;
     const char *end = begin + strlen(str);
 
-    /* Check output buffer size */
-    if (size < strlen(str) / 2) {
-        return ResultCode::ERROR_BAD_PARAMETER;
-    }
-
     /* Skip `0x` */
     if (end - begin >= 2 && *begin == '0' && *(begin + 1) == 'x') {
         it += 2;
+    }
+
+    /* Check output buffer size */
+    if (size < (str + strlen(str) - it) / 2) {
+        return ResultCode::ERROR_BAD_PARAMETER;
     }
 
     while (it != end) {
