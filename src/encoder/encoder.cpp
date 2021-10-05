@@ -144,8 +144,6 @@ ResultCode Encoder::base64_encode(const uint8_t *data, size_t size, char *out)
 int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& transfer, uint8_t* out, size_t maxOutSize)
 {
     ActionCore pbCore;
-    uint8_t encodedCore[1024];
-
     pbCore.version = transfer.version;
     pbCore.gasLimit = transfer.gasLimit;
     pbCore.nonce = transfer.nonce;
@@ -160,16 +158,9 @@ int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& tra
     // pbCore.action.transfer.payload.arg = (void*)transfer.transfer.payload.c_str();
     // pbCore.action.transfer.payload.funcs.encode = &encode_bytes;
 
-    pb_ostream_t stream = pb_ostream_from_buffer(encodedCore, sizeof(encodedCore));
-    pb_encode(&stream, ActionCore_fields, &pbCore);
-
-    if(stream.bytes_written > maxOutSize)
-    {
-        return -1;
-    }
-
     memset(out, 0, maxOutSize);
-    memcpy(out, encodedCore, stream.bytes_written);
+    pb_ostream_t stream = pb_ostream_from_buffer(out, maxOutSize);
+    pb_encode(&stream, ActionCore_fields, &pbCore);
     
     return stream.bytes_written;
 }
@@ -177,8 +168,6 @@ int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& tra
 int32_t Encoder::protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& execution, uint8_t* out, size_t maxOutSize)
 {
     ActionCore pbCore;
-    uint8_t encodedCore[1024];
-
     pbCore.version = execution.version;
     pbCore.gasLimit = execution.gasLimit;
     pbCore.nonce = execution.nonce;
@@ -202,16 +191,10 @@ int32_t Encoder::protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& e
     pbCore.action.execution.data.arg = &bytesWithLength;
     pbCore.action.execution.data.funcs.encode = &encode_bytes;
 
-    pb_ostream_t stream = pb_ostream_from_buffer(encodedCore, sizeof(encodedCore));
+    memset(out, 0, maxOutSize);
+    // TODO This assumes maxOutSize is always enough
+    pb_ostream_t stream = pb_ostream_from_buffer(out, maxOutSize);
     pb_encode(&stream, ActionCore_fields, &pbCore);
 
-    if(stream.bytes_written > maxOutSize)
-    {
-        return -1;
-    }
-
-    memset(out, 0, maxOutSize);
-    memcpy(out, encodedCore, stream.bytes_written);
-    
     return stream.bytes_written;
 }
