@@ -2,15 +2,8 @@
 #define __COMMANDS_H__
 
 #include "Arduino.h"
-#include "api/wallet/wallets.h"
-#include "connection/connection.h"
-#include "account/account.h"
-#include "random/random.h"
-#include "storage/storage.h"
-#include "contract/contract.h"
-#include "helpers/client_helpers.h"
+#include "iotex-client.h"
 
-#include "erc20Abi.h"
 #include "addDataAbi.h"
 
 using namespace iotex;
@@ -36,22 +29,22 @@ void printResult(iotex::ResultCode code)
     switch(code)
     {
         case iotex::ResultCode::SUCCESS:
-            Serial.println("SUCCESS");
+            Serial.println(F("SUCCESS"));
             break;
         case iotex::ResultCode::ERROR_HTTP:
-            Serial.println("ERROR_HTTP");
+            Serial.println(F("ERROR_HTTP"));
             break;
         case iotex::ResultCode::ERROR_JSON_PARSE:
-            Serial.println("ERROR_JSON_PARSE");
+            Serial.println(F("ERROR_JSON_PARSE"));
             break;
         case iotex::ResultCode::ERROR_UNKNOWN:
-            Serial.println("ERROR_UNKNOWN");
+            Serial.println(F("ERROR_UNKNOWN"));
             break;
         case iotex::ResultCode::ERROR_GRPC:
-            Serial.println("ERROR_GRPC");
+            Serial.println(F("ERROR_GRPC"));
             break;
         default:
-            Serial.println("DEFAULT");
+            Serial.println(F("DEFAULT"));
             break;
     }
 }
@@ -76,11 +69,11 @@ String readLineFromSerial()
 void GetBalance()
 {
     IotexString balance;
-    Serial.println("Executing command GetBalance");
-    Serial.println("Enter the iotex address: ");
+    Serial.println(F("Executing command GetBalance"));
+    Serial.println(F("Enter the iotex address: "));
     String accountStr = readLineFromSerial();
     iotex::ResultCode result = connection.api.wallets.getBalance(accountStr.c_str(), balance);
-    Serial.print("Result : ");
+    Serial.print(F("Result : "));
     printResult(result);
     if (result == iotex::ResultCode::SUCCESS)
     {
@@ -92,8 +85,8 @@ void GetBalance()
 void GetAccountMeta()
 {
     IotexString balance;
-    Serial.println("Executing command GetAccountMeta");
-    Serial.println("Enter the iotex address: ");
+    Serial.println(F("Executing command GetAccountMeta"));
+    Serial.println(F("Enter the iotex address: "));
     String accountStr = readLineFromSerial();
     iotex::ResponseTypes::AccountMeta accountMeta;
     iotex::ResultCode result = connection.api.wallets.getAccount(accountStr.c_str(), accountMeta);
@@ -103,13 +96,13 @@ void GetAccountMeta()
     {
         Serial.print("Balance:");
         Serial.println(accountMeta.balance);
-        Serial.println("Nonce: ");
+        Serial.println(F("Nonce: "));
         Serial.println(accountMeta.nonce.c_str());
-        Serial.println("PendingNonce: ");
+        Serial.println(F("PendingNonce: "));
         Serial.println(accountMeta.pendingNonce.c_str());
-        Serial.println("NumActions: ");
+        Serial.println(F("NumActions: "));
         Serial.println(accountMeta.numActions.c_str());
-        Serial.println("IsContract: ");
+        Serial.println(F("IsContract: "));
         Serial.println(accountMeta.isContract ? "\"true\"" : "\"false\"");
     }
 }
@@ -117,8 +110,8 @@ void GetAccountMeta()
 void GetTransactionByHash()
 {
     std::string balance;
-    Serial.println("Executing command GetTransactionByHash");
-    Serial.println("Enter the hash: ");
+    Serial.println(F("Executing command GetTransactionByHash"));
+    Serial.println(F("Enter the hash: "));
     String input = readLineFromSerial();
     iotex::ResponseTypes::ActionInfo_Transfer data;
     iotex::ResultCode result = connection.api.wallets.getTransactionByHash(input.c_str(), data);
@@ -134,23 +127,23 @@ void GetTransactionByHash()
 void CreateAccount()
 {
     std::string balance;
-    Serial.println("Executing command CreateAccount");
-    Serial.println("Enter the private key (empty to generate a new one): ");
+    Serial.println(F("Executing command CreateAccount"));
+    Serial.println(F("Enter the private key (empty to generate a new one): "));
     String input = readLineFromSerial();
     uint8_t privKey[IOTEX_PRIVATE_KEY_SIZE] = {0};
     if(input.length() == IOTEX_PRIVATE_KEY_SIZE*2)
     {
-        Serial.println("Generating acconunt from provided private key");
+        Serial.println(F("Generating acconunt from provided private key"));
         signer.str2hex(input.c_str(), privKey, IOTEX_PRIVATE_KEY_SIZE);
     }
     else
     {
-        Serial.println("Generating a new private key");
+        Serial.println(F("Generating a new private key"));
         randomGenerator.fillRandom(privKey, sizeof(privKey));
     }
     uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE] = {0};
     iotex::Account account(privKey);
-    Serial.println("Account created:");
+    Serial.println(F("Account created:"));
     Serial.print("Private key: ");
     account.getPrivateKey(buffer);
     printhex(buffer, IOTEX_PRIVATE_KEY_SIZE);
@@ -164,13 +157,13 @@ void CreateAccount()
     account.getEthereumAddress((char*)buffer);
     Serial.println((char*)buffer);
 
-    Serial.println("Save this private key to EEPROM? (y/n):");
+    Serial.println(F("Save this private key to EEPROM? (y/n):"));
     input = readLineFromSerial();
     if(input == "y" || input == "yes")
     {
         account.getPrivateKey(buffer);
         storage.savePrivateKey((void *)&IOTEX_ACCOUNT_EEPROM_ADDRESS, buffer);
-        Serial.println("Private key saved");
+        Serial.println(F("Private key saved"));
     }
 }
 
@@ -178,20 +171,20 @@ void ReadPrivateKeyFromEeprom()
 {
     uint8_t buffer[IOTEX_PRIVATE_KEY_SIZE];
     storage.readPrivateKey((void *)&IOTEX_ACCOUNT_EEPROM_ADDRESS, buffer);
-    Serial.println("Executing command ReadPrivateKeyFromEeprom");
-    Serial.println("Private key: ");
+    Serial.println(F("Executing command ReadPrivateKeyFromEeprom"));
+    Serial.println(F("Private key: "));
     printhex(buffer, sizeof(buffer));
 }
 
 void SignMessage()
 {
-    Serial.println("Executing command SignMessage");
-    Serial.println("Enter the message to sign (max 124 bytes) as a hex string (without x0 prefix). Eg. acbd: ");
+    Serial.println(F("Executing command SignMessage"));
+    Serial.println(F("Enter the message to sign (max 124 bytes) as a hex string (without x0 prefix). Eg. acbd: "));
     String input = readLineFromSerial();
     uint8_t msgBuf[124] = {0};
     size_t msgSize = input.length() / 2;
     signer.str2hex(input.c_str(), msgBuf, sizeof(msgBuf));
-    Serial.println("Enter the private key: ");
+    Serial.println(F("Enter the private key: "));
     input = readLineFromSerial();
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
@@ -208,25 +201,25 @@ void SignMessage()
 
 void SendTransfer()
 {
-    Serial.println("Executing command SendTransfer");
-    Serial.println("Enter the private key of the source address:");
+    Serial.println(F("Executing command SendTransfer"));
+    Serial.println(F("Enter the private key of the source address:"));
     String input = readLineFromSerial();
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Private key: ");
     printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
 
-    Serial.println("Enter the destination address:");
+    Serial.println(F("Enter the destination address (IoTex representation):"));
     String destinationAddr = readLineFromSerial();
     Serial.println("Destination addr: " + destinationAddr);
 
-    Serial.println("Enter the amount in RAU: ");
+    Serial.println(F("Enter the amount in RAU: "));
     String amount = readLineFromSerial();
     Serial.println("Amount: " + amount);
 
     iotex::Account originAccount(pk);
     iotex::ResponseTypes::AccountMeta accMeta;
-    char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
+    char originIotexAddr[IOTEX_ADDRESS_STRLEN+1] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
@@ -242,31 +235,31 @@ void SendTransfer()
 
 void SendTokenTransfer()
 {
-    Serial.println("Executing command SendTokenTransfer");
-    Serial.println("Enter the private key of the source address:");
+    Serial.println(F("Executing command SendTokenTransfer"));
+    Serial.println(F("Enter the private key of the source address:"));
     String input = readLineFromSerial();
-    // String input = "privateKey"; // Uncomment to use harcoded
+    // String input = "private-key"; // Uncomment to use harcoded
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Private key: ");
     printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
 
-    Serial.println("Enter the destination address (eth representation):");
+    Serial.println(F("Enter the destination address (eth representation):"));
+    // String destinationAddr = "ethereumAddress"; // Uncomment to use harcoded
     String destinationAddr = readLineFromSerial();
     destinationAddr.toLowerCase();
     destinationAddr.replace("0x", "");
-    // String destinationAddr = "iotexAddressWithoutIoPrefix"; // Uncomment to use harcoded
     Serial.println("Destination addr: " + destinationAddr);
 
     Serial.println("Enter the amount in VITA (max 2^64): ");
     String amount = readLineFromSerial();
-    // String amount = "1000000000000000000";  // Uncomment to use harcoded 
+    // String amount = "1";  // Uncomment to use harcoded 
     uint64_t nAmount = strtoull(amount.c_str(), NULL, 10);
     Serial.println("Amount: " + amount);
 
     iotex::Account originAccount(pk);
     iotex::ResponseTypes::AccountMeta accMeta;
-    char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
+    char originIotexAddr[IOTEX_ADDRESS_STRLEN+1] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
@@ -285,12 +278,13 @@ void SendTokenTransfer()
     paramValue.size = sizeof(uint64_t);
     params.emplace(std::pair<IotexString, ParameterValue>("_value", paramValue));
 
-    String abi = erc20AbiJson;
     const char vitaTokenAddress[] = "io1hp6y4eqr90j7tmul4w2wa8pm7wx462hq0mg4tw";
-    Contract contract(abi);
-    String callData = "";
-    contract.generateCallData("transfer", params, callData);
-    Serial.printf("Calling contract with data: 0x%s\r\n", callData.c_str());
+    
+    uint8_t data[IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE] = {0};
+    char callData[IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE * 2 + 1] = {0};
+    Xrc20Contract::generateCallDataForTransfer(toAddress, nAmount, data);
+    signer.hex2str(data, IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE, callData, sizeof(callData));
+    Serial.printf("Calling contract with data: 0x%s\r\n", callData);
 
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", vitaTokenAddress, callData, hash);
 
@@ -305,8 +299,8 @@ void SendTokenTransfer()
 
 void AddData()
 {
-    Serial.println("Executing command AddData");
-    Serial.println("Enter the private key of the source address:");
+    Serial.println(F("Executing command AddData"));
+    Serial.println(F("Enter the private key of the source address:"));
     String input = readLineFromSerial();
     // String input = "privateKey"; // Uncomment to use harcoded
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
@@ -314,17 +308,17 @@ void AddData()
     Serial.print("Private key: ");
     printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
 
-    Serial.println("Enter the imei:");
+    Serial.println(F("Enter the imei:"));
     String imei = readLineFromSerial();
     // String imei = "012345678901234"; // Uncomment to use harcoded 
     Serial.println("Imei: " + imei);
     
-    Serial.println("Enter the data (hex string without 0x prefix):");
+    Serial.println(F("Enter the data (hex string without 0x prefix):"));
     String data = readLineFromSerial();
     // String data = "01020304"; // Uncomment to use harcoded 
     Serial.println("Data: " + data);
     
-    Serial.println("Enter the signature (hex string without 0x prefix):");
+    Serial.println(F("Enter the signature (hex string without 0x prefix):"));
     String signature = readLineFromSerial();
     // String signature = "test-signature"; // Uncomment to use harcoded 
     Serial.println("Signature: " + signature);
@@ -332,7 +326,7 @@ void AddData()
     // Create the account
     iotex::Account originAccount(pk);
     iotex::ResponseTypes::AccountMeta accMeta;
-    char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
+    char originIotexAddr[IOTEX_ADDRESS_STRLEN+1] = {0};
     originAccount.getIotexAddress(originIotexAddr);
     connection.api.wallets.getAccount(originIotexAddr, accMeta);
 

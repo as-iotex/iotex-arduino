@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "iotex-client.h"
 
 #ifdef ESP32
     #include <WiFi.h>
@@ -9,22 +10,17 @@
     #include <WiFiClient.h>
 #endif
 
-#include "api/wallet/wallets.h"
-#include "connection/connection.h"
-#include "account/account.h"
 #include <map>
-#include "secrets.h"
 #include "commands.h"
+#include "secrets.h"
 
-using namespace Iotex;
-using namespace Iotex::api;
-using namespace Iotex::ResponseTypes;
 
 constexpr const char tIp[] = "gateway.iotexlab.io";
 constexpr const char tBaseUrl[] = "iotexapi.APIService";
 constexpr const int tPort = 10000;
-constexpr const char wifiSsid[] = WIFI_SSID;
-constexpr const char wifiPass[] = WIFI_PASS;
+constexpr const char wifiSsid[] = SECRET_WIFI_SSID;
+constexpr const char wifiPass[] = SECRET_WIFI_PASS;
+
 // Create a connection
 Connection<Api> connection(tIp, tPort, tBaseUrl);
 
@@ -32,19 +28,19 @@ void initWiFi()
 {
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifiSsid, wifiPass);
-  Serial.print("Connecting to WiFi ..");
+  Serial.print(F("Connecting to WiFi .."));
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
     delay(1000);
   }
-  Serial.println("Connected. IP: ");
+  Serial.println(F("Connected. IP: "));
   Serial.println(WiFi.localIP());
 }
 
 
 void showMenu()
 {
-    Serial.println("\nSelect command");
+    Serial.println(F("\nSelect command"));
     for (auto &function : functionsMap)
     {
         Serial.print(String(function.first) + " - " + function.second.first + "\n");
