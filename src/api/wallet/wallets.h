@@ -22,6 +22,8 @@ namespace iotex
                 virtual ResultCode getBalance(const char *const address, IotexString& balance) = 0;
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) = 0;
+                
+                virtual ResultCode getExecutionByHash(const char *const address, ResponseTypes::ActionInfo_Execution& action) = 0;
 
                 virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) = 0;
 
@@ -41,6 +43,8 @@ namespace iotex
                 virtual ResultCode getBalance(const char *const address, IotexString& balance) override;
 
                 virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) override;
+                
+                virtual ResultCode getExecutionByHash(const char *const address, ResponseTypes::ActionInfo_Execution& action) override;
 
                 virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) override;
 

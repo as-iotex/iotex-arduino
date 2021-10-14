@@ -396,6 +396,211 @@ ResultCode GetActionResponse_Transfer::fromJson(IotexString& jsonString)
     return ret;
 }
 
+ResultCode GetActionResponse_Execution::fromJson(IotexString& jsonString)
+{
+    ResultCode ret = ResultCode::SUCCESS;
+
+    cJSON *data = cJSON_Parse(jsonString.c_str());
+    if (data == NULL)
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+
+    // Clear fields
+    memset(actionInfo.actHash, 0, sizeof(actionInfo.actHash));
+    memset(actionInfo.blkHash, 0, sizeof(actionInfo.blkHash));
+    memset(actionInfo.timestamp, 0, sizeof(actionInfo.timestamp));
+    memset(actionInfo.sender, 0, sizeof(actionInfo.sender));
+    memset(actionInfo.gasFee, 0, sizeof(actionInfo.gasFee));
+    memset(actionInfo.action.senderPublicKey, 0, sizeof(actionInfo.action.senderPublicKey));
+    memset(actionInfo.action.signature, 0, sizeof(actionInfo.action.signature));
+    memset(actionInfo.action.core.gasPrice, 0, sizeof(actionInfo.action.core.gasPrice));
+    memset(actionInfo.action.core.execution.amount, 0, sizeof(actionInfo.action.core.execution.amount));
+    memset(actionInfo.action.core.execution.contract, 0, sizeof(actionInfo.action.core.execution.contract));
+
+    const cJSON *actionInfoArray = cJSON_GetObjectItemCaseSensitive(data, "actionInfo");
+    if (!cJSON_IsArray(actionInfoArray))
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+    
+    const cJSON *pActionInfoJson = cJSON_GetArrayItem(actionInfoArray, 0);
+    if (!cJSON_IsObject(pActionInfoJson))
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+
+    // Action data and core
+    const cJSON* action = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "action");
+    if (!cJSON_IsObject(action))
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+    const cJSON* core = cJSON_GetObjectItemCaseSensitive(action, "core");
+    if (!cJSON_IsObject(core))
+    {
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+    const cJSON* execution = cJSON_GetObjectItemCaseSensitive(core, "execution");
+    if (!cJSON_IsObject(execution))
+    {
+        char *jsonstr = cJSON_Print(core);
+        cJSON_Delete(data);
+        return ResultCode::ERROR_JSON_PARSE;
+    }
+    
+    // Action - Sender public key
+    const cJSON* senderPubKey = cJSON_GetObjectItemCaseSensitive(action, "senderPubKey");
+    ret = SetValueFromJsonObject(senderPubKey, CppType::C_STRING, (void *)&(actionInfo.action.senderPublicKey), IOTEX_PUBLIC_KEY_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Action - Signature
+    const cJSON* signature = cJSON_GetObjectItemCaseSensitive(action, "signature");
+    ret = SetValueFromJsonObject(signature, CppType::C_STRING, (void *)&(actionInfo.action.signature), IOTEX_SIGNATURE_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Action - core - version
+    const cJSON* version = cJSON_GetObjectItemCaseSensitive(core, "version");
+    ret = SetValueFromJsonObject(version, CppType::UINT32, (void *)&(actionInfo.action.core.version));
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    
+    // Action - core - nonce
+    const cJSON* nonce = cJSON_GetObjectItemCaseSensitive(core, "nonce");
+    // Nonce is string in the HTTP response, but uint64 in the protobuf
+    // As a workaround, we get the string value and convert to int here
+    IotexString buf;
+    ret = SetValueFromJsonObject(nonce, CppType::STRING, (void*)&buf);
+    if (ret != ResultCode::SUCCESS || !IsNumeric(buf))
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    actionInfo.action.core.nonce = atol(buf.c_str());
+
+    // Action - core - gasLimit
+    const cJSON* gasLimit = cJSON_GetObjectItemCaseSensitive(core, "gasLimit");
+    // GasLimit is string in the HTTP response, but uint64 in the protobuf
+    // As a workaround, we get the string value and convert to int here
+    ret = SetValueFromJsonObject(gasLimit, CppType::STRING, &buf);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    actionInfo.action.core.gasLimit = atol(buf.c_str());
+
+    // Action - core - gasPrice
+    const cJSON* gasPrice = cJSON_GetObjectItemCaseSensitive(core, "gasPrice");
+    ret = SetValueFromJsonObject(gasPrice, CppType::C_STRING, (void *)&(actionInfo.action.core.gasPrice), IOTEX_MAX_BALANCE_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Action - core - execution - amount
+    const cJSON* amount = cJSON_GetObjectItemCaseSensitive(execution, "amount");
+    ret = SetValueFromJsonObject(amount, CppType::C_STRING, (void *)&(actionInfo.action.core.execution.amount), IOTEX_MAX_BALANCE_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Action - core - execution - contract
+    const cJSON* recipient = cJSON_GetObjectItemCaseSensitive(execution, "contract");
+    ret = SetValueFromJsonObject(recipient, CppType::C_STRING, (void *)&(actionInfo.action.core.execution.contract), IOTEX_ADDRESS_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+  
+    // Action - core - transfer - payload
+    const cJSON* payload = cJSON_GetObjectItemCaseSensitive(execution, "data");
+    ret = SetValueFromJsonObject(payload, CppType::STRING, (void *)&(actionInfo.action.core.execution.data));
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Action hash
+    const cJSON* actHash = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "actHash");
+    ret = SetValueFromJsonObject(actHash, CppType::C_STRING, (void *)&(actionInfo.actHash), IOTEX_HASH_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Blk hash
+    const cJSON* blkHash = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "blkHash");
+    ret = SetValueFromJsonObject(blkHash, CppType::C_STRING, (void *)&(actionInfo.blkHash), IOTEX_HASH_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Timestamp
+    const cJSON* timestamp = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "timestamp");
+    ret = SetValueFromJsonObject(timestamp, CppType::C_STRING, (void *)&(actionInfo.timestamp), IOTEX_TIMESTAMP_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+
+    // Blk height
+    const cJSON* blkHeight = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "blkHeight");
+    ret = SetValueFromJsonObject(blkHeight, CppType::STRING, (void *)&(actionInfo.blkHeight));
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    
+    // Sender
+    const cJSON* sender = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "sender");
+    ret = SetValueFromJsonObject(sender, CppType::C_STRING, (void *)&(actionInfo.sender), IOTEX_ADDRESS_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    
+    // GasFee
+    const cJSON* gasFee = cJSON_GetObjectItemCaseSensitive(pActionInfoJson, "gasFee");
+    ret = SetValueFromJsonObject(gasFee, CppType::C_STRING, (void *)&(actionInfo.gasFee), IOTEX_MAX_BALANCE_STRLEN);
+    if (ret != ResultCode::SUCCESS)
+    {
+        cJSON_Delete(data);
+        return ret;
+    }
+    
+    cJSON_Delete(data);
+
+    return ret;
+}
+
 ResultCode SendExecutionResponse::fromJson(IotexString jsonString)
 {
     ResultCode ret = ResultCode::SUCCESS;

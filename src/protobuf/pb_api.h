@@ -101,6 +101,17 @@ namespace iotex
       char sender[IOTEX_ADDRESS_STRLEN + 1];
       char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
     };
+
+    struct ActionInfo_Execution
+    {
+      Action_Execution action;
+      char actHash[IOTEX_HASH_STRLEN + 1];
+      char blkHash[IOTEX_HASH_STRLEN + 1];
+      char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
+      IotexString blkHeight;
+      char sender[IOTEX_ADDRESS_STRLEN + 1];
+      char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
+    };
     
     struct BlockIdentifier
     {
@@ -138,6 +149,15 @@ namespace iotex
 
       public:
         ActionInfo_Transfer actionInfo;
+    };
+
+    struct GetActionResponse_Execution
+    {
+      public:
+        ResultCode fromJson(IotexString& jsonString);
+
+      public:
+        ActionInfo_Execution actionInfo;
     };
     
     struct SendExecutionResponse

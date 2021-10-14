@@ -15,6 +15,7 @@ using namespace iotex::ResponseTypes;
 namespace 
 {
     constexpr const char tTransactionHash[] = "e19dfb0c84799fc43217287d0d81369348279a0b3b32d0ad2f973ee5aaa392ae";
+    const char tExecutionHash[] = "55b172298e80dff0fa929c7c7f7ecc266baf48e33aa226b3fd48d4de870b1efa";
     constexpr const char tAccount[] = IOTEX_ADDRESS_2;
     constexpr const char tIp[] = "gateway.iotexlab.io";
     constexpr const char tBaseUrl[] = "iotexapi.APIService";
@@ -53,7 +54,7 @@ TEST_F(WalletTests, GetAccount)
     ASSERT_EQ(accountMeta.numActions, "1");
 }
 
-TEST_F(WalletTests, GetActionByHash)
+TEST_F(WalletTests, GetTransactionByHash)
 {
     Connection<Api> connection(tIp, tPort, tBaseUrl);
     ActionInfo_Transfer transaction;
@@ -75,7 +76,32 @@ TEST_F(WalletTests, GetActionByHash)
     ASSERT_EQ(transaction.blkHeight, "13208023");
     ASSERT_STREQ(transaction.sender, "io1l5cqp670fmqgyfttux85e3y362jxnlmpskgeus");
     ASSERT_STREQ(transaction.gasFee, "10000000000000000");
-    ASSERT_STREQ(transaction.timestamp, "2021-09-14T07:14:40Z");
-   
+    ASSERT_STREQ(transaction.timestamp, "2021-09-14T07:14:40Z");   
 }
+
+TEST_F(WalletTests, GetExecutionByHash)
+{
+    Connection<Api> connection(tIp, tPort, tBaseUrl);
+    ActionInfo_Execution execution;
+    ResultCode result = connection.api.wallets.getExecutionByHash(tExecutionHash, execution);
+
+    ASSERT_EQ(result, ResultCode::SUCCESS);
+    ASSERT_EQ(execution.action.core.version, 1);
+    ASSERT_EQ(execution.action.core.nonce, 729);
+    ASSERT_EQ(execution.action.core.gasLimit, 1000000);
+    ASSERT_STREQ(execution.action.core.gasPrice, "1000000000000");
+    ASSERT_STREQ(execution.action.core.execution.amount, "1000000000000000000");
+    ASSERT_STREQ(execution.action.core.execution.contract, "io12s9f9hv4zsr7umy5hxt6g0k0xr4x6pxdp5w998");
+    ASSERT_EQ(execution.action.core.execution.data, "8hMVnAAAAAAAAAAAAAAAAI5mwNa3DAsj059LIaHqxSu6jtiaAAAAAAAAAAAAAAAApThiOA00qEE6+v2PM8qeKxzAwJ8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG8FtZ07IAAA==");
+    ASSERT_STREQ(execution.action.senderPublicKey, "BJtPtoWy0iC/dlEq6kiuW7e94u4PONPobDpxEZDSrhTO8fRMmsvBg1u34jA5Esm4/ej5q5Gzgh0xocRRdn7iLFE=");
+    ASSERT_STREQ(execution.action.signature, "U+7oW3zCo1MsU2DIRRBnTW5I6vywqSf1IyjQ4iyo87xCoCRdj5CbbFWiLRD7pz0ZbXBE2x9WWiQO1Hbbh86NpwA=");
+    
+    ASSERT_STREQ(execution.actHash, "55b172298e80dff0fa929c7c7f7ecc266baf48e33aa226b3fd48d4de870b1efa");
+    ASSERT_STREQ(execution.blkHash, "de2790219a38a0abcc49993bd7c9b1179cd5f850036bc3e310b9c9ce5816f54e");
+    ASSERT_EQ(execution.blkHeight, "11625139");
+    ASSERT_STREQ(execution.sender, "io1dvfjg5xxnzpydnmq2q0n0n0ham2arytkkvrr2h");
+    ASSERT_STREQ(execution.gasFee, "49065000000000000");
+    ASSERT_STREQ(execution.timestamp, "2021-06-14T10:14:00Z"); 
+}
+
 

@@ -48,7 +48,6 @@ ResultCode Wallets::getBalance(const char *const address, IotexString& balance)
 	return ret;
 }
 
-
 ResultCode Wallets::getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
@@ -59,6 +58,24 @@ ResultCode Wallets::getTransactionByHash(const char *const address, ResponseType
 		return ret;
 	}
 	ResponseTypes::GetActionResponse_Transfer response;
+	ret = response.fromJson(rspBody);
+	if (ret != ResultCode::SUCCESS)
+		return ret;
+
+	action = response.actionInfo;
+	return ret;
+}
+
+ResultCode Wallets::getExecutionByHash(const char *const address, ResponseTypes::ActionInfo_Execution& action)
+{
+	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
+	IotexString rspBody;
+	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
+	if (ret != ResultCode::SUCCESS)
+	{
+		return ret;
+	}
+	ResponseTypes::GetActionResponse_Execution response;
 	ret = response.fromJson(rspBody);
 	if (ret != ResultCode::SUCCESS)
 		return ret;

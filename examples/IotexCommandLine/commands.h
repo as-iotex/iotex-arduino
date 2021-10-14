@@ -119,7 +119,24 @@ void GetTransactionByHash()
     printResult(result);
     if (result == iotex::ResultCode::SUCCESS)
     {
-        Serial.print("Signature:");
+        Serial.print("Signature: ");
+        Serial.println(data.action.signature);
+    }
+}
+
+void GetExecutionByHash()
+{
+    std::string balance;
+    Serial.println(F("Executing command GetExecutionByHash"));
+    Serial.println(F("Enter the hash: "));
+    String input = readLineFromSerial();
+    iotex::ResponseTypes::ActionInfo_Execution data;
+    iotex::ResultCode result = connection.api.wallets.getExecutionByHash(input.c_str(), data);
+    Serial.print("Result : ");
+    printResult(result);
+    if (result == iotex::ResultCode::SUCCESS)
+    {
+        Serial.print("Signature: ");
         Serial.println(data.action.signature);
     }
 }
@@ -378,12 +395,13 @@ void initMenu()
     functionsMap[1] = std::make_pair("GetBalance", GetBalance);
     functionsMap[2] = std::make_pair("GetAccountMeta", GetAccountMeta);
     functionsMap[3] = std::make_pair("GetTransactionByHash", GetTransactionByHash);
-    functionsMap[4] = std::make_pair("CreateAccount", CreateAccount);
-    functionsMap[5] = std::make_pair("ReadPrivateKeyFromEeprom", ReadPrivateKeyFromEeprom);
-    functionsMap[6] = std::make_pair("SignMessage", SignMessage);
-    functionsMap[7] = std::make_pair("SendTransfer", SendTransfer);
-    functionsMap[8] = std::make_pair("SendERC20TokenTransfer", SendTokenTransfer);
-    functionsMap[9] = std::make_pair("AddData", AddData);
+    functionsMap[4] = std::make_pair("GetExecutionByHash", GetExecutionByHash);
+    functionsMap[5] = std::make_pair("CreateAccount", CreateAccount);
+    functionsMap[6] = std::make_pair("ReadPrivateKeyFromEeprom", ReadPrivateKeyFromEeprom);
+    functionsMap[7] = std::make_pair("SignMessage", SignMessage);
+    functionsMap[8] = std::make_pair("SendTransfer", SendTransfer);
+    functionsMap[9] = std::make_pair("SendERC20TokenTransfer", SendTokenTransfer);
+    functionsMap[10] = std::make_pair("AddData", AddData);
 }
 
 #endif
