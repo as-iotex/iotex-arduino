@@ -13,6 +13,7 @@ namespace iotex
         ERROR_UNKNOWN,
         ERROR_STORAGE_OPEN,
         ERROR_STORAGE_BAD_READ,
+        ERROR_STORAGE_EMPTY,
         ERROR_GRPC,
         ERROR_WRONG_TYPE
     };

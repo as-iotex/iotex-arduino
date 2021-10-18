@@ -9,6 +9,9 @@
     #include <ESP8266HTTPClient.h>
     #include <WiFiClient.h>
 #endif
+#ifdef __SAMD21G18A__
+    #include <WiFiNINA.h>
+#endif
 
 #include <map>
 #include "commands.h"
@@ -26,6 +29,7 @@ Connection<Api> connection(tIp, tPort, tBaseUrl);
 
 void initWiFi() 
 {
+#if defined(ESP8266) || defined(ESP32)
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifiSsid, wifiPass);
   Serial.print(F("Connecting to WiFi .."));
@@ -33,6 +37,30 @@ void initWiFi()
     Serial.print('.');
     delay(1000);
   }
+#endif
+#if defined(__SAMD21G18A__)
+  int status = WL_IDLE_STATUS;
+  // check for the WiFi module:
+  if (WiFi.status() == WL_NO_MODULE) {
+    Serial.println("Communication with WiFi module failed!");
+    // don't continue
+    while (true);
+  }
+  String fv = WiFi.firmwareVersion();
+  if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+    Serial.println("Please upgrade the firmware");
+  }
+  // attempt to connect to WiFi network:
+  while (status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(wifiSsid);
+    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+    status = WiFi.begin(wifiSsid, wifiPass);
+
+    // wait 10 seconds for connection:
+    delay(10000);
+  }
+#endif
   Serial.println(F("Connected. IP: "));
   Serial.println(WiFi.localIP());
 }
@@ -60,7 +88,9 @@ void showMenu()
 void setup() {
   Serial.begin(115200);
 
-  while (!Serial) { delay(100); };
+  delay(5000);
+
+  // while (!Serial) { delay(100); };
   // ^for the Arduino Leonardo/Micro only
   initWiFi();
 

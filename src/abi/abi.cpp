@@ -12,14 +12,14 @@ ResultCode iotex::abi::parseContract(const IotexString &contractAbi, std::vector
     cJSON *data = cJSON_Parse(contractAbi.c_str());
     if (data == NULL)
     {
-        IOTEX_DEBUG_F("iotex::abi::parseContract(): Cannot parse ABI JSON. Wrong format\r\n");
+        IOTEX_DEBUG("iotex::abi::parseContract(): Cannot parse ABI JSON. Wrong format\r\n");
         cJSON_Delete(data);
         return ResultCode::ERROR_JSON_PARSE;
     }
 
     if (!cJSON_IsArray(data))
     {
-        IOTEX_DEBUG_F("iotex::abi::parseContract(): Provided ABI is not a JSON array\r\n");
+        IOTEX_DEBUG("iotex::abi::parseContract(): Provided ABI is not a JSON array\r\n");
         cJSON_Delete(data);
         return ResultCode::ERROR_JSON_PARSE;
     }
@@ -33,7 +33,7 @@ ResultCode iotex::abi::parseContract(const IotexString &contractAbi, std::vector
         ret = SetValueFromJsonObject(typeJson, CppType::STRING, (void *)&(type));
         if (ret != ResultCode::SUCCESS)
         {
-            IOTEX_DEBUG_F("iotex::abi::parseContract(): Error parsing element\r\n");
+            IOTEX_DEBUG("iotex::abi::parseContract(): Error parsing element\r\n");
             cJSON_Delete(data);
             return ResultCode::ERROR_JSON_PARSE;
         }
@@ -120,7 +120,7 @@ ResultCode iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
     ret = SetValueFromJsonObject(nameJson, CppType::STRING, (void *)&(out.name));
     if (ret != ResultCode::SUCCESS)
     {
-        IOTEX_DEBUG_F("iotex::abi::parseInputOutput(): Error parsing name\r\n");
+        IOTEX_DEBUG("iotex::abi::parseInputOutput(): Error parsing name\r\n");
         return ret;
     }
 
@@ -130,7 +130,7 @@ ResultCode iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
     ret = SetValueFromJsonObject(typeJson, CppType::STRING, (void *)&(type));
     if (ret != ResultCode::SUCCESS)
     {
-        IOTEX_DEBUG_F("iotex::abi::parseInputOutput(): Error parsing type\r\n");
+        IOTEX_DEBUG("iotex::abi::parseInputOutput(): Error parsing type\r\n");
         return ret;
     }
     ret = InputOutputAbi::getTypeAndSizeFromString(type, out);
@@ -145,7 +145,7 @@ ResultCode iotex::abi::parseInputOutput(const cJSON* data, InputOutputAbi& out)
         || out.type == EthereumTypeName::TUPLE_STATIC
     )
     {
-        IOTEX_DEBUG_F("iotex::abi::parseInputOutput(): Unsupported type: Tuple\r\n");
+        IOTEX_DEBUG("iotex::abi::parseInputOutput(): Unsupported type: Tuple\r\n");
         return ResultCode::ERROR_WRONG_TYPE;
     }
     return ResultCode::SUCCESS;
@@ -344,7 +344,7 @@ void iotex::abi::FunctionAbi::getSignature(IotexString &out)
                 break;
 
             default:
-                IOTEX_DEBUG_F("Type not supported\r\n");
+                IOTEX_DEBUG("Type not supported\r\n");
                 break;
         }
 

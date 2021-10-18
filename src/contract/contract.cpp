@@ -6,7 +6,6 @@
 using namespace iotex;
 using namespace std;
 using namespace iotex::abi;
-using namespace iotex::helpers;
 
 
 static void EndianSwap(uint8_t* pData, uint64_t size)
@@ -54,7 +53,7 @@ ResultCode iotex::Contract::generateCallData(const IotexString& functionName, Pa
 
             // Function selector
             generateFunctionSelector(function, contractData);
-            vectorToHexString(contractData, out);
+            iotex::Helpers::vectorToHexString(contractData, out);
             IOTEX_DEBUG_F("iotex::Contract::generateCallData:Function selector:\n%s\n", out.c_str());
             
             // Params
@@ -80,7 +79,7 @@ ResultCode iotex::Contract::generateCallData(const IotexString& functionName, Pa
                 headsSize += currentHeadSize;
 
                 IotexString valString;
-                vectorToHexString(data, valString);
+                iotex::Helpers::vectorToHexString(data, valString);
                 IOTEX_DEBUG_F("Bytes: %s\n", valString.c_str());
                 staticHeadsOrDynamicTails.push_back(std::move(data));
 
@@ -128,7 +127,7 @@ ResultCode iotex::Contract::generateCallData(const IotexString& functionName, Pa
             }
 
             // 
-            vectorToHexString(contractData, out);
+            iotex::Helpers::vectorToHexString(contractData, out);
         }
     }
 

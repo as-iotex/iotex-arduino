@@ -102,7 +102,7 @@ void Account::signExecutionAction(iotex::ResponseTypes::ActionCore_Execution &ex
 
     uint8_t h[IOTEX_HASH_SIZE] = {0};
     signer.getHash(encodedCore, encodedCoreSize, h);
-    IOTEX_DEBUG_F("Account::signExecutionAction(): Signing hash: ");
+    IOTEX_DEBUG("Account::signExecutionAction(): Signing hash: ");
     IOTEX_DEBUG_HEX_BUF(h, IOTEX_HASH_SIZE);
 
     if (hash)

@@ -19,7 +19,9 @@ void printhex(uint8_t* data, int length)
 {
     for (uint8_t i = 0; i < length; i++)
     {
-        Serial.printf("%02x", data[i]);
+        char buf[3] = {0};
+        sprintf(buf, "%02x", data[i]);
+        Serial.print(buf);
     }
     Serial.println();
 }
@@ -56,7 +58,9 @@ String readLineFromSerial()
     {
         String ret = Serial.readStringUntil('\r');
         while (Serial.available()) Serial.read();  // Flush
-        Serial.printf("Input (%d): %s\n", ret.length(), ret.c_str());
+        char buf[256] = {0};
+        sprintf(buf, "Input (%d): %s\n", ret.length(), ret.c_str());
+        Serial.print(buf);
         return ret;
     }
     else
@@ -301,7 +305,8 @@ void SendTokenTransfer()
     char callData[IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE * 2 + 1] = {0};
     Xrc20Contract::generateCallDataForTransfer(toAddress, nAmount, data);
     signer.hex2str(data, IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE, callData, sizeof(callData));
-    Serial.printf("Calling contract with data: 0x%s\r\n", callData);
+    Serial.print("Calling contract with data: 0x%");
+    Serial.println(callData);
 
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", vitaTokenAddress, callData, hash);
 
@@ -376,7 +381,8 @@ void AddData()
     // Generate call data
     String callData = "";
     contract.generateCallData("addData", params, callData);
-    Serial.printf("Calling contract with data: 0x%s\r\n", callData.c_str());
+    Serial.print("Calling contract with data: 0x%");
+    Serial.println(callData);
 
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", contractAddress, callData, hash);

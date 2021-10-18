@@ -61,5 +61,7 @@
     "libLDFMode": "deep+",
     "dependencies":
     [
+      "FlashStorage",
+      "WiFiNINA"
     ]
   }
