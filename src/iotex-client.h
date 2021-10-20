@@ -17,5 +17,6 @@ using namespace iotex;
 using namespace iotex::api;
 using namespace iotex::abi;
 using namespace iotex::ResponseTypes;
+using namespace iotex::Helpers;
 
 #endif

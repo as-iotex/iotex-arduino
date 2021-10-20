@@ -63,6 +63,31 @@ namespace iotex
             }
             IOTEX_DEBUG("\r\n");
         }
+
+        static inline void printResult(iotex::ResultCode code)
+        {
+            switch(code)
+            {
+                case iotex::ResultCode::SUCCESS:
+                    IOTEX_DEBUG("SUCCESS");
+                    break;
+                case iotex::ResultCode::ERROR_HTTP:
+                    IOTEX_DEBUG("ERROR_HTTP");
+                    break;
+                case iotex::ResultCode::ERROR_JSON_PARSE:
+                    IOTEX_DEBUG("ERROR_JSON_PARSE");
+                    break;
+                case iotex::ResultCode::ERROR_UNKNOWN:
+                    IOTEX_DEBUG("ERROR_UNKNOWN");
+                    break;
+                case iotex::ResultCode::ERROR_GRPC:
+                    IOTEX_DEBUG("ERROR_GRPC");
+                    break;
+                default:
+                    IOTEX_DEBUG("DEFAULT");
+                    break;
+            }
+        }
     }
 }
 
