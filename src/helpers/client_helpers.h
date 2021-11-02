@@ -8,6 +8,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include "result_codes.h"
 
 #if defined(ARDUINO) || defined(ESP8266) || defined(ESP32) || defined(__SAMD21G18A__)
 

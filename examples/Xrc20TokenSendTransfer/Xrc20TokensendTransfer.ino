@@ -109,6 +109,6 @@ void loop() {
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        printhex(hash, IOTEX_HASH_SIZE);
+        printHex(hash, IOTEX_HASH_SIZE);
     }
 }
