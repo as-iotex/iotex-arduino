@@ -4,27 +4,31 @@
 #include "host/host.h"
 #include "http/http.h"
 
-namespace iotex 
+namespace iotex
 {
-	namespace api 
+namespace api
+{
+class Abstract
+{
+  public:
+	void setHost(const char* newHost, int newPort, const char* baseUrl = nullptr)
 	{
-		class Abstract
-		{
-			public:
-				void setHost(const char* newHost, int newPort, const char* baseUrl = nullptr) 
-				{
-					this->_host.set(newHost, newPort, baseUrl);
-				};
+		this->_host.set(newHost, newPort, baseUrl);
+	};
 
-			protected:
-				Host _host;
-				std::unique_ptr<IHTTP> _http;
+  protected:
+	Host _host;
+	std::unique_ptr<IHTTP> _http;
 
-				Abstract() : _http(makeHTTP()) {}
-				explicit Abstract(IHTTP* http) : _http(http) {}
-		};	// class Abstract
+	Abstract() : _http(makeHTTP())
+	{
+	}
+	explicit Abstract(IHTTP* http) : _http(http)
+	{
+	}
+}; // class Abstract
 
-	}  // namespace api
-}  // namespace iotex
+} // namespace api
+} // namespace iotex
 
 #endif

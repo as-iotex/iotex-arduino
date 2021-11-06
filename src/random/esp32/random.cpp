@@ -7,9 +7,9 @@ using namespace iotex;
 
 Random randomGenerator;
 
-void Random::fillRandom(uint8_t *buf, size_t size)
+void Random::fillRandom(uint8_t* buf, size_t size)
 {
-    esp_fill_random(buf, size);
+	esp_fill_random(buf, size);
 }
 
 #endif

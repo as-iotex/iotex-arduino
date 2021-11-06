@@ -8,15 +8,16 @@
 
 namespace iotex
 {
-	class Api : public api::Abstract 
-	{
-		public:
-			api::Wallets wallets;
+class Api : public api::Abstract
+{
+  public:
+	api::Wallets wallets;
 
-		Api() : Abstract(),
-			wallets(_host, *_http) {}
-	};	// class Api
-	
-}  // namespace iotex
+	Api() : Abstract(), wallets(_host, *_http)
+	{
+	}
+}; // class Api
+
+} // namespace iotex
 
 #endif

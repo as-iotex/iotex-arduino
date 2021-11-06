@@ -8,213 +8,237 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "api/base.h"
-#include "result_codes.h"
 #include "helpers/json_helper.h"
+#include "IoTeXResultCodes.h"
 
-namespace iotex 
+namespace iotex
 {
-  /**
-   * @namespace		ResponseTypes	  Protobuf response messages mapped to c structs that might support reflection and JSON serialization/deserialization
-   */
-  namespace ResponseTypes
-  {  
-    ////////////////////////////////////////////////////////////////////////////////
-    // PROTOBUF OBJECTS
-    ////////////////////////////////////////////////////////////////////////////////
+/**
+ * @namespace		ResponseTypes	  Protobuf response messages mapped to
+ * c structs that might support reflection and JSON
+ * serialization/deserialization
+ */
+namespace ResponseTypes
+{
+////////////////////////////////////////////////////////////////////////////////
+// PROTOBUF OBJECTS
+////////////////////////////////////////////////////////////////////////////////
 
-    struct AccountMeta
-    {
-        char address[IOTEX_ADDRESS_STRLEN + 1];
-        char balance[IOTEX_MAX_BALANCE_STRLEN + 1];
-        IotexString nonce;
-        IotexString pendingNonce;
-        IotexString numActions;
-        bool isContract;
-    };
-    
-    enum Encoding 
-    {
-      IOTEX_PROTOBUF = 0,
-      ETHEREUM_RLP = 1
-    };
+struct AccountMeta
+{
+	char address[IOTEX_ADDRESS_STRLEN + 1];
+	char balance[IOTEX_MAX_BALANCE_STRLEN + 1];
+	IotexString nonce;
+	IotexString pendingNonce;
+	IotexString numActions;
+	bool isContract;
+};
 
-    struct Transfer
-    {
-      char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
-      char recipient[IOTEX_ADDRESS_STRLEN + 1];
-      IotexString payload;
-    };
-    
-    struct Execution
-    {
-      char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
-      char contract[IOTEX_ADDRESS_STRLEN + 1];
-      IotexString data;
-    };
+enum Encoding
+{
+	IOTEX_PROTOBUF = 0,
+	ETHEREUM_RLP = 1
+};
 
-    struct ActionCore_Transfer
-    {
-      uint32_t version;
-      uint64_t nonce;
-      uint64_t gasLimit;
-      char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
-      uint32_t chainId;
-      Transfer transfer;
-    };
-    
-    struct ActionCore_Execution
-    {
-      uint32_t version;
-      uint64_t nonce;
-      uint64_t gasLimit;
-      char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
-      Execution execution;
-    };
+struct Transfer
+{
+	char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
+	char recipient[IOTEX_ADDRESS_STRLEN + 1];
+	IotexString payload;
+};
 
-    struct Action_Transfer
-    {
-      ActionCore_Transfer core;
-      char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
-      char signature[IOTEX_SIGNATURE_STRLEN + 1];
-      // Encoding encoding;
-    };
-   
-    struct Action_Execution
-    {
-      ActionCore_Execution core;
-      char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
-      char signature[IOTEX_SIGNATURE_STRLEN + 1];
-      // Encoding encoding;
-    };
+struct Execution
+{
+	char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
+	char contract[IOTEX_ADDRESS_STRLEN + 1];
+	IotexString data;
+};
 
-    struct ActionInfo_Transfer
-    {
-      Action_Transfer action;
-      char actHash[IOTEX_HASH_STRLEN + 1];
-      char blkHash[IOTEX_HASH_STRLEN + 1];
-      char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
-      IotexString blkHeight;
-      char sender[IOTEX_ADDRESS_STRLEN + 1];
-      char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
-    };
+struct ActionCore_Transfer
+{
+	uint32_t version;
+	uint64_t nonce;
+	uint64_t gasLimit;
+	char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
+	uint32_t chainId;
+	Transfer transfer;
+};
 
-    struct ActionInfo_Execution
-    {
-      Action_Execution action;
-      char actHash[IOTEX_HASH_STRLEN + 1];
-      char blkHash[IOTEX_HASH_STRLEN + 1];
-      char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
-      IotexString blkHeight;
-      char sender[IOTEX_ADDRESS_STRLEN + 1];
-      char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
-    };
-    
-    struct BlockIdentifier
-    {
-        char hash[IOTEX_HASH_STRLEN + 1];
-        IotexString height;
-    };
+struct ActionCore_Execution
+{
+	uint32_t version;
+	uint64_t nonce;
+	uint64_t gasLimit;
+	char gasPrice[IOTEX_MAX_BALANCE_STRLEN + 1];
+	Execution execution;
+};
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // RESPONSE MESSAGES
-    ////////////////////////////////////////////////////////////////////////////////
+struct Action_Transfer
+{
+	ActionCore_Transfer core;
+	char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
+	char signature[IOTEX_SIGNATURE_STRLEN + 1];
+	// Encoding encoding;
+};
 
-    struct GetBalanceResponse
-    {
-      ResultCode fromJson(IotexString jsonString);
-      const char *getBalance() { return balance.c_str(); }
+struct Action_Execution
+{
+	ActionCore_Execution core;
+	char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
+	char signature[IOTEX_SIGNATURE_STRLEN + 1];
+	// Encoding encoding;
+};
 
-      private:
-        IotexString balance;
-    };
+struct ActionInfo_Transfer
+{
+	Action_Transfer action;
+	char actHash[IOTEX_HASH_STRLEN + 1];
+	char blkHash[IOTEX_HASH_STRLEN + 1];
+	char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
+	IotexString blkHeight;
+	char sender[IOTEX_ADDRESS_STRLEN + 1];
+	char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
+};
 
-    struct GetAccountResponse
-    {
-      public:
-        ResultCode fromJson(IotexString jsonString);
+struct ActionInfo_Execution
+{
+	Action_Execution action;
+	char actHash[IOTEX_HASH_STRLEN + 1];
+	char blkHash[IOTEX_HASH_STRLEN + 1];
+	char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
+	IotexString blkHeight;
+	char sender[IOTEX_ADDRESS_STRLEN + 1];
+	char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
+};
 
-      public:
-        AccountMeta accountMeta;
-        BlockIdentifier blockIdentifier;
-    };
+struct BlockIdentifier
+{
+	char hash[IOTEX_HASH_STRLEN + 1];
+	IotexString height;
+};
 
-    struct GetActionResponse_Transfer
-    {
-      public:
-        ResultCode fromJson(IotexString& jsonString);
+////////////////////////////////////////////////////////////////////////////////
+// RESPONSE MESSAGES
+////////////////////////////////////////////////////////////////////////////////
 
-      public:
-        ActionInfo_Transfer actionInfo;
-    };
+struct GetBalanceResponse
+{
+	ResultCode fromJson(IotexString jsonString);
+	const char* getBalance()
+	{
+		return balance.c_str();
+	}
 
-    struct GetActionResponse_Execution
-    {
-      public:
-        ResultCode fromJson(IotexString& jsonString);
+  private:
+	IotexString balance;
+};
 
-      public:
-        ActionInfo_Execution actionInfo;
-    };
-    
-    struct SendExecutionResponse
-    {
-      public:
-        ResultCode fromJson(IotexString jsonString);
+struct GetAccountResponse
+{
+  public:
+	ResultCode fromJson(IotexString jsonString);
 
-      public:
-        char hash[IOTEX_HASH_STRLEN + 1];
-    };
+  public:
+	AccountMeta accountMeta;
+	BlockIdentifier blockIdentifier;
+};
 
-    // JSON Objects - unused
-    
-    struct AccountMetaJsonObject
-    {
-      public:
-        json::StringJsonProp address;
-        json::StringJsonProp balance;
-        json::Uint64JsonProp nonce;
-        json::Uint64JsonProp pendingNonce;
-        json::Uint64JsonProp numActions;
-        json::BoolJsonProp isContract;
-        json::BytesJsonProp contractByteCode;
+struct GetActionResponse_Transfer
+{
+  public:
+	ResultCode fromJson(IotexString& jsonString);
 
-      public:
-        AccountMetaJsonObject() :
-          address("address"),
-          balance("balance"),
-          nonce("nonce"),
-          pendingNonce("pendingNonce"),
-          numActions("numActions"),
-          isContract("isContract"),
-          contractByteCode("contractByteCode")
-          {}
+  public:
+	ActionInfo_Transfer actionInfo;
+};
 
-          const char*  getAddress() { return address.getValueCString(); }
-          const char* getBalance() { return balance.getValueCString(); }
-          uint64_t getNonce() { return nonce.getValueUint64(); }
-          uint64_t getPendingNonce() { return pendingNonce.getValueUint64(); }
-          uint64_t getNumActions() { return numActions.getValueUint64(); }
-          bool getIsContract() { return isContract.getValueBool(); }
-          const uint8_t* getContractByteCode() { return contractByteCode.getValueBytes(); }
-          const uint32_t getContractByteCodeSize() { return contractByteCode.getBytesCount(); }
-    };
+struct GetActionResponse_Execution
+{
+  public:
+	ResultCode fromJson(IotexString& jsonString);
 
-    struct BlockIdentifierJsonObject
-    {
-      json::StringJsonProp hash;
-      json::Uint64JsonProp height;
+  public:
+	ActionInfo_Execution actionInfo;
+};
 
-      BlockIdentifierJsonObject() :
-        hash("hash"),
-        height("height")
-        {}
-    };
+struct SendExecutionResponse
+{
+  public:
+	ResultCode fromJson(IotexString jsonString);
 
-  } // namespace ResponseTypes
-}
+  public:
+	char hash[IOTEX_HASH_STRLEN + 1];
+};
+
+// JSON Objects - unused
+
+struct AccountMetaJsonObject
+{
+  public:
+	json::StringJsonProp address;
+	json::StringJsonProp balance;
+	json::Uint64JsonProp nonce;
+	json::Uint64JsonProp pendingNonce;
+	json::Uint64JsonProp numActions;
+	json::BoolJsonProp isContract;
+	json::BytesJsonProp contractByteCode;
+
+  public:
+	AccountMetaJsonObject() :
+		address("address"), balance("balance"), nonce("nonce"), pendingNonce("pendingNonce"),
+		numActions("numActions"), isContract("isContract"), contractByteCode("contractByteCode")
+	{
+	}
+
+	const char* getAddress()
+	{
+		return address.getValueCString();
+	}
+	const char* getBalance()
+	{
+		return balance.getValueCString();
+	}
+	uint64_t getNonce()
+	{
+		return nonce.getValueUint64();
+	}
+	uint64_t getPendingNonce()
+	{
+		return pendingNonce.getValueUint64();
+	}
+	uint64_t getNumActions()
+	{
+		return numActions.getValueUint64();
+	}
+	bool getIsContract()
+	{
+		return isContract.getValueBool();
+	}
+	const uint8_t* getContractByteCode()
+	{
+		return contractByteCode.getValueBytes();
+	}
+	const uint32_t getContractByteCodeSize()
+	{
+		return contractByteCode.getBytesCount();
+	}
+};
+
+struct BlockIdentifierJsonObject
+{
+	json::StringJsonProp hash;
+	json::Uint64JsonProp height;
+
+	BlockIdentifierJsonObject() : hash("hash"), height("height")
+	{
+	}
+};
+
+} // namespace ResponseTypes
+} // namespace iotex
 
 #endif

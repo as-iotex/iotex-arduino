@@ -10,48 +10,129 @@
 
 namespace iotex
 {
-    namespace api
-    {
-        class IWallets : public Base
-        {
-            public:
-                virtual ~IWallets() {}
+namespace api
+{
+/**
+ * @brief Interface for the Wallets API
+ *
+ */
+class IWallets : public Base
+{
+  public:
+	virtual ~IWallets()
+	{
+	}
 
-                virtual ResultCode getAccount(const char *const address, ResponseTypes::AccountMeta& data) = 0;
+	/**
+	 * @brief Gets the account metadata from the blockchain
+	 *
+	 * @param address The IoTeX address as a null terminated string
+	 * @param[out] metadata The account metadata if successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode getAccount(const char* const address,
+								  ResponseTypes::AccountMeta& metadata) = 0;
 
-                virtual ResultCode getBalance(const char *const address, IotexString& balance) = 0;
+	/**
+	 * @brief Gets the account balance from the blockchain
+	 *
+	 * @param address The IoTeX address as a null terminated string
+	 * @param[out] balance The account balance if successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode getBalance(const char* const address, IotexString& balance) = 0;
 
-                virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) = 0;
-                
-                virtual ResultCode getExecutionByHash(const char *const address, ResponseTypes::ActionInfo_Execution& action) = 0;
+	/**
+	 * @brief Gets the action info for a transaction action hash from the
+	 * blockchain
+	 *
+	 * @param hash The hash null terminated string
+	 * @param[out] actionInfo The action data if successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode getTransactionByHash(const char* const hash,
+											ResponseTypes::ActionInfo_Transfer& actionInfo) = 0;
 
-                virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) = 0;
+	/**
+	 * @brief Gets the action info for a execution action hash from the blockchain
+	 *
+	 * @param hash The hash as a null terminated string
+	 * @param[out] actionInfo The action data if successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode getExecutionByHash(const char* const hash,
+										  ResponseTypes::ActionInfo_Execution& actionInfo) = 0;
 
-                virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Execution &transfer, uint8_t hash[IOTEX_HASH_SIZE]) = 0;
+	/**
+	 * @brief Sends a token transfer action to the blockchain
+	 *
+	 * @param senderPubKey The public key of the sender address as a byte array
+	 * @param signature The transfer action core signature as a byte array
+	 * @param transfer The transfer action core
+	 * @param[out] hash The hash for the action returned by the blockchain if
+	 * successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+										 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
+										 const ResponseTypes::ActionCore_Transfer& transfer,
+										 uint8_t hash[IOTEX_HASH_SIZE]) = 0;
 
-            protected:
-                IWallets(Host &host, IHTTP &http) : Base(host, http) {}
-        };  // class IWallets
+	/**
+	 * @brief Sends an execution action to the blockchain
+	 *
+	 * @param senderPubKey  The public key of the sender address as a byte array
+	 * @param signature  The execution action core signature as a byte array
+	 * @param transfer  The execution action core
+	 * @param[out] hash The hash for the action returned by the blockchain if
+	 * successful
+	 * @return ResultCode Success or an error code
+	 */
+	virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+									 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
+									 const ResponseTypes::ActionCore_Execution& transfer,
+									 uint8_t hash[IOTEX_HASH_SIZE]) = 0;
 
-        class Wallets : public IWallets 
-        {
-            public:
-                Wallets(Host &host, IHTTP &http) : IWallets(host, http) {}
+  protected:
+	IWallets(Host& host, IHTTP& http) : Base(host, http)
+	{
+	}
+}; // class IWallets
 
-                virtual ResultCode getAccount(const char *const address, ResponseTypes::AccountMeta& data) override;
+/**
+ * @brief A class that represents the Wallets API
+ *
+ */
+class Wallets : public IWallets
+{
+  public:
+	Wallets(Host& host, IHTTP& http) : IWallets(host, http)
+	{
+	}
 
-                virtual ResultCode getBalance(const char *const address, IotexString& balance) override;
+	virtual ResultCode getAccount(const char* const address,
+								  ResponseTypes::AccountMeta& data) override;
 
-                virtual ResultCode getTransactionByHash(const char *const address, ResponseTypes::ActionInfo_Transfer& action) override;
-                
-                virtual ResultCode getExecutionByHash(const char *const address, ResponseTypes::ActionInfo_Execution& action) override;
+	virtual ResultCode getBalance(const char* const address, IotexString& balance) override;
 
-                virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Transfer &transfer, uint8_t hash[IOTEX_HASH_SIZE]) override;
+	virtual ResultCode getTransactionByHash(const char* const address,
+											ResponseTypes::ActionInfo_Transfer& action) override;
 
-                virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE], const ResponseTypes::ActionCore_Execution &transfer, uint8_t hash[IOTEX_HASH_SIZE]) override;
-        }; // class Wallets : public IWallets
+	virtual ResultCode getExecutionByHash(const char* const address,
+										  ResponseTypes::ActionInfo_Execution& action) override;
 
-    }  // namespace api
-}  // namespace iotex
+	virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+										 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
+										 const ResponseTypes::ActionCore_Transfer& transfer,
+										 uint8_t hash[IOTEX_HASH_SIZE]) override;
+
+	virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+									 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
+									 const ResponseTypes::ActionCore_Execution& transfer,
+									 uint8_t hash[IOTEX_HASH_SIZE]) override;
+}; // class Wallets : public IWallets
+
+} // namespace api
+} // namespace iotex
 
 #endif

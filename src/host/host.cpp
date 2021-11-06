@@ -2,8 +2,8 @@
 #include "helpers/client_helpers.h"
 
 #include <cstdio>
-#include <string>
 #include <string.h>
+#include <string>
 
 using namespace iotex;
 
@@ -12,9 +12,10 @@ Host::Host(const char* hostname, int port, const char* baseUrl)
 	set(hostname, port, baseUrl);
 }
 
-bool Host::set(const char* hostname, int port, const char* baseUrl) 
+bool Host::set(const char* hostname, int port, const char* baseUrl)
 {
-	if(strlen(hostname) >= IP_MAX_STRING_LEN || (baseUrl && strlen(baseUrl) >= BASEURL_MAX_STRING_LEN) )
+	if(strlen(hostname) >= IP_MAX_STRING_LEN ||
+	   (baseUrl && strlen(baseUrl) >= BASEURL_MAX_STRING_LEN))
 	{
 		return false;
 	}
@@ -29,9 +30,15 @@ bool Host::set(const char* hostname, int port, const char* baseUrl)
 	return true;
 }
 
-IotexString Host::ip() const noexcept { return this->_hostname; };
+IotexString Host::ip() const noexcept
+{
+	return this->_hostname;
+};
 
-int Host::port() const noexcept { return this->_port; };
+int Host::port() const noexcept
+{
+	return this->_port;
+};
 
 IotexString Host::toString()
 {
@@ -39,10 +46,10 @@ IotexString Host::toString()
 	out.reserve(strlen(_hostname) + PORT_MAX_STRING_LEN + strlen(_baseUrl) + 3);
 	out += (this->_hostname);
 	out += ":";
-	char port_str[6] = { 0 };
+	char port_str[6] = {0};
 	snprintf(port_str, 6, "%u", this->_port);
 	out += port_str;
-	if (strlen(_baseUrl))
+	if(strlen(_baseUrl))
 	{
 		out += "/";
 		out += (this->_baseUrl);

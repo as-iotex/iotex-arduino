@@ -3,9 +3,9 @@
 /*
  * TrueRandom - A true random number generator for Arduino.
  * This is variant of original work originally implemented as:
- * https://code.google.com/archive/p/tinkerit/ https://github.com/Cathedrow/TrueRandom
- * Copyright (c) 2010 Peter Knight, Tinker.it! All rights reserved.
- * Now modified for the ESP8266
+ * https://code.google.com/archive/p/tinkerit/
+ * https://github.com/Cathedrow/TrueRandom Copyright (c) 2010 Peter Knight,
+ * Tinker.it! All rights reserved. Now modified for the ESP8266
  */
 
 #ifndef ESP8266TrueRandom_h
@@ -28,11 +28,12 @@ class ESP8266TrueRandomClass
 	ICACHE_FLASH_ATTR void mac(uint8_t* macLocation);
 	ICACHE_FLASH_ATTR void uuid(uint8_t* uuidLocation);
 	ICACHE_FLASH_ATTR String uuidToString(uint8_t* uuidLocation);
-    bool useRNG;
+	bool useRNG;
+
   private:
-    unsigned long lastYield;
-    ICACHE_FLASH_ATTR int randomBitRaw(void);
-    ICACHE_FLASH_ATTR int randomBitRaw2(void);
+	unsigned long lastYield;
+	ICACHE_FLASH_ATTR int randomBitRaw(void);
+	ICACHE_FLASH_ATTR int randomBitRaw2(void);
 };
 extern ESP8266TrueRandomClass ESP8266TrueRandom;
 #endif

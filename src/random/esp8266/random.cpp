@@ -7,12 +7,12 @@ using namespace iotex;
 
 Random randomGenerator;
 
-void Random::fillRandom(uint8_t *buf, size_t size)
+void Random::fillRandom(uint8_t* buf, size_t size)
 {
-    for (int i = 0; i < size; i++)
-    {
-        buf[i] = ESP8266TrueRandom.randomByte();
-    }
+	for(int i = 0; i < size; i++)
+	{
+		// buf[i] = rand();
+	}
 }
 
 #endif

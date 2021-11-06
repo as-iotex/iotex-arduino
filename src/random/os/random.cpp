@@ -11,10 +11,10 @@ using namespace iotex;
 // Define global object
 Random randomGenerator;
 
-void Random::fillRandom(uint8_t *buf, size_t size)
+void Random::fillRandom(uint8_t* buf, size_t size)
 {
-    int fd = open("/dev/random", O_RDONLY);
-    read(fd, buf, size);
+	int fd = open("/dev/random", O_RDONLY);
+	read(fd, buf, size);
 }
 
 #endif

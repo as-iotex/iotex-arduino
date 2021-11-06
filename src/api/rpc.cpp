@@ -1,21 +1,17 @@
 #include "api/rpc.h"
 
-#include <iostream>
 #include "encoder/encoder.h"
 #include "signer/signer.h"
+#include <iostream>
 #include <numeric>
 #include <string>
 
 using namespace iotex::api::rpc;
 
-namespace 
+namespace
 {
-  constexpr const uint8_t URL_MAX_LEN = 128U;
+constexpr const uint8_t URL_MAX_LEN = 128U;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-//Wallets
-////////////////////////////////////////////////////////////////////////////////
 
 RpcCallData Wallets::getAccount(Host& host, const IotexString address)
 {
@@ -36,7 +32,7 @@ RpcCallData Wallets::getAccount(Host& host, const IotexString address)
 
 RpcCallData Wallets::getBalance(Host& host, const IotexString address)
 {
- 	return getAccount(host, address);
+	return getAccount(host, address);
 }
 
 RpcCallData Wallets::getActionByHash(Host& host, const IotexString hash, bool checkPending)
@@ -58,13 +54,17 @@ RpcCallData Wallets::getActionByHash(Host& host, const IotexString hash, bool ch
 	return ret;
 }
 
-
-RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCore_Transfer transfer, const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE])
+RpcCallData Wallets::sendTokenTransfer(Host& host,
+									   const ResponseTypes::ActionCore_Transfer transfer,
+									   const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+									   const uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
 	RpcCallData ret;
 	// Base64 encode signature and sender public key
-    char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
-    char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
+	char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {
+		0}; // Double the size is enough for a base64 encoded message
+	char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {
+		0}; // Double the size is enough for a base64 encoded message
 	encoder.base64_encode(signature, IOTEX_SIGNATURE_SIZE, base64Signature);
 	encoder.base64_encode(senderPubKey, IOTEX_PUBLIC_KEY_SIZE, base64PublicKey);
 
@@ -74,7 +74,8 @@ RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCo
 	ret.url += "SendAction";
 
 	// Body
-	char body[1024] = {0}; 	// TODO: Improve max size. 1024 should be enough for most executions unless data is too big
+	char body[1024] = {0}; // TODO: Improve max size. 1024 should be enough for
+						   // most executions unless data is too big
 
 	sprintf(body + strlen(body), R"({"action": {"core": )");
 	sprintf(body + strlen(body), R"({"version": )");
@@ -107,15 +108,19 @@ RpcCallData Wallets::sendTokenTransfer(Host& host, const ResponseTypes::ActionCo
 	return ret;
 }
 
-RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_Execution execution, const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE], const uint8_t signature[IOTEX_SIGNATURE_SIZE])
+RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_Execution execution,
+								   const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
+								   const uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
 	RpcCallData ret;
 	// Base64 encode signature and sender public key
-    char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
-    char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {0}; // Double the size is enough for a base64 encoded message
+	char base64Signature[IOTEX_SIGNATURE_SIZE * 2] = {
+		0}; // Double the size is enough for a base64 encoded message
+	char base64PublicKey[IOTEX_PUBLIC_KEY_SIZE * 2] = {
+		0}; // Double the size is enough for a base64 encoded message
 	uint8_t data[execution.execution.data.length() / 2];
 	memset(data, 0, sizeof(data));
-	char base64Data[sizeof(data)*2]; // Double the size is enough for a base64 encoded message
+	char base64Data[sizeof(data) * 2]; // Double the size is enough for a base64 encoded message
 	memset(base64Data, 0, sizeof(base64Data));
 	encoder.base64_encode(signature, IOTEX_SIGNATURE_SIZE, base64Signature);
 	encoder.base64_encode(senderPubKey, IOTEX_PUBLIC_KEY_SIZE, base64PublicKey);
@@ -126,11 +131,12 @@ RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_E
 	ret.url.reserve(URL_MAX_LEN);
 	ret.url += host.toString().c_str();
 	ret.url += "SendAction";
-	
+
 	// Body
-	char body[1024 + sizeof(base64Data)]; 	// TODO: Improve max size. 1024 should be enough for most transfers for now
+	char body[1024 + sizeof(base64Data)]; // TODO: Improve max size. 1024 should
+										  // be enough for most transfers for now
 	memset(body, 0, sizeof(body));
-	
+
 	sprintf(body + strlen(body), R"({"action": {"core": )");
 	sprintf(body + strlen(body), R"({"version": )");
 	sprintf(body + strlen(body), "%d", execution.version);
