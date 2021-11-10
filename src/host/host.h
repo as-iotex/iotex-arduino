@@ -1,7 +1,7 @@
 #ifndef HOST_H
 #define HOST_H
 
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include <string>
 
 namespace iotex

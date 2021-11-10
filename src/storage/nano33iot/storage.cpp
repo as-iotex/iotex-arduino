@@ -2,9 +2,11 @@
 
 #include "storage/storage.h"
 #include "FlashAsEEPROM.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 using namespace iotex;
+
+static const auto& logModule = logModuleNamesLookupTable[LogModules::GENERAL];
 
 // Define global object
 Storage storage;
@@ -30,7 +32,7 @@ ResultCode Storage::readPrivateKey(void* storageId, uint8_t privateKey[IOTEX_PRI
 {
 	if(!EEPROM.isValid())
 	{
-		IOTEX_DEBUG("Storage::readPrivateKey: No private keys are stored");
+		IOTEX_ERROR(logModule, "Failed to read PK. No private keys are stored");
 		return ResultCode::ERROR_STORAGE_EMPTY;
 	}
 

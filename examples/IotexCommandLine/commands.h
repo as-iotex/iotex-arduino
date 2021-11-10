@@ -2,7 +2,7 @@
 #define __COMMANDS_H__
 
 #include "Arduino.h"
-#include "iotex-client.h"
+#include "IoTeXClient.h"
 
 #include "addDataAbi.h"
 
@@ -14,42 +14,6 @@ const uint32_t IOTEX_ACCOUNT_EEPROM_ADDRESS = 0;
 extern iotex::Connection<iotex::Api> connection;
 typedef void (*commandFxn)(void);
 static std::map < int, std::pair<String, commandFxn>> functionsMap;
-
-void printhex(uint8_t* data, int length)
-{
-    for (uint8_t i = 0; i < length; i++)
-    {
-        char buf[3] = {0};
-        sprintf(buf, "%02x", data[i]);
-        Serial.print(buf);
-    }
-    Serial.println();
-}
-
-void printResult(iotex::ResultCode code)
-{
-    switch(code)
-    {
-        case iotex::ResultCode::SUCCESS:
-            Serial.println(F("SUCCESS"));
-            break;
-        case iotex::ResultCode::ERROR_HTTP:
-            Serial.println(F("ERROR_HTTP"));
-            break;
-        case iotex::ResultCode::ERROR_JSON_PARSE:
-            Serial.println(F("ERROR_JSON_PARSE"));
-            break;
-        case iotex::ResultCode::ERROR_UNKNOWN:
-            Serial.println(F("ERROR_UNKNOWN"));
-            break;
-        case iotex::ResultCode::ERROR_GRPC:
-            Serial.println(F("ERROR_GRPC"));
-            break;
-        default:
-            Serial.println(F("DEFAULT"));
-            break;
-    }
-}
 
 String readLineFromSerial()
 {
@@ -78,7 +42,7 @@ void GetBalance()
     String accountStr = readLineFromSerial();
     iotex::ResultCode result = connection.api.wallets.getBalance(accountStr.c_str(), balance);
     Serial.print(F("Result : "));
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Balance:");
@@ -95,18 +59,18 @@ void GetAccountMeta()
     iotex::ResponseTypes::AccountMeta accountMeta;
     iotex::ResultCode result = connection.api.wallets.getAccount(accountStr.c_str(), accountMeta);
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Balance:");
         Serial.println(accountMeta.balance);
-        Serial.println(F("Nonce: "));
+        Serial.print(F("Nonce: "));
         Serial.println(accountMeta.nonce.c_str());
-        Serial.println(F("PendingNonce: "));
+        Serial.print(F("PendingNonce: "));
         Serial.println(accountMeta.pendingNonce.c_str());
-        Serial.println(F("NumActions: "));
+        Serial.print(F("NumActions: "));
         Serial.println(accountMeta.numActions.c_str());
-        Serial.println(F("IsContract: "));
+        Serial.print(F("IsContract: "));
         Serial.println(accountMeta.isContract ? "\"true\"" : "\"false\"");
     }
 }
@@ -120,7 +84,7 @@ void GetTransactionByHash()
     iotex::ResponseTypes::ActionInfo_Transfer data;
     iotex::ResultCode result = connection.api.wallets.getTransactionByHash(input.c_str(), data);
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Signature: ");
@@ -137,7 +101,7 @@ void GetExecutionByHash()
     iotex::ResponseTypes::ActionInfo_Execution data;
     iotex::ResultCode result = connection.api.wallets.getExecutionByHash(input.c_str(), data);
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Signature: ");
@@ -167,10 +131,10 @@ void CreateAccount()
     Serial.println(F("Account created:"));
     Serial.print("Private key: ");
     account.getPrivateKey(buffer);
-    printhex(buffer, IOTEX_PRIVATE_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule, buffer, IOTEX_PRIVATE_KEY_SIZE);
     Serial.print("Public key: ");
     account.getPublicKey(buffer);
-    printhex(buffer, IOTEX_PUBLIC_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule, buffer, IOTEX_PUBLIC_KEY_SIZE);
     Serial.print("IoTeX address: ");
     account.getIotexAddress((char*)buffer);
     Serial.println((char*)buffer);
@@ -194,7 +158,7 @@ void ReadPrivateKeyFromEeprom()
     storage.readPrivateKey((void *)&IOTEX_ACCOUNT_EEPROM_ADDRESS, buffer);
     Serial.println(F("Executing command ReadPrivateKeyFromEeprom"));
     Serial.println(F("Private key: "));
-    printhex(buffer, sizeof(buffer));
+    IOTEX_INFO_BUF(generalLogModule,  buffer, sizeof(buffer));
 }
 
 void SignMessage()
@@ -210,14 +174,14 @@ void SignMessage()
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Signing message ");
-    printhex(msgBuf, msgSize);
+    IOTEX_INFO_BUF(generalLogModule,  msgBuf, msgSize);
     Serial.print("Using private key ");
-    printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule,  pk, IOTEX_PRIVATE_KEY_SIZE);
 
     uint8_t signature[IOTEX_SIGNATURE_SIZE] = {0};
     signer.signMessage(msgBuf, msgSize, pk, signature);
     Serial.print("Signature: ");
-    printhex(signature, IOTEX_SIGNATURE_SIZE);
+    IOTEX_INFO_BUF(generalLogModule,  signature, IOTEX_SIGNATURE_SIZE);
 }
 
 void SendTransfer()
@@ -228,7 +192,7 @@ void SendTransfer()
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Private key: ");
-    printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule,  pk, IOTEX_PRIVATE_KEY_SIZE);
 
     Serial.println(F("Enter the destination address (IoTex representation):"));
     String destinationAddr = readLineFromSerial();
@@ -246,11 +210,11 @@ void SendTransfer()
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
     iotex::ResultCode result = originAccount.sendTokenTransferAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", amount.c_str(), destinationAddr.c_str(), hash);
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        printhex(hash, IOTEX_HASH_SIZE);
+        IOTEX_INFO_BUF(generalLogModule,  hash, IOTEX_HASH_SIZE);
     }
 }
 
@@ -263,7 +227,7 @@ void SendTokenTransfer()
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Private key: ");
-    printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule,  pk, IOTEX_PRIVATE_KEY_SIZE);
 
     Serial.println(F("Enter the destination address (eth representation):"));
     // String destinationAddr = "ethereumAddress"; // Uncomment to use harcoded
@@ -311,11 +275,11 @@ void SendTokenTransfer()
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", vitaTokenAddress, callData, hash);
 
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        printhex(hash, IOTEX_HASH_SIZE);
+        IOTEX_INFO_BUF(generalLogModule,  hash, IOTEX_HASH_SIZE);
     }
 }
 
@@ -328,7 +292,7 @@ void AddData()
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(input.c_str(), pk, IOTEX_SIGNATURE_SIZE);
     Serial.print("Private key: ");
-    printhex(pk, IOTEX_PRIVATE_KEY_SIZE);
+    IOTEX_INFO_BUF(generalLogModule,  pk, IOTEX_PRIVATE_KEY_SIZE);
 
     Serial.println(F("Enter the imei:"));
     String imei = readLineFromSerial();
@@ -388,11 +352,11 @@ void AddData()
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", contractAddress, callData, hash);
 
     Serial.print("Result : ");
-    printResult(result);
+    Serial.println(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        printhex(hash, IOTEX_HASH_SIZE);
+        IOTEX_INFO_BUF(generalLogModule,  hash, IOTEX_HASH_SIZE);
     }
 }
 

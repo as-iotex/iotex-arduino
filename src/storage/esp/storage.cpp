@@ -2,7 +2,7 @@
 
 #include "storage/storage.h"
 #include "EEPROM.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 using namespace iotex;
 

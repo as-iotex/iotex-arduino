@@ -1,11 +1,13 @@
 #include "account/account.h"
 #include "api/wallet/wallets.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 #include <vector>
 
 using namespace iotex;
 using namespace std;
+
+static const auto& logModule = logModuleNamesLookupTable[LogModules::GENERAL];
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTION
@@ -49,14 +51,19 @@ Account::Account(Random* pRandomGenerator, Encoder* pEncoder, Signer* pSigner,
 // GETTERS
 ////////////////////////////////////////////////////////////////////////////////
 
-void Account::getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN + 1])
+void Account::getIotexAddress(char buffer[IOTEX_ADDRESS_C_STRING_SIZE])
 {
-	memcpy(buffer, _iotexAddr.c_str(), IOTEX_ADDRESS_STRLEN + 1);
+	memcpy(buffer, _iotexAddr.c_str(), IOTEX_ADDRESS_C_STRING_SIZE);
 }
 
-void Account::getEthereumAddress(char buffer[ETH_ADDRESS_STRLEN + 1])
+void Account::getEthereumAddress(char buffer[ETH_ADDRESS_C_STRING_SIZE])
 {
-	memcpy(buffer, _ethAddr.c_str(), ETH_ADDRESS_STRLEN + 1);
+	memcpy(buffer, _ethAddr.c_str(), ETH_ADDRESS_C_STRING_SIZE);
+}
+
+void Account::getEthereumAddressBytes(uint8_t buffer[ETH_ADDRESS_SIZE])
+{
+	signer.str2hex(_ethAddr.c_str(), buffer, sizeof(buffer));
 }
 
 void Account::getPublicKey(uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE])
@@ -64,9 +71,19 @@ void Account::getPublicKey(uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE])
 	memcpy(buffer, _publicKey, IOTEX_PUBLIC_KEY_SIZE);
 }
 
+void Account::getPublicKeyString(char buffer[IOTEX_PUBLIC_KEY_C_STRING_SIZE])
+{
+	signer.hex2str(_publicKey, IOTEX_PUBLIC_KEY_SIZE, buffer, IOTEX_PUBLIC_KEY_C_STRING_SIZE);
+}
+
 void Account::getPrivateKey(uint8_t buffer[IOTEX_PRIVATE_KEY_SIZE])
 {
 	memcpy(buffer, _privateKey, IOTEX_PRIVATE_KEY_SIZE);
+}
+
+void Account::getPrivateKeyString(char buffer[IOTEX_PRIVATE_KEY_C_STRING_SIZE])
+{
+	signer.hex2str(_privateKey, IOTEX_PRIVATE_KEY_SIZE, buffer, IOTEX_PRIVATE_KEY_C_STRING_SIZE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,8 +118,8 @@ void Account::signExecutionAction(iotex::ResponseTypes::ActionCore_Execution& ex
 
 	uint8_t h[IOTEX_HASH_SIZE] = {0};
 	signer.getHash(encodedCore, encodedCoreSize, h);
-	IOTEX_DEBUG("Account::signExecutionAction(): Signing hash: ");
-	IOTEX_DEBUG_HEX_BUF(h, IOTEX_HASH_SIZE);
+	IOTEX_DEBUG(logModule, "Signing execution hash: ");
+	IOTEX_DEBUG_BUF(logModule, h, IOTEX_HASH_SIZE);
 
 	if(hash)
 	{

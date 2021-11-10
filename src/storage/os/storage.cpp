@@ -1,7 +1,7 @@
 #ifdef OS
 
 #include "storage/storage.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 #include <cstring>
 #include <stdio.h>

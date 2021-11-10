@@ -4,6 +4,8 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
 
+static const auto& logModule = logModuleNamesLookupTable[LogModules::HTTP];
+
 namespace iotex
 {
 namespace
@@ -43,19 +45,19 @@ class PlatformHTTP : public AbstractHTTP
 		client.print(F("\r\n\r\n"));
 		client.print(body);
 
-		Serial.print(F("POST "));
+		IOTEX_DEBUG(logModule, "Sending HTTP POST request with body:");
 		Serial.print(path);
-		Serial.print(F(" HTTP/1.1\r\n"));
-		Serial.print(F("Host: "));
+		Serial.print(logModule, " HTTP/1.1\r\n");
+		Serial.print(logModule, "Host: ");
 		Serial.print(host);
-		Serial.print(":");
+		Serial.print(logModule, ":");
 		Serial.print(port);
-		Serial.print(F("\r\n"));
-		Serial.print(F("Content-Type: application/json\r\n"));
-		Serial.print(F("Connection: close\r\n"));
-		Serial.print(F("Content-Length: "));
-		Serial.print(strlen(body));
-		Serial.print(F("\r\n\r\n"));
+		Serial.print("\r\n");
+		Serial.print("Content-Type: application/json\r\n");
+		Serial.print("Connection: close\r\n");
+		Serial.print("Content-Length: ");
+		Serial.print(strlen(body);
+		Serial.print("\r\n\r\n");
 		Serial.print(body);
 		Serial.println();
 
@@ -107,7 +109,7 @@ class PlatformHTTP : public AbstractHTTP
 			char dbgBuf[256] = {0};
 			sprintf(dbgBuf, "Failed to connect to http server\n Host: %s Port: %d Path: %s\n",
 					host.c_str(), port, path.c_str());
-			IOTEX_DEBUG(dbgBuf);
+			IOTEX_DEBUG(logModule, dbgBuf);
 			return false;
 		}
 
@@ -124,7 +126,7 @@ class PlatformHTTP : public AbstractHTTP
 			delay(1);
 			if(elapsed >= timeout)
 			{
-				IOTEX_DEBUG("waitForResponse(): Error, max timeout reached\n");
+				IOTEX_DEBUG(logModule, "waitForResponse(): Error, max timeout reached");
 				return false;
 			}
 		}
@@ -135,7 +137,7 @@ class PlatformHTTP : public AbstractHTTP
 	{
 		if(!waitForResponse())
 		{
-			IOTEX_DEBUG("getServerResponse(): No response received");
+			IOTEX_DEBUG(logModule, "getServerResponse(): No response received");
 			return "";
 		}
 
@@ -153,8 +155,8 @@ class PlatformHTTP : public AbstractHTTP
 		/* Disconnecting the client */
 		client.stop();
 
-		IOTEX_DEBUG("getServerResponse(): Response:");
-		IOTEX_DEBUG(response);
+		IOTEX_DEBUG(logModule, "getServerResponse(): Response:");
+		IOTEX_DEBUG(logModule, response);
 
 		return response;
 	}

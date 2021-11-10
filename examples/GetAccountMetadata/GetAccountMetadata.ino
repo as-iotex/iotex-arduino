@@ -14,13 +14,13 @@
 
 #include <map>
 #include "secrets.h"
-#include "iotex-client.h"               // Include IoTex-client
+#include "IoTeXClient.h"
 
-constexpr const char tIp[] = "gateway.iotexlab.io";
-constexpr const char tBaseUrl[] = "iotexapi.APIService";
-constexpr const int tPort = 10000;
-constexpr const char wifiSsid[] = SECRET_WIFI_SSID;
-constexpr const char wifiPass[] = SECRET_WIFI_PASS;
+const char tIp[] = "gateway.iotexlab.io";
+const char tBaseUrl[] = "iotexapi.APIService";
+const int tPort = 10000;
+const char wifiSsid[] = SECRET_WIFI_SSID;
+const char wifiPass[] = SECRET_WIFI_PASS;
 
 // Create the IoTeX client connection
 Connection<Api> connection(tIp, tPort, tBaseUrl);
@@ -36,27 +36,8 @@ void initWiFi()
         Serial.print('.');
         delay(1000);
     }
-    Serial.println(F("Connected. IP: "));
+    Serial.println(F("\r\nConnected. IP: "));
     Serial.println(WiFi.localIP());
-}
-
-String readLineFromSerial()
-{
-    while (!Serial.available());
-    if (Serial.available() > 0)
-    {
-        String ret = Serial.readStringUntil('\r');
-        while (Serial.available()) Serial.read();  // Flush
-        char buf[256] = {0};
-        sprintf(buf, "Input (%d): %s\n", ret.length(), ret.c_str());
-        Serial.print(buf);
-        return ret;
-    }
-    else
-    {
-        while (Serial.available()) Serial.read();  // Flush
-        return "";
-    } 
 }
 
 void setup() {
@@ -68,14 +49,15 @@ void setup() {
 
     initWiFi();
 
-    Serial.println(F("Enter the iotex address: "));
-    String accountStr = readLineFromSerial();
+    const char accountStr[] = "io1xkx7y9ygsa3dlmvzzyvv8zm6hd6rmskh4dawyu";
     iotex::ResponseTypes::AccountMeta accountMeta;
-    iotex::ResultCode result = connection.api.wallets.getAccount(accountStr.c_str(), accountMeta);
+    iotex::ResultCode result = connection.api.wallets.getAccount(accountStr, accountMeta);
     
-    // Print the result and account metadata
+    // Print the result
     Serial.print("Result : ");
-    printResult(result);
+    Serial.print(IotexHelpers.GetResultString(result));
+
+    // If the query suceeded, print the account metadata
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Balance:");

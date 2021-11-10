@@ -1,7 +1,7 @@
 #ifdef OS
 
 #include "random/random.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 #include <fcntl.h>
 #include <unistd.h>

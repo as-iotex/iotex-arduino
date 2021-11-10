@@ -14,7 +14,7 @@
 
 #include <map>
 #include "secrets.h"
-#include "iotex-client.h"               // Include IoTex-client
+#include "IoTeXClient.h"
 
 void setup() {
     Serial.begin(115200);
@@ -23,30 +23,36 @@ void setup() {
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
 
-    // Generate a random private
-    uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
-    randomGenerator.fillRandom(pk, sizeof(pk));
+    // Generate a random private key
+    uint8_t pkBytes[IOTEX_PRIVATE_KEY_SIZE];
+    randomGenerator.fillRandom(pkBytes, sizeof(pkBytes));
 
     // Create the account 
-    iotex::Account account(pk);
+    iotex::Account account(pkBytes);
 
-    // Print account address and public/private key
-    uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE] = {0};
+    // Create buffers for the account details
+    char publicKeyBuf[IOTEX_PUBLIC_KEY_C_STRING_SIZE] = {0};
+    char privateKeyBuf[IOTEX_PRIVATE_KEY_C_STRING_SIZE] = {0};
+    char ethAddressBuf[ETH_ADDRESS_C_STRING_SIZE] = {0};
+    char ioAddressBuf[IOTEX_ADDRESS_C_STRING_SIZE] = {0};
+
+    // Get the account details
+    account.getPublicKeyString(publicKeyBuf);
+    account.getPrivateKeyString(privateKeyBuf);
+    account.getEthereumAddress(ethAddressBuf);
+    account.getIotexAddress(ioAddressBuf);
+    
+    // Print the account details
     Serial.println(F("Account created:"));
     Serial.print("Private key: ");
-    account.getPrivateKey(buffer);
-    printHex(buffer, IOTEX_PRIVATE_KEY_SIZE);
+    Serial.print(privateKeyBuf);
     Serial.print("Public key: ");
-    account.getPublicKey(buffer);
-    printHex(buffer, IOTEX_PUBLIC_KEY_SIZE);
+    Serial.print(publicKeyBuf);
     Serial.print("IoTeX address: ");
-    account.getIotexAddress((char*)buffer);
-    Serial.println((char*)buffer);
-    Serial.print("Eth address: ");
-    account.getEthereumAddress((char*)buffer);
-    Serial.println((char*)buffer);
+    Serial.print(ioAddressBuf);
+    Serial.print("Ethereum address: ");
+    Serial.print(ethAddressBuf);
 }
 
 void loop() {
-    delay(1000);
 }

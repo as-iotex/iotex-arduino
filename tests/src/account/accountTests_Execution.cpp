@@ -166,12 +166,12 @@ TEST_F(AccountTests_Execution, sendExecution_transfer_producesCorrectCallData)
     signer.str2hex(toAddressStr, toAddress, ETH_ADDRESS_SIZE);
     paramTo.value.bytes = toAddress;
     paramTo.size = ETH_ADDRESS_SIZE;
-    params.emplace(std::pair<std::string, ParameterValue>("_to", paramTo));    
+    params.AddParameter("_to", paramTo);    
 
     ParameterValue paramValue;
     paramValue.value.uint32 = 1;
     paramValue.size = 4;
-    params.emplace(std::pair<std::string, ParameterValue>("_value", paramValue));
+    params.AddParameter("_value", paramValue);
 
     contract->generateCallData("transfer", params, callData);
     ASSERT_STREQ(expectedCallData, callData.c_str());
@@ -193,7 +193,7 @@ TEST_F(AccountTests_Execution, sendExecution_balanceOf_producesCorrectCallData)
     signer.str2hex(toAddressStr, toAddress, ETH_ADDRESS_SIZE);
     paramTo.value.bytes = toAddress;
     paramTo.size = ETH_ADDRESS_SIZE;
-    params.emplace(std::pair<std::string, ParameterValue>("_owner", paramTo));    
+    params.AddParameter("_owner", paramTo);    
 
     contract->generateCallData("balanceOf", params, callData);
     ASSERT_STREQ(expectedCallData, callData.c_str());
@@ -217,19 +217,19 @@ TEST_F(AccountTests_Execution, sendExecution_sendData_producesCorrectCallData)
     ParameterValue paramImei;
     std::string imeiStr = "test-imei";
     paramImei.value.string = &imeiStr;
-    params.emplace(std::pair<std::string, ParameterValue>("imei", paramImei));    
+    params.AddParameter("imei", paramImei);    
     
     ParameterValue paramData;
     uint8_t data[] = { 0xde, 0xad, 0xbe, 0xef };
     paramData.value.bytes = data;
     paramData.size = sizeof(data);
-    params.emplace(std::pair<std::string, ParameterValue>("data", paramData));    
+    params.AddParameter("data", paramData);    
     
     ParameterValue paramSignature;
     uint8_t sigData[] = { 0x01, 0x02, 0x03, 0x04 };
     paramSignature.value.bytes = sigData;
     paramSignature.size = sizeof(sigData);
-    params.emplace(std::pair<std::string, ParameterValue>("signature", paramSignature));    
+    params.AddParameter("signature", paramSignature);    
 
     addDataContract.generateCallData("addData", params, callData);
 

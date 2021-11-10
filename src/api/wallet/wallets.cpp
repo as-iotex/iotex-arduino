@@ -1,18 +1,20 @@
 
 #include "api/wallet/wallets.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include "signer/signer.h"
 
 using namespace iotex;
 using namespace iotex::api;
 using namespace iotex::ResponseTypes;
 
+static const auto& logModule = logModuleNamesLookupTable[LogModules::GENERAL];
+
 ResultCode Wallets::getAccount(const char* const address, AccountMeta& data)
 {
-	IOTEX_DEBUG_F("Wallets::getAccount(): Address %s\r\n", address);
+	IOTEX_TRACE(logModule, "Wallets::getAccount(): Address %s", address);
 	rpc::RpcCallData callData = rpc::Wallets::getAccount(this->host_, address);
 	IotexString rspBody;
-	IOTEX_DEBUG_F("Wallets::getAccount(): Post\r\n");
+	IOTEX_TRACE(logModule, "Wallets::getAccount(): Post");
 	auto ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if(ret != ResultCode::SUCCESS)
 	{
@@ -20,7 +22,7 @@ ResultCode Wallets::getAccount(const char* const address, AccountMeta& data)
 	}
 
 	ResponseTypes::GetAccountResponse resp;
-	IOTEX_DEBUG_F("Wallets::getAccount(): FromJson\r\n");
+	IOTEX_TRACE(logModule, "Wallets::getAccount(): FromJson");
 	ret = resp.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;
@@ -116,7 +118,7 @@ ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SI
 		rpc::Wallets::sendExecution(this->host_, execution, senderPubKey, signature);
 	IotexString rspBody;
 
-	IOTEX_DEBUG_F("Wallets::sendExecution: %s\n", callData.body.c_str());
+	IOTEX_DEBUG(logModule, "Sending execution request with body: %s", callData.body.c_str());
 
 	ResultCode ret = http_->post(callData.url.c_str(), callData.body.c_str(), rspBody);
 	if(ret != ResultCode::SUCCESS)
@@ -129,7 +131,7 @@ ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SI
 
 	signer.str2hex(response.hash, hash, IOTEX_HASH_SIZE);
 
-	IOTEX_DEBUG_F("Action hash: %s\n", response.hash);
+	IOTEX_DEBUG(logModule, "Sent execution request. Action hash: %s", response.hash);
 
 	return ret;
 }

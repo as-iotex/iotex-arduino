@@ -19,14 +19,14 @@ void Xrc20Contract::generateCallDataForBalanceOf(uint8_t address[ETH_ADDRESS_SIZ
 	Contract::generateBytesForAddress(address, it);
 }
 
-void Xrc20Contract::generateCallDataForTransfer(uint8_t owner[ETH_ADDRESS_SIZE], uint64_t value,
+void Xrc20Contract::generateCallDataForTransfer(uint8_t to[ETH_ADDRESS_SIZE], uint64_t value,
 												uint8_t data[68])
 {
 	uint8_t* it = data;
 	static const uint8_t functionSelector[] = {0xa9, 0x05, 0x9c, 0xbb};
 	memcpy(data, functionSelector, sizeof(functionSelector));
 	it += sizeof(functionSelector);
-	Contract::generateBytesForAddress(owner, it);
+	Contract::generateBytesForAddress(to, it);
 	it += 32; // Encoded address size
 	Contract::generateBytesForUint((uint8_t*)&value, sizeof(value), it);
 }

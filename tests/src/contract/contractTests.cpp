@@ -14,7 +14,6 @@ using namespace std;
 using namespace testing;
 using namespace iotex;
 using namespace iotex::abi;
-using namespace iotex::helpers;
 
 class ContractTests : public Test
 {
@@ -195,7 +194,7 @@ TEST_F(ContractTests, generateBytesForStaticArrayOfStaticElements_Uint8_3)
     std::vector<uint8_t> out;
     std::string outStr;
     size_t encoded = Contract::generateBytesForStaticArrayOfStaticElements(paramContainer, out);
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
 
     ASSERT_EQ(elementsCount * 32, encoded);
     ASSERT_STREQ("000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003", outStr.c_str());
@@ -223,7 +222,7 @@ TEST_F(ContractTests, generateBytesForStaticArrayOfStaticElements_Bytes3_2)
     std::vector<uint8_t> out;
     std::string outStr;
     size_t encoded = Contract::generateBytesForStaticArrayOfStaticElements(paramContainer, out);
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
 
     ASSERT_EQ(elementsCount * 32, encoded);
     ASSERT_STREQ("61626300000000000000000000000000000000000000000000000000000000006465660000000000000000000000000000000000000000000000000000000000", outStr.c_str());
@@ -253,7 +252,7 @@ TEST_F(ContractTests, generateBytesForStaticArrayOfDynamicElements_String3)
     std::vector<uint8_t> out;
     std::string outStr;
     size_t encoded = Contract::generateBytesForStaticArrayOfDynamicElements(paramContainer, out);
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
 
     char expected[] = "000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000000036f6e650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000374776f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000057468726565000000000000000000000000000000000000000000000000000000";
     ASSERT_EQ(strlen(expected) / 2, encoded);
@@ -280,7 +279,7 @@ TEST_F(ContractTests, generateBytesForDynamicArrayOfStaticElementsElements_Uint3
     std::vector<uint8_t> out;
     std::string outStr;
     size_t encoded = Contract::generateBytesForDynamicArrayOfStaticElements(paramContainer, out);
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
 
     char expected[] = "000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002";
     // ASSERT_EQ(strlen(expected)/2, encoded);
@@ -299,7 +298,7 @@ TEST_F(ContractTests, generateFunctionSelector_Uint32AndBool)
     function.name = "baz";
     InputOutputAbi input;
     input.name = "inputName";
-    input.size_bytes = 4;
+    input.sizeBytes = 4;
     input.type = EthereumTypeName::UINT;
     function.inputs.push_back(input);
     InputOutputAbi input2;
@@ -323,7 +322,7 @@ TEST_F(ContractTests, generateFunctionSelector_Uint8AndStringArray)
     function.name = "testArray";
     InputOutputAbi input;
     input.name = "inputName";
-    input.size_bytes = 1;
+    input.sizeBytes = 1;
     input.type = EthereumTypeName::UINT;
     function.inputs.push_back(input);
     InputOutputAbi input2;
@@ -358,7 +357,7 @@ TEST_F(ContractTests, generateFunctionSelector_StaticArray_Uint8)
     std::string outStr;
     Contract::generateFunctionSelector(function, out);
 
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
     ASSERT_STREQ("eacdca49", outStr.c_str());
 }
 
@@ -378,7 +377,7 @@ TEST_F(ContractTests, generateFunctionSelector_DynamicArray_Uint8)
     std::string outStr;
     Contract::generateFunctionSelector(function, out);
 
-    vectorToHexString(out, outStr);
+    IotexHelpers.vectorToHexString(out, outStr);
     ASSERT_STREQ("1119273c", outStr.c_str());
 }
 
@@ -392,7 +391,7 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     function.name = "baz";
     InputOutputAbi input;
     input.name = "input1";
-    input.size_bytes = 4;
+    input.sizeBytes = 4;
     input.type = EthereumTypeName::UINT;
     function.inputs.push_back(input);
     InputOutputAbi input2;
@@ -412,8 +411,8 @@ TEST_F(ContractTests, generateCallData_Uint32AndBool)
     param2.value.boolean = true;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input2"), (const ParameterValue)param2));
+    params.AddParameter(std::string("input1"), (const ParameterValue)param1);
+    params.AddParameter(std::string("input2"), (const ParameterValue)param2);
     std::string out;
     contract.generateCallData(function.name, params, out);
 
@@ -430,7 +429,7 @@ TEST_F(ContractTests, generateCallData_Int32)
     function.name = "functionName";
     InputOutputAbi input;
     input.name = "input1";
-    input.size_bytes = 4;
+    input.sizeBytes = 4;
     input.type = EthereumTypeName::INT;
     function.inputs.push_back(input);
 
@@ -443,7 +442,7 @@ TEST_F(ContractTests, generateCallData_Int32)
     param1.size = 4;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+    params.AddParameter(std::string("input1"), (const ParameterValue)param1);
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -469,7 +468,7 @@ TEST_F(ContractTests, generateCallData_Bool)
     param1.value.boolean = true;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)param1));
+    params.AddParameter(std::string("input1"), (const ParameterValue)param1);
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -509,7 +508,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_Uint8)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.AddParameter(std::string("input1"), (const ParameterValue)paramContainer);
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -549,7 +548,7 @@ TEST_F(ContractTests, generateCallData_StaticArray_String)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.AddParameter(std::string("input1"), (const ParameterValue)paramContainer);
 
     std::string out;
     contract.generateCallData(function.name, params, out);
@@ -590,7 +589,7 @@ TEST_F(ContractTests, generateCallData_DynamicArray_Uint8)
     paramContainer.value.elements = paramElements;
 
     ParameterValuesDictionary params;
-    params.emplace(std::make_pair<const IotexString, const iotex::abi::ParameterValue>(std::string("input1"), (const ParameterValue)paramContainer));
+    params.AddParameter(std::string("input1"), (const ParameterValue)paramContainer);
 
     std::string out;
     contract.generateCallData(function.name, params, out);

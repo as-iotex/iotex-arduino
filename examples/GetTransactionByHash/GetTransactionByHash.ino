@@ -14,7 +14,7 @@
 
 #include <map>
 #include "secrets.h"
-#include "iotex-client.h"               // Include IoTex-client
+#include "IoTeXClient.h"
 
 constexpr const char tIp[] = "gateway.iotexlab.io";
 constexpr const char tBaseUrl[] = "iotexapi.APIService";
@@ -36,27 +36,8 @@ void initWiFi()
         Serial.print('.');
         delay(1000);
     }
-    Serial.println(F("Connected. IP: "));
+    Serial.println(F("\r\nConnected. IP: "));
     Serial.println(WiFi.localIP());
-}
-
-String readLineFromSerial()
-{
-    while (!Serial.available());
-    if (Serial.available() > 0)
-    {
-        String ret = Serial.readStringUntil('\r');
-        while (Serial.available()) Serial.read();  // Flush
-        char buf[256] = {0};
-        sprintf(buf, "Input (%d): %s\n", ret.length(), ret.c_str());
-        Serial.print(buf);
-        return ret;
-    }
-    else
-    {
-        while (Serial.available()) Serial.read();  // Flush
-        return "";
-    } 
 }
 
 void setup() {
@@ -68,12 +49,11 @@ void setup() {
 
     initWiFi();
 
-    Serial.println(F("Enter the transaction hash: "));
-    String input = readLineFromSerial();
+    const char hash[] = "5444318f1a460c74d3e86918b640272d93d0b30e2bf2dc329dfd3faa636e52ec";
     iotex::ResponseTypes::ActionInfo_Transfer data;
-    iotex::ResultCode result = connection.api.wallets.getTransactionByHash(input.c_str(), data);
+    iotex::ResultCode result = connection.api.wallets.getTransactionByHash(hash, data);
     
-    // Print the transaction details
+    // Print the action details
     Serial.print("Result : ");
     printResult(result);
     if (result == iotex::ResultCode::SUCCESS)

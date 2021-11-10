@@ -14,8 +14,8 @@
 
 #include <map>
 #include "secrets.h"
-#include "iotex-client.h"               // Include IoTex-client
-#include "addDataAbi.h"                 // Contract abi
+#include "IoTeXClient.h"
+#include "addDataAbi.h"
 
 constexpr const char tIp[] = "gateway.iotexlab.io";
 constexpr const char tBaseUrl[] = "iotexapi.APIService";
@@ -49,16 +49,11 @@ void setup() {
     #endif
 
     initWiFi();
+
+    IotexHelpers.setModuleLogLevel(generalLogModule, IotexLogLevel::INFO);
 }
 
 void loop() {
-    // // Wait for the user to input any character before initiating the transfer
-    // Serial.println(F("Press any key to initiate transfer"));
-    // while(!Serial.available());
-    // while(Serial.available()) { 
-    //     Serial.read(); 
-    // }
-
     // VITA token address
     const char tokenAddress[] = "io1hp6y4eqr90j7tmul4w2wa8pm7wx462hq0mg4tw";
     // Private key of the origin address
@@ -70,11 +65,9 @@ void loop() {
     // Data
     uint8_t data[] = { 0x01, 0x02, 0x03, 0x04 };
     // Signature
-    String signature = "test-signature";
-    uint8_t signatureBytes[signature.length()/2];
-    signer.str2hex(signature.c_str(), signatureBytes, sizeof(signatureBytes));
+    uint8_t signature[] = { 0x05, 0x06, 0x07, 0x08 };
 
-    // Convert the privte key and address hex strings to byte arrays
+    // Convert the privte key to a byte array
     uint8_t pk[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(pK, pk, IOTEX_SIGNATURE_SIZE);
 
@@ -97,13 +90,13 @@ void loop() {
     // Create Parameters
     ParameterValue paramImei = MakeParamString(imei);
     ParameterValue paramData = MakeParamBytes(data, sizeof(data), true);
-    ParameterValue paramSig = MakeParamBytes(signatureBytes, sizeof(signatureBytes), true);
+    ParameterValue paramSig = MakeParamBytes(signature, sizeof(signature), true);
 
     // Create parameter values dictionary
     iotex::ParameterValuesDictionary params;
-    params.emplace(std::pair<IotexString, ParameterValue>("imei", paramImei));
-    params.emplace(std::pair<IotexString, ParameterValue>("data", paramData));
-    params.emplace(std::pair<IotexString, ParameterValue>("signature", paramSig));
+    params.AddParameter("imei", paramImei);
+    params.AddParameter("data", paramData);
+    params.AddParameter("signature", paramSig);
 
     // Create the contract
     String abi = addDataAbiJson;
@@ -119,10 +112,16 @@ void loop() {
     iotex::ResultCode result = originAccount.sendExecutionAction(connection, nonce, 20000000, "1000000000000", "0", contractAddress, callData, hash);
 
     Serial.print("Result : ");
-    printResult(result);
+    Serial.print(IotexHelpers.GetResultString(result));
     if (result == iotex::ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        printHex(hash, IOTEX_HASH_SIZE);
+        IOTEX_INFO_BUF(generalLogModule, hash, IOTEX_HASH_SIZE);
+    }
+
+    Serial.println("Program finished");
+    while (true)
+    {
+        delay(10000);
     }
 }

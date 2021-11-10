@@ -45,8 +45,9 @@ add_library(iotex-antenna-arduino STATIC
         src/extern/crypto/aes/aescrypt.c
         src/extern/crypto/aes/aeskey.c
         src/extern/crypto/aes/aestab.c
-        src/extern/crypto/aes/aestst.c
         src/extern/crypto/ed25519-donna/ed25519.c
+        # CppLogger
+        src/extern/cpplogger/cpplogger.cpp
    
     # Protobuf
         src/protobuf_files/c_files/action.pb.c
@@ -56,7 +57,7 @@ add_library(iotex-antenna-arduino STATIC
         src/host/host.cpp        
         src/api/rpc.cpp
         src/api/wallet/wallets.cpp
-        src/api/protobuf/pb_api.cpp
+        src/protobuf/pb_api.cpp
         src/signer/signer.cpp
         src/encoder/encoder.cpp
         src/encoder/bech32.cpp
@@ -66,6 +67,7 @@ add_library(iotex-antenna-arduino STATIC
         src/account/account.cpp
         src/abi/abi.cpp
         src/helpers/json_helper.cpp
+        src/helpers/client_helper.cpp
         src/contract/contract.cpp
         src/contract/xrc20Contract.cpp
 )

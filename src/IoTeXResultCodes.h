@@ -5,7 +5,7 @@ namespace iotex
 {
 enum class ResultCode
 {
-	SUCCESS,
+	SUCCESS = 0,
 	ERROR_HTTP,
 	ERROR_JSON_PARSE,
 	ERROR_BAD_PARAMETER,
@@ -15,7 +15,8 @@ enum class ResultCode
 	ERROR_STORAGE_BAD_READ,
 	ERROR_STORAGE_EMPTY,
 	ERROR_GRPC,
-	ERROR_WRONG_TYPE
+	ERROR_WRONG_TYPE,
+	VALES_COUNT
 };
 } // namespace iotex
 

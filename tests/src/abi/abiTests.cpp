@@ -51,7 +51,7 @@ TEST_F(AbiTests, ParseInputOutput_UintX)
         ASSERT_EQ(result, ResultCode::SUCCESS);
         ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
         ASSERT_EQ(EthereumTypeName::UINT, parsedInput.type);
-        ASSERT_EQ(sizes[i]/8, parsedInput.size_bytes);
+        ASSERT_EQ(sizes[i]/8, parsedInput.sizeBytes);
         cJSON_Delete(input);
     }
 }
@@ -67,7 +67,7 @@ TEST_F(AbiTests, ParseInputOutput_Uint)
     ASSERT_EQ(result, ResultCode::SUCCESS);
     ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
     ASSERT_EQ(EthereumTypeName::UINT, parsedInput.type);
-    ASSERT_EQ(32, parsedInput.size_bytes);
+    ASSERT_EQ(32, parsedInput.sizeBytes);
     cJSON_Delete(input);
 }
 
@@ -93,7 +93,7 @@ TEST_F(AbiTests, ParseInputOutput_IntX)
         ASSERT_EQ(result, ResultCode::SUCCESS);
         ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
         ASSERT_EQ(EthereumTypeName::INT, parsedInput.type);
-        ASSERT_EQ(sizes[i]/8, parsedInput.size_bytes);
+        ASSERT_EQ(sizes[i]/8, parsedInput.sizeBytes);
         cJSON_Delete(input);
     }
 }
@@ -109,7 +109,7 @@ TEST_F(AbiTests, ParseInputOutput_Int)
     ASSERT_EQ(result, ResultCode::SUCCESS);
     ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
     ASSERT_EQ(EthereumTypeName::INT, parsedInput.type);
-    ASSERT_EQ(32, parsedInput.size_bytes);
+    ASSERT_EQ(32, parsedInput.sizeBytes);
     cJSON_Delete(input);
 }
 
@@ -163,7 +163,7 @@ TEST_F(AbiTests, ParseInputOutput_StaticBytes)
         ASSERT_EQ(result, ResultCode::SUCCESS);
         ASSERT_STREQ(parsedInput.name.c_str(), "inputName");
         ASSERT_EQ(EthereumTypeName::BYTES_STATIC, parsedInput.type);
-        ASSERT_EQ(sizes[i], parsedInput.size_bytes);
+        ASSERT_EQ(sizes[i], parsedInput.sizeBytes);
         cJSON_Delete(input);
     }
 }
@@ -241,7 +241,7 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_Uint)
     InputOutputAbi input;
     input.name = "inputName";
     input.type = EthereumTypeName::UINT;
-    input.size_bytes = 32;
+    input.sizeBytes = 32;
     function.inputs.push_back(input);
 
     std::string buf;
@@ -257,7 +257,7 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_Int)
     InputOutputAbi input;
     input.name = "inputName";
     input.type = EthereumTypeName::INT;
-    input.size_bytes = 1;
+    input.sizeBytes = 1;
     function.inputs.push_back(input);
 
     std::string buf;
@@ -288,7 +288,7 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_Bytes32)
     InputOutputAbi input;
     input.name = "inputName";
     input.type = EthereumTypeName::BYTES_STATIC;
-    input.size_bytes = 32;
+    input.sizeBytes = 32;
     function.inputs.push_back(input);
 
     std::string buf;
@@ -371,11 +371,11 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_IntAndUintAndBytesAndBytes10AndBool)
     function.name = "functionName";
     InputOutputAbi input;
     input.name = "inputName";
-    input.size_bytes = 32;
+    input.sizeBytes = 32;
     input.type = EthereumTypeName::INT;
     function.inputs.push_back(input);
     InputOutputAbi input2;
-    input2.size_bytes = 32;
+    input2.sizeBytes = 32;
     input2.name = "inputName";
     input2.type = EthereumTypeName::UINT;
     function.inputs.push_back(input2);
@@ -386,7 +386,7 @@ TEST_F(AbiTests, FunctionAbi_GetSignature_IntAndUintAndBytesAndBytes10AndBool)
     InputOutputAbi input4;
     input4.name = "inputName";
     input4.type = EthereumTypeName::BYTES_STATIC;
-    input4.size_bytes = 10;
+    input4.sizeBytes = 10;
     function.inputs.push_back(input4);
     InputOutputAbi input5;
     input5.name = "inputName";

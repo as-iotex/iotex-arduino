@@ -1,7 +1,7 @@
 #ifndef HTTP_H
 #define HTTP_H
 
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include "IoTeXResultCodes.h"
 #include <memory>
 #include <string>

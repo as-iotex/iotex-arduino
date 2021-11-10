@@ -30,7 +30,7 @@ namespace ResponseTypes
 
 struct AccountMeta
 {
-	char address[IOTEX_ADDRESS_STRLEN + 1];
+	char address[IOTEX_ADDRESS_C_STRING_SIZE];
 	char balance[IOTEX_MAX_BALANCE_STRLEN + 1];
 	IotexString nonce;
 	IotexString pendingNonce;
@@ -47,14 +47,14 @@ enum Encoding
 struct Transfer
 {
 	char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
-	char recipient[IOTEX_ADDRESS_STRLEN + 1];
+	char recipient[IOTEX_ADDRESS_C_STRING_SIZE];
 	IotexString payload;
 };
 
 struct Execution
 {
 	char amount[IOTEX_MAX_BALANCE_STRLEN + 1];
-	char contract[IOTEX_ADDRESS_STRLEN + 1];
+	char contract[IOTEX_ADDRESS_C_STRING_SIZE];
 	IotexString data;
 };
 
@@ -80,44 +80,44 @@ struct ActionCore_Execution
 struct Action_Transfer
 {
 	ActionCore_Transfer core;
-	char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
-	char signature[IOTEX_SIGNATURE_STRLEN + 1];
+	char senderPublicKey[IOTEX_PUBLIC_KEY_C_STRING_SIZE];
+	char signature[IOTEX_SIGNATURE_C_STRING_SIZE];
 	// Encoding encoding;
 };
 
 struct Action_Execution
 {
 	ActionCore_Execution core;
-	char senderPublicKey[IOTEX_PUBLIC_KEY_STRLEN + 1];
-	char signature[IOTEX_SIGNATURE_STRLEN + 1];
+	char senderPublicKey[IOTEX_PUBLIC_KEY_C_STRING_SIZE];
+	char signature[IOTEX_SIGNATURE_C_STRING_SIZE];
 	// Encoding encoding;
 };
 
 struct ActionInfo_Transfer
 {
 	Action_Transfer action;
-	char actHash[IOTEX_HASH_STRLEN + 1];
-	char blkHash[IOTEX_HASH_STRLEN + 1];
+	char actHash[IOTEX_HASH_C_STRING_SIZE];
+	char blkHash[IOTEX_HASH_C_STRING_SIZE];
 	char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
 	IotexString blkHeight;
-	char sender[IOTEX_ADDRESS_STRLEN + 1];
+	char sender[IOTEX_ADDRESS_C_STRING_SIZE];
 	char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
 };
 
 struct ActionInfo_Execution
 {
 	Action_Execution action;
-	char actHash[IOTEX_HASH_STRLEN + 1];
-	char blkHash[IOTEX_HASH_STRLEN + 1];
+	char actHash[IOTEX_HASH_C_STRING_SIZE];
+	char blkHash[IOTEX_HASH_C_STRING_SIZE];
 	char timestamp[IOTEX_TIMESTAMP_STRLEN + 1];
 	IotexString blkHeight;
-	char sender[IOTEX_ADDRESS_STRLEN + 1];
+	char sender[IOTEX_ADDRESS_C_STRING_SIZE];
 	char gasFee[IOTEX_MAX_BALANCE_STRLEN + 1];
 };
 
 struct BlockIdentifier
 {
-	char hash[IOTEX_HASH_STRLEN + 1];
+	char hash[IOTEX_HASH_C_STRING_SIZE];
 	IotexString height;
 };
 
@@ -171,7 +171,7 @@ struct SendExecutionResponse
 	ResultCode fromJson(IotexString jsonString);
 
   public:
-	char hash[IOTEX_HASH_STRLEN + 1];
+	char hash[IOTEX_HASH_C_STRING_SIZE];
 };
 
 // JSON Objects - unused

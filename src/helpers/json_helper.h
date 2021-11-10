@@ -2,7 +2,7 @@
 #define JSON_HELPER_H
 
 #include "extern/cjson/cJSON.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include "helpers/reflection_helper.h"
 #include "IoTeXResultCodes.h"
 #include <string.h>

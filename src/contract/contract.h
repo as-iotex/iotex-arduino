@@ -9,7 +9,18 @@
 
 namespace iotex
 {
-typedef std::map<const IotexString, iotex::abi::ParameterValue> ParameterValuesDictionary;
+
+class ParameterValuesDictionary
+{
+  public:
+	void AddParameter(const IotexString& name, iotex::abi::ParameterValue value);
+	bool ContainsParameter(const IotexString& name);
+	iotex::abi::ParameterValue GetParameter(const IotexString& name);
+
+  private:
+	std::map<const IotexString, iotex::abi::ParameterValue> _dictionary;
+};
+
 class Contract
 {
   public:

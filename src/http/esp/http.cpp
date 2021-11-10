@@ -11,7 +11,9 @@
 #include <HTTPClient.h>
 #endif
 
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
+
+static const auto& logModule = iotex::logModuleNamesLookupTable[iotex::LogModules::HTTP];
 
 namespace iotex
 {
@@ -46,34 +48,23 @@ class PlatformHTTP : public AbstractHTTP
 
 		_httpClient.collectHeaders(headerKeys, numberOfHeaders);
 
-#ifdef DEBUG_HTTP
-		IOTEX_DEBUG_F("HTTP::post(): Request path: %s\r\n", request);
-		Serial.println("HTTP::post(): Request Body: ");
-		Serial.println(body);
-#endif
+		IOTEX_DEBUG(logModule, "Sending HTTP POST request to: %s", request);
+		IOTEX_DEBUG(logModule, "Request body: %s", body);
 
 		_httpClient.POST(body);
 		response = String(_httpClient.getString());
-
-#ifdef DEBUG_HTTP
-		Serial.print("HTTP::post(): Response Body: ");
-		Serial.println(response);
-#endif
+		IOTEX_DEBUG(logModule, "Response Body: %s", response.c_str());
 
 		GrpcStatusCode grpcStatus = (GrpcStatusCode)atoi(_httpClient.header("grpc-status").c_str());
 		if(grpcStatus != GrpcStatusCode::OK)
 		{
 			response = _httpClient.header("grpc-message").c_str();
-#ifdef DEBUG_HTTP
-			IOTEX_DEBUG_F("HTTP::post(): Grpc error, message: %s\n",
+			IOTEX_WARNING(logModule, "Grpc error, message: %s",
 						  _httpClient.header("grpc-message").c_str());
-#endif
 			return ResultCode::ERROR_GRPC;
 		}
-#ifdef DEBUG_HTTP
-		IOTEX_DEBUG_F("HTTP::post(): Grpc success, message : %s\n",
+		IOTEX_DEBUG(logModule, "Grpc success, message : %s",
 					  _httpClient.header("grpc-message").c_str());
-#endif
 		return ResultCode::SUCCESS;
 	}
 
@@ -121,7 +112,7 @@ class PlatformHTTP : public AbstractHTTP
 #endif
 		if(!initOk)
 		{
-			Serial.println("Failed to initialize HTTP client");
+			IOTEX_ERROR_F(logModule, "Failed to initialize HTTP client");
 		}
 		return initOk;
 	}

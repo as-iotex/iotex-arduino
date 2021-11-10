@@ -6,7 +6,7 @@
 #include "connection/connection.h"
 #include "contract/contract.h"
 #include "contract/xrc20Contract.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include "IoTeXConstants.h"
 #include "IoTeXResultCodes.h"
 #include "random/random.h"
@@ -16,6 +16,5 @@ using namespace iotex;
 using namespace iotex::api;
 using namespace iotex::abi;
 using namespace iotex::ResponseTypes;
-using namespace iotex::Helpers;
 
 #endif

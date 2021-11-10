@@ -1,7 +1,7 @@
 #ifdef OS
 
 #include "http/http.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 
 #include <algorithm> // std::min
 #include <cstring>

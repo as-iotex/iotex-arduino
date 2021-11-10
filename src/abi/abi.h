@@ -2,7 +2,7 @@
 #define IOTEX_ABI_H
 
 #include "extern/cjson/cJSON.h"
-#include "helpers/client_helpers.h"
+#include "helpers/client_helper.h"
 #include "helpers/json_helper.h"
 #include "IoTeXConstants.h"
 #include "IoTeXResultCodes.h"

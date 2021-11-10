@@ -28,36 +28,63 @@ class Account
 	 */
 	Account(uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE]);
 
-	// Getters
+	/**************************************************************************/
+	/* Getters */
+	/**************************************************************************/
+
 	/**
 	 * @brief Get the IoTeX address as a null terminated string
 	 *
-	 * @param buffer
+	 * @param[out] buffer
 	 */
-	void getIotexAddress(char buffer[IOTEX_ADDRESS_STRLEN + 1]);
+	void getIotexAddress(char buffer[IOTEX_ADDRESS_C_STRING_SIZE]);
 
 	/**
 	 * @brief Get the Ethereum address as a null terminated string
 	 *
-	 * @param buffer
+	 * @param[out] buffer
 	 */
-	void getEthereumAddress(char buffer[ETH_ADDRESS_STRLEN + 1]);
+	void getEthereumAddress(char buffer[ETH_ADDRESS_C_STRING_SIZE]);
+
+	/**
+	 * @brief Get the Ethereum address as a byte array
+	 *
+	 * @param[out] buffer
+	 */
+	void getEthereumAddressBytes(uint8_t buffer[ETH_ADDRESS_SIZE]);
 
 	/**
 	 * @brief Get the public key as a byte array
 	 *
-	 * @param buffer
+	 * @param[out] buffer
 	 */
 	void getPublicKey(uint8_t buffer[IOTEX_PUBLIC_KEY_SIZE]);
 
 	/**
+	 * @brief Get the public key as a null terminated string
+	 *
+	 * @param[out] buffer
+	 */
+	void getPublicKeyString(char buffer[IOTEX_PUBLIC_KEY_C_STRING_SIZE]);
+
+	/**
 	 * @brief Get the private key as a byte array
 	 *
-	 * @param buffer
+	 * @param[out] buffer
 	 */
 	void getPrivateKey(uint8_t buffer[IOTEX_PRIVATE_KEY_SIZE]);
 
-	// Signing
+	/**
+	 * @brief Get the private key as a null terminated string
+	 *
+	 * @param[out] buffer
+	 */
+	void getPrivateKeyString(char buffer[IOTEX_PRIVATE_KEY_C_STRING_SIZE]);
+
+	/**************************************************************************/
+	/* Signing */
+	/**************************************************************************/
+
 	/**
 	 * @brief Singns a message
 	 *
@@ -87,7 +114,10 @@ class Account
 							 uint8_t signature[IOTEX_SIGNATURE_SIZE],
 							 uint8_t hash[IOTEX_HASH_SIZE] = nullptr);
 
-	// Action execution
+	/**************************************************************************/
+	/* Action execution */
+	/**************************************************************************/
+
 	/**
 	 * @brief Sends a token transfer action to the blockchain
 	 *
@@ -140,8 +170,8 @@ class Account
 	template<typename TAPI>
 	ResultCode sendExecutionAction(Connection<TAPI>& conn, uint64_t nonce, uint64_t gasLimit,
 								   const char* gasPrice, const char* amount,
-								   const char contract[IOTEX_ADDRESS_STRLEN + 1], IotexString data,
-								   uint8_t hash[IOTEX_HASH_SIZE])
+								   const char contract[IOTEX_ADDRESS_C_STRING_SIZE],
+								   IotexString data, uint8_t hash[IOTEX_HASH_SIZE])
 	{
 		ResponseTypes::ActionCore_Execution core;
 		core.version = 1;
@@ -165,19 +195,25 @@ class Account
 	uint8_t _publicKey[IOTEX_PUBLIC_KEY_SIZE];
 	uint8_t _privateKey[IOTEX_PRIVATE_KEY_SIZE];
 
-	// Dependencies
+	//**************************************************************************/
+	/* Dependencies */
+	/**************************************************************************/
 	Random* _pRandomGenerator;
 	Encoder* _pEncoder;
 	Signer* _pSigner;
 
-	// Private methods
+	/**************************************************************************/
+	/* Private methods */
+	/**************************************************************************/
   private:
 	void GenerateAddressesFromPrivateKey();
 	void generateIotexAddress();
 	void generateEthAddress();
 	void setDepsFromGlobals();
 
-	// Methods below should only be used for testing
+	/**************************************************************************/
+	/* Unit testing methods */
+	/**************************************************************************/
   public:
 	// Allow to inject mock dependencies in constructor
 	Account(Random* pRandomGenerator, Encoder* pEncoder, Signer* pSigner,
