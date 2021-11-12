@@ -16,7 +16,7 @@ enum class ResultCode
 	ERROR_STORAGE_EMPTY,
 	ERROR_GRPC,
 	ERROR_WRONG_TYPE,
-	VALES_COUNT
+	VALUES_COUNT
 };
 } // namespace iotex
 

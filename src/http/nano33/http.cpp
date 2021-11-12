@@ -1,10 +1,11 @@
 #ifdef __SAMD21G18A__
 #include "http/http.h"
+#include "helpers/client_helper.h"
 
 #include <SPI.h>
 #include <WiFiNINA.h>
 
-static const auto& logModule = logModuleNamesLookupTable[LogModules::HTTP];
+static const auto& logModule = iotex::logModuleNamesLookupTable[iotex::LogModules::HTTP];
 
 namespace iotex
 {
@@ -47,16 +48,16 @@ class PlatformHTTP : public AbstractHTTP
 
 		IOTEX_DEBUG(logModule, "Sending HTTP POST request with body:");
 		Serial.print(path);
-		Serial.print(logModule, " HTTP/1.1\r\n");
-		Serial.print(logModule, "Host: ");
+		Serial.print(" HTTP/1.1\r\n");
+		Serial.print("Host: ");
 		Serial.print(host);
-		Serial.print(logModule, ":");
+		Serial.print(":");
 		Serial.print(port);
 		Serial.print("\r\n");
 		Serial.print("Content-Type: application/json\r\n");
 		Serial.print("Connection: close\r\n");
 		Serial.print("Content-Length: ");
-		Serial.print(strlen(body);
+		Serial.print(strlen(body));
 		Serial.print("\r\n\r\n");
 		Serial.print(body);
 		Serial.println();
@@ -156,7 +157,7 @@ class PlatformHTTP : public AbstractHTTP
 		client.stop();
 
 		IOTEX_DEBUG(logModule, "getServerResponse(): Response:");
-		IOTEX_DEBUG(logModule, response);
+		IOTEX_DEBUG(logModule, "%s", response);
 
 		return response;
 	}

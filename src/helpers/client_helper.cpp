@@ -4,7 +4,7 @@ using namespace cpplogger;
 using namespace iotex;
 
 
-const char* resultLookupTable[(int)ResultCode::VALES_COUNT] =
+const char* resultLookupTable[(int)ResultCode::VALUES_COUNT] =
 {
 	"SUCCESS",
 	"ERROR_HTTP",
@@ -19,14 +19,17 @@ const char* resultLookupTable[(int)ResultCode::VALES_COUNT] =
 	"ERROR_WRONG_TYPE",
 };
 
-const std::string iotex::logModuleNamesLookupTable[(int)LogModules::VALES_COUNT] =
+const std::string iotex::logModuleNamesLookupTable[(int)LogModules::VALUES_COUNT] =
 {
+	// Lookup table for LogModules.
+	// Must be in the same order as LogModules and contain LogModules::VALUES_COUNT elements
+	"USER",
 	"GENERAL",
 	"HTTP",
 	"CONTRACT"
 };
 
-const std::string& iotex::generalLogModule = iotex::logModuleNamesLookupTable[0];
+const std::string& iotex::userLogModule = iotex::logModuleNamesLookupTable[0];
 
 iotex::Helpers IotexHelpers;
 
@@ -43,7 +46,7 @@ static uint32_t printmessage ( const char *message, void* ctx )
 iotex::Helpers::Helpers() :
 	logger(printmessage, IOTEX_LOG_LEVEL, nullptr)
 {
-	for(int i = 0; i < (int)LogModules::VALES_COUNT; i++)
+	for(int i = 0; i < (int)LogModules::VALUES_COUNT; i++)
 	{
 		logger.register_module(logModuleNamesLookupTable[i], IOTEX_LOG_LEVEL);
 	}

@@ -10,10 +10,22 @@
 // clang-format off
 
 /**************************************************************************/
+/* Log level macros */
+/**************************************************************************/
+
+#define IOTEX_LOG_LEVEL_TRACE cpplogger::LogLevel::TRACE
+#define IOTEX_LOG_LEVEL_DEBUG cpplogger::LogLevel::DEBUG
+#define IOTEX_LOG_LEVEL_INFO cpplogger::LogLevel::INFO
+#define IOTEX_LOG_LEVEL_WARNING cpplogger::LogLevel::WARNING
+#define IOTEX_LOG_LEVEL_ERROR cpplogger::LogLevel::ERROR
+#define IOTEX_LOG_LEVEL_NONE cpplogger::LogLevel::NONE
+
+#define IOTEX_DEFAULT_LOG_LEVEL IOTEX_LOG_LEVEL_NONE
+
+/**************************************************************************/
 /* Set default log level */
 /**************************************************************************/
 
-#define IOTEX_DEFAULT_LOG_LEVEL cpplogger::LogLevel::TRACE
 #ifndef IOTEX_LOG_LEVEL
 	#define IOTEX_LOG_LEVEL IOTEX_DEFAULT_LOG_LEVEL
 #endif
@@ -84,10 +96,11 @@ namespace iotex
  */
 enum LogModules
 {
+	USER,
 	GENERAL,
 	HTTP,
 	CONTRACT,
-	VALES_COUNT
+	VALUES_COUNT
 };
 
 /**
@@ -95,13 +108,13 @@ enum LogModules
  * needed
  *
  */
-extern const std::string& generalLogModule;
+extern const std::string& userLogModule;
 
 /**
  * @brief Lookup table for log module names. This should be only used by the internal library code
  *
  */
-extern const std::string logModuleNamesLookupTable[(int)LogModules::VALES_COUNT];
+extern const std::string logModuleNamesLookupTable[(int)LogModules::VALUES_COUNT];
 
 /**
  * @brief Enum representing all the log levels
