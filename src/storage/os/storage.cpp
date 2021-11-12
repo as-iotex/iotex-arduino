@@ -11,16 +11,15 @@ using namespace iotex;
 // Define global object
 Storage storage;
 
-void Storage::Initialize()
+void Storage::Initialize(uint32_t storageSize = 0)
 {
 }
 
-ResultCode Storage::savePrivateKey(void* storageId,
+ResultCode Storage::savePrivateKey(const char* path,
 								   const uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE])
 {
 	FILE* pFile;
-	char* filePath = (char*)storageId;
-	pFile = fopen(filePath, "wb");
+	pFile = fopen(path, "wb");
 	if(pFile == NULL)
 	{
 		perror("Failed: ");
@@ -32,11 +31,11 @@ ResultCode Storage::savePrivateKey(void* storageId,
 	return ResultCode::SUCCESS;
 }
 
-ResultCode Storage::readPrivateKey(void* storageId, uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE])
+ResultCode Storage::readPrivateKey(const char* path, uint8_t privateKey[IOTEX_PRIVATE_KEY_SIZE])
 {
 	memset(privateKey, 0, IOTEX_PRIVATE_KEY_SIZE);
 	FILE* pFile;
-	pFile = fopen((char*)storageId, "rb");
+	pFile = fopen(path, "rb");
 	if(pFile == NULL)
 	{
 		return ResultCode::ERROR_STORAGE_OPEN;
