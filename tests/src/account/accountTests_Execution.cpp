@@ -15,7 +15,7 @@
 using namespace std;
 using namespace testing;
 using namespace iotex;
-using namespace iotex::ResponseTypes;
+using namespace iotex::responsetypes;
 using namespace iotex::abi;
 
 namespace

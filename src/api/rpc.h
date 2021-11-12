@@ -32,11 +32,11 @@ class Wallets
 	static RpcCallData getActionByHash(Host& host, const IotexString hash,
 									   bool checkPending = false);
 	static RpcCallData sendTokenTransfer(Host& host,
-										 const ResponseTypes::ActionCore_Transfer transfer,
+										 const responsetypes::ActionCore_Transfer transfer,
 										 const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 										 const uint8_t signature[IOTEX_SIGNATURE_SIZE]);
 	static RpcCallData sendExecution(Host& host,
-									 const ResponseTypes::ActionCore_Execution execution,
+									 const responsetypes::ActionCore_Execution execution,
 									 const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 									 const uint8_t signature[IOTEX_SIGNATURE_SIZE]);
 };

@@ -23,9 +23,9 @@ class Encoder
 	ResultCode base64_encode(const uint8_t* data, size_t size, char* out);
 
 	// Protobuf
-	int32_t protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& transfer, uint8_t* out,
+	int32_t protobuf_encodeTransfer(responsetypes::ActionCore_Transfer& transfer, uint8_t* out,
 									size_t maxOutSize);
-	int32_t protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& execution, uint8_t* out,
+	int32_t protobuf_encodeExecution(responsetypes::ActionCore_Execution& execution, uint8_t* out,
 									 size_t maxOutSize);
 
   private:

@@ -5,7 +5,7 @@
 
 using namespace iotex;
 using namespace iotex::api;
-using namespace iotex::ResponseTypes;
+using namespace iotex::responsetypes;
 
 static const auto& logModule = logModuleNamesLookupTable[LogModules::GENERAL];
 
@@ -21,7 +21,7 @@ ResultCode Wallets::getAccount(const char* const address, AccountMeta& data)
 		return ResultCode::ERROR_HTTP;
 	}
 
-	ResponseTypes::GetAccountResponse resp;
+	responsetypes::GetAccountResponse resp;
 	IOTEX_TRACE(logModule, "Wallets::getAccount(): FromJson");
 	ret = resp.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
@@ -41,7 +41,7 @@ ResultCode Wallets::getBalance(const char* const address, IotexString& balance)
 		return ret;
 	}
 
-	ResponseTypes::GetBalanceResponse response;
+	responsetypes::GetBalanceResponse response;
 	ret = response.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;
@@ -51,7 +51,7 @@ ResultCode Wallets::getBalance(const char* const address, IotexString& balance)
 }
 
 ResultCode Wallets::getTransactionByHash(const char* const address,
-										 ResponseTypes::ActionInfo_Transfer& action)
+										 responsetypes::ActionInfo_Transfer& action)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
 	IotexString rspBody;
@@ -60,7 +60,7 @@ ResultCode Wallets::getTransactionByHash(const char* const address,
 	{
 		return ret;
 	}
-	ResponseTypes::GetActionResponse_Transfer response;
+	responsetypes::GetActionResponse_Transfer response;
 	ret = response.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;
@@ -70,7 +70,7 @@ ResultCode Wallets::getTransactionByHash(const char* const address,
 }
 
 ResultCode Wallets::getExecutionByHash(const char* const address,
-									   ResponseTypes::ActionInfo_Execution& action)
+									   responsetypes::ActionInfo_Execution& action)
 {
 	rpc::RpcCallData callData = rpc::Wallets::getActionByHash(this->host_, address);
 	IotexString rspBody;
@@ -79,7 +79,7 @@ ResultCode Wallets::getExecutionByHash(const char* const address,
 	{
 		return ret;
 	}
-	ResponseTypes::GetActionResponse_Execution response;
+	responsetypes::GetActionResponse_Execution response;
 	ret = response.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;
@@ -90,7 +90,7 @@ ResultCode Wallets::getExecutionByHash(const char* const address,
 
 ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 									  const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-									  const ResponseTypes::ActionCore_Transfer& transfer,
+									  const responsetypes::ActionCore_Transfer& transfer,
 									  uint8_t hash[IOTEX_HASH_SIZE])
 {
 	rpc::RpcCallData callData =
@@ -100,7 +100,7 @@ ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KE
 	if(ret != ResultCode::SUCCESS)
 		return ret;
 
-	ResponseTypes::SendExecutionResponse response;
+	responsetypes::SendExecutionResponse response;
 	ret = response.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;
@@ -111,7 +111,7 @@ ResultCode Wallets::sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KE
 
 ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 								  const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-								  const ResponseTypes::ActionCore_Execution& execution,
+								  const responsetypes::ActionCore_Execution& execution,
 								  uint8_t hash[IOTEX_HASH_SIZE])
 {
 	rpc::RpcCallData callData =
@@ -124,7 +124,7 @@ ResultCode Wallets::sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SI
 	if(ret != ResultCode::SUCCESS)
 		return ret;
 
-	ResponseTypes::SendExecutionResponse response;
+	responsetypes::SendExecutionResponse response;
 	ret = response.fromJson(rspBody);
 	if(ret != ResultCode::SUCCESS)
 		return ret;

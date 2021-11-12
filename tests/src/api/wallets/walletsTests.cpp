@@ -10,7 +10,7 @@ using namespace std;
 using namespace testing;
 using namespace iotex;
 using namespace iotex::api;
-using namespace iotex::ResponseTypes;
+using namespace iotex::responsetypes;
 
 namespace 
 {

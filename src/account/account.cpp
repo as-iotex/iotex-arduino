@@ -96,7 +96,7 @@ void Account::signMessage(const uint8_t* message, size_t size,
 	_pSigner->signMessage(message, size, _privateKey, signature);
 }
 
-void Account::signTokenTransferAction(iotex::ResponseTypes::ActionCore_Transfer& transfer,
+void Account::signTokenTransferAction(iotex::responsetypes::ActionCore_Transfer& transfer,
 									  uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
 	uint8_t encodedCore[1024] = {0};
@@ -108,7 +108,7 @@ void Account::signTokenTransferAction(iotex::ResponseTypes::ActionCore_Transfer&
 	signer.signHash(hash, _privateKey, signature);
 }
 
-void Account::signExecutionAction(iotex::ResponseTypes::ActionCore_Execution& execution,
+void Account::signExecutionAction(iotex::responsetypes::ActionCore_Execution& execution,
 								  uint8_t signature[IOTEX_SIGNATURE_SIZE],
 								  uint8_t hash[IOTEX_HASH_SIZE])
 {

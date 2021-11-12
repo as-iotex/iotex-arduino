@@ -100,7 +100,7 @@ class Account
 	 * @param transfer The transfer object
 	 * @param[out] signature The transfer signature as a byte array
 	 */
-	void signTokenTransferAction(iotex::ResponseTypes::ActionCore_Transfer& transfer,
+	void signTokenTransferAction(iotex::responsetypes::ActionCore_Transfer& transfer,
 								 uint8_t signature[IOTEX_SIGNATURE_SIZE]);
 
 	/**
@@ -110,7 +110,7 @@ class Account
 	 * @param signature The execution signature as a byte array
 	 * @param[out] hash Optional. The execution hash as a byte array
 	 */
-	void signExecutionAction(iotex::ResponseTypes::ActionCore_Execution& execution,
+	void signExecutionAction(iotex::responsetypes::ActionCore_Execution& execution,
 							 uint8_t signature[IOTEX_SIGNATURE_SIZE],
 							 uint8_t hash[IOTEX_HASH_SIZE] = nullptr);
 
@@ -136,7 +136,7 @@ class Account
 									   const char* gasPrice, const char* amount,
 									   const char* recipient, uint8_t hash[IOTEX_HASH_SIZE])
 	{
-		ResponseTypes::ActionCore_Transfer core;
+		responsetypes::ActionCore_Transfer core;
 		core.version = 1;
 		core.gasLimit = gasLimit;
 		core.nonce = nonce;
@@ -173,7 +173,7 @@ class Account
 								   const char contract[IOTEX_ADDRESS_C_STRING_SIZE],
 								   IotexString data, uint8_t hash[IOTEX_HASH_SIZE])
 	{
-		ResponseTypes::ActionCore_Execution core;
+		responsetypes::ActionCore_Execution core;
 		core.version = 1;
 		core.gasLimit = gasLimit;
 		core.nonce = nonce;

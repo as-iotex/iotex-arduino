@@ -31,7 +31,7 @@ class IWallets : public Base
 	 * @return ResultCode Success or an error code
 	 */
 	virtual ResultCode getAccount(const char* const address,
-								  ResponseTypes::AccountMeta& metadata) = 0;
+								  responsetypes::AccountMeta& metadata) = 0;
 
 	/**
 	 * @brief Gets the account balance from the blockchain
@@ -51,7 +51,7 @@ class IWallets : public Base
 	 * @return ResultCode Success or an error code
 	 */
 	virtual ResultCode getTransactionByHash(const char* const hash,
-											ResponseTypes::ActionInfo_Transfer& actionInfo) = 0;
+											responsetypes::ActionInfo_Transfer& actionInfo) = 0;
 
 	/**
 	 * @brief Gets the action info for a execution action hash from the blockchain
@@ -61,7 +61,7 @@ class IWallets : public Base
 	 * @return ResultCode Success or an error code
 	 */
 	virtual ResultCode getExecutionByHash(const char* const hash,
-										  ResponseTypes::ActionInfo_Execution& actionInfo) = 0;
+										  responsetypes::ActionInfo_Execution& actionInfo) = 0;
 
 	/**
 	 * @brief Sends a token transfer action to the blockchain
@@ -75,7 +75,7 @@ class IWallets : public Base
 	 */
 	virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 										 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-										 const ResponseTypes::ActionCore_Transfer& transfer,
+										 const responsetypes::ActionCore_Transfer& transfer,
 										 uint8_t hash[IOTEX_HASH_SIZE]) = 0;
 
 	/**
@@ -90,7 +90,7 @@ class IWallets : public Base
 	 */
 	virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 									 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-									 const ResponseTypes::ActionCore_Execution& transfer,
+									 const responsetypes::ActionCore_Execution& transfer,
 									 uint8_t hash[IOTEX_HASH_SIZE]) = 0;
 
   protected:
@@ -111,24 +111,24 @@ class Wallets : public IWallets
 	}
 
 	virtual ResultCode getAccount(const char* const address,
-								  ResponseTypes::AccountMeta& data) override;
+								  responsetypes::AccountMeta& data) override;
 
 	virtual ResultCode getBalance(const char* const address, IotexString& balance) override;
 
 	virtual ResultCode getTransactionByHash(const char* const address,
-											ResponseTypes::ActionInfo_Transfer& action) override;
+											responsetypes::ActionInfo_Transfer& action) override;
 
 	virtual ResultCode getExecutionByHash(const char* const address,
-										  ResponseTypes::ActionInfo_Execution& action) override;
+										  responsetypes::ActionInfo_Execution& action) override;
 
 	virtual ResultCode sendTokenTransfer(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 										 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-										 const ResponseTypes::ActionCore_Transfer& transfer,
+										 const responsetypes::ActionCore_Transfer& transfer,
 										 uint8_t hash[IOTEX_HASH_SIZE]) override;
 
 	virtual ResultCode sendExecution(const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 									 const uint8_t signature[IOTEX_SIGNATURE_SIZE],
-									 const ResponseTypes::ActionCore_Execution& transfer,
+									 const responsetypes::ActionCore_Execution& transfer,
 									 uint8_t hash[IOTEX_HASH_SIZE]) override;
 }; // class Wallets : public IWallets
 

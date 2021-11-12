@@ -55,7 +55,7 @@ RpcCallData Wallets::getActionByHash(Host& host, const IotexString hash, bool ch
 }
 
 RpcCallData Wallets::sendTokenTransfer(Host& host,
-									   const ResponseTypes::ActionCore_Transfer transfer,
+									   const responsetypes::ActionCore_Transfer transfer,
 									   const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 									   const uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {
@@ -108,7 +108,7 @@ RpcCallData Wallets::sendTokenTransfer(Host& host,
 	return ret;
 }
 
-RpcCallData Wallets::sendExecution(Host& host, const ResponseTypes::ActionCore_Execution execution,
+RpcCallData Wallets::sendExecution(Host& host, const responsetypes::ActionCore_Execution execution,
 								   const uint8_t senderPubKey[IOTEX_PUBLIC_KEY_SIZE],
 								   const uint8_t signature[IOTEX_SIGNATURE_SIZE])
 {

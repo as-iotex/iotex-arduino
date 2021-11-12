@@ -143,7 +143,7 @@ ResultCode Encoder::base64_encode(const uint8_t* data, size_t size, char* out)
 	return ResultCode::SUCCESS;
 }
 
-int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& transfer, uint8_t* out,
+int32_t Encoder::protobuf_encodeTransfer(responsetypes::ActionCore_Transfer& transfer, uint8_t* out,
 										 size_t maxOutSize)
 {
 	ActionCore pbCore;
@@ -169,7 +169,7 @@ int32_t Encoder::protobuf_encodeTransfer(ResponseTypes::ActionCore_Transfer& tra
 	return stream.bytes_written;
 }
 
-int32_t Encoder::protobuf_encodeExecution(ResponseTypes::ActionCore_Execution& execution,
+int32_t Encoder::protobuf_encodeExecution(responsetypes::ActionCore_Execution& execution,
 										  uint8_t* out, size_t maxOutSize)
 {
 	ActionCore pbCore;

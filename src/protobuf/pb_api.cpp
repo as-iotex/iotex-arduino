@@ -2,7 +2,7 @@
 #include "extern/cjson/cJSON.h"
 
 using namespace iotex;
-using namespace iotex::ResponseTypes;
+using namespace iotex::responsetypes;
 using namespace iotex::api;
 using namespace iotex::reflection;
 

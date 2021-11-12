@@ -22,7 +22,7 @@ namespace iotex
  * c structs that might support reflection and JSON
  * serialization/deserialization
  */
-namespace ResponseTypes
+namespace responsetypes
 {
 ////////////////////////////////////////////////////////////////////////////////
 // PROTOBUF OBJECTS
