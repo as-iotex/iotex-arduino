@@ -45,47 +45,77 @@
 #endif
 
 /**************************************************************************/
+/* Remove log statements from compiled binary if IOTEX_ENABLE_LOG not defined */
+/**************************************************************************/
+
+#ifndef IOTEX_ENABLE_LOG
+	#define IOTEX_DEBUG(module, ...)
+	#define IOTEX_INFO(module, ...) 
+	#define IOTEX_WARNING(module, ...) 
+	#define IOTEX_TRACE(module, ...) 
+	#define IOTEX_ERROR(module, ...)
+	#define IOTEX_DEBUG_F(module, ...)
+	#define IOTEX_INFO_F(module, ...) 
+	#define IOTEX_WARNING_F(module, ...) 
+	#define IOTEX_TRACE_F(module, ...) 
+	#define IOTEX_ERROR_F(module, ...)
+	#define IOTEX_DEBUG_BUF(module, ...)
+	#define IOTEX_INFO_BUF(module, ...) 
+	#define IOTEX_WARNING_BUF(module, ...) 
+	#define IOTEX_TRACE_BUF(module, ...) 
+	#define IOTEX_ERROR_BUF(module, ...)
+#endif
+
+/**************************************************************************/
 /* Helper macros for logging a message with different levels */
 /**************************************************************************/
-#define IOTEX_DEBUG(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::DEBUG, module, __VA_ARGS__)
-#define IOTEX_INFO(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::INFO, module, __VA_ARGS__)
-#define IOTEX_WARNING(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::WARNING, module, __VA_ARGS__)
-#define IOTEX_TRACE(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::TRACE, module, __VA_ARGS__)
-#define IOTEX_ERROR(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::ERROR, module, __VA_ARGS__)
+
+#ifdef IOTEX_ENABLE_LOG
+	#define IOTEX_DEBUG(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::DEBUG, module, __VA_ARGS__)
+	#define IOTEX_INFO(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::INFO, module, __VA_ARGS__)
+	#define IOTEX_WARNING(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::WARNING, module, __VA_ARGS__)
+	#define IOTEX_TRACE(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::TRACE, module, __VA_ARGS__)
+	#define IOTEX_ERROR(module, ...) IotexHelpers.logger.LOG_MSG(cpplogger::LogLevel::ERROR, module, __VA_ARGS__)
+#endif
 
 /**************************************************************************/
 /* Helper macros for logging a hex dump of a buffer with different levels */
 /**************************************************************************/
 
-#define IOTEX_DEBUG_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::DEBUG, module, buf, size)
-#define IOTEX_INFO_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::INFO, module, buf, size)
-#define IOTEX_WARNING_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::WARNING, module, buf, size)
-#define IOTEX_TRACE_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::TRACE, module, buf, size)
-#define IOTEX_ERROR_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::ERROR, module, buf, size)
+#ifdef IOTEX_ENABLE_LOG
+	#define IOTEX_DEBUG_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::DEBUG, module, buf, size)
+	#define IOTEX_INFO_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::INFO, module, buf, size)
+	#define IOTEX_WARNING_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::WARNING, module, buf, size)
+	#define IOTEX_TRACE_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::TRACE, module, buf, size)
+	#define IOTEX_ERROR_BUF(module, buf, size) IotexHelpers.logger.LOG_BUF(cpplogger::LogLevel::ERROR, module, buf, size)
+#endif
 
 /**************************************************************************/
 /* Helper macros for logging a flash string with different levels (for ESP) */
 /**************************************************************************/
 
-#if !defined(ESP8266) && !defined(ESP32)
-	#define IOTEX_FLASH_STRING_SUPPORT false
-#else
-	#define IOTEX_FLASH_STRING_SUPPORT true
+#ifdef IOTEX_ENABLE_LOG
+	#if !defined(ESP8266) && !defined(ESP32)
+		#define IOTEX_FLASH_STRING_SUPPORT false
+	#else
+		#define IOTEX_FLASH_STRING_SUPPORT true
+	#endif
+
+	#if !IOTEX_FLASH_STRING_SUPPORT
+		#define IOTEX_DEBUG_F(module, ...) IOTEX_DEBUG(module, __VA_ARGS__)
+		#define IOTEX_INFO_F(module, ...) IOTEX_INFO(module, __VA_ARGS__)
+		#define IOTEX_WARNING_F(module, ...) IOTEX_WARNING(module, __VA_ARGS__)
+		#define IOTEX_TRACE_F(module, ...) IOTEX_TRACE(module, __VA_ARGS__)
+		#define IOTEX_ERROR_F(module, ...) IOTEX_ERROR(module, __VA_ARGS__)
+	#else
+		#define IOTEX_DEBUG_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
+		#define IOTEX_INFO_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
+		#define IOTEX_WARNING_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
+		#define IOTEX_TRACE_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
+		#define IOTEX_ERROR_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
+	#endif
 #endif
 
-#if !IOTEX_FLASH_STRING_SUPPORT
-	#define IOTEX_DEBUG_F(module, ...) IOTEX_DEBUG(module, __VA_ARGS__)
-	#define IOTEX_INFO_F(module, ...) IOTEX_INFO(module, __VA_ARGS__)
-	#define IOTEX_WARNING_F(module, ...) IOTEX_WARNING(module, __VA_ARGS__)
-	#define IOTEX_TRACE_F(module, ...) IOTEX_TRACE(module, __VA_ARGS__)
-	#define IOTEX_ERROR_F(module, ...) IOTEX_ERROR(module, __VA_ARGS__)
-#else
-	#define IOTEX_DEBUG_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
-	#define IOTEX_INFO_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
-	#define IOTEX_WARNING_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
-	#define IOTEX_TRACE_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
-	#define IOTEX_ERROR_F(module, msg) IotexHelpers.logger.LOG_PROGMEM_STRING(cpplogger::LogLevel::DEBUG, module, msg)
-#endif
 // clang-format on
 
 namespace iotex
