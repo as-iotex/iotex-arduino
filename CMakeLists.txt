@@ -1,14 +1,10 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
-project(iotex-antenna-arduino)
-
-set(PROJECT_VERSION_MAJOR 0)
-set(PROJECT_VERSION_MINOR 1)
-set(PROJECT_VERSION_PATCH 0)
+project(iotex-client)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(iotex-antenna-arduino STATIC
+add_library(iotex-client STATIC
     # Extern
         # JSON
         src/extern/cjson/cJSON.c
@@ -72,7 +68,7 @@ add_library(iotex-antenna-arduino STATIC
         src/contract/xrc20Contract.cpp
 )
 
-target_include_directories(iotex-antenna-arduino 
+target_include_directories(iotex-client 
     # Iotex-arduino
     PUBLIC src
     
@@ -84,14 +80,29 @@ target_include_directories(iotex-antenna-arduino
     PUBLIC src/extern  
 )
 
-target_compile_definitions(iotex-antenna-arduino
+target_compile_definitions(iotex-client
     PUBLIC OS
-    PUBLIC _DEBUG_HTTP_
-    # PUBLIC ARDUINO
 )
 
-target_link_libraries(iotex-antenna-arduino
+target_link_libraries(iotex-client
     PRIVATE curl
 )
 
-add_subdirectory(tests)
+# ------------------------------------------------------------------------------
+# Conditiotionally build unit tests
+#
+# Disabled by default.
+#
+# Use `cmake -DUNIT_TEST=ON ..` to enable unit test build
+# ------------------------------------------------------------------------------
+
+option(UNIT_TEST "Unit tests disabled by default" OFF)
+
+if(UNIT_TEST)
+    add_subdirectory(tests)
+endif()
+
+SET(LOG_LEVEL "IOTEX_LOG_LEVEL_NONE" CACHE STRING "The level for debug logs. Disabled by default")
+target_compile_definitions(iotex-client
+    PUBLIC IOTEX_LOG_LEVEL=IOTEX_LOG_LEVEL_${LOG_LEVEL}
+)

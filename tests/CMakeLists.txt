@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 
 project(
-    iotex-antenna-arduino-tests
+    iotex-client-tests
     VERSION 1.0
     LANGUAGES CXX)
   
@@ -65,7 +65,7 @@ target_link_libraries(iotex_unit_tests
     PRIVATE gtest_main
     PRIVATE gmock
     PRIVATE curl
-    PUBLIC iotex-antenna-arduino
+    PUBLIC iotex-client
 )
 
 add_test(
