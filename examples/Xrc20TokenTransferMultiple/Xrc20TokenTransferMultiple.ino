@@ -111,9 +111,7 @@ void loop() {
         Serial.println();
     }
 
-    Serial.println("Program finished");
-    while(true)
-    {
-        delay(1000);
-    }
+    Serial.println("Progrm finished");
+    
+    delay(5000);
 }
