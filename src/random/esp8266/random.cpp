@@ -11,7 +11,7 @@ void Random::fillRandom(uint8_t* buf, size_t size)
 {
 	for(int i = 0; i < size; i++)
 	{
-		// buf[i] = rand();
+		buf[i] = ESP8266TrueRandom.random(1,255);
 	}
 }
 
