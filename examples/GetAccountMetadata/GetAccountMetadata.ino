@@ -16,14 +16,14 @@
 #include "secrets.h"
 #include "IoTeXClient.h"
 
-const char tIp[] = "gateway.iotexlab.io";
-const char tBaseUrl[] = "iotexapi.APIService";
-const int tPort = 10000;
+const char ip[] = "gateway.iotexlab.io";
+const char baseUrl[] = "iotexapi.APIService";
+const int port = 10000;
 const char wifiSsid[] = SECRET_WIFI_SSID;
 const char wifiPass[] = SECRET_WIFI_PASS;
 
 // Create the IoTeX client connection
-Connection<Api> connection(tIp, tPort, tBaseUrl);
+Connection<Api> connection(ip, port, baseUrl);
 
 void initWiFi() 
 {
@@ -47,18 +47,24 @@ void setup() {
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
 
+    // Connect to the wifi network
     initWiFi();
+}
 
+void loop() {
+    // The wallet address
     const char accountStr[] = "io1xkx7y9ygsa3dlmvzzyvv8zm6hd6rmskh4dawyu";
-    iotex::ResponseTypes::AccountMeta accountMeta;
-    iotex::ResultCode result = connection.api.wallets.getAccount(accountStr, accountMeta);
+
+    // Query the account metadata
+    AccountMeta accountMeta;
+    ResultCode result = connection.api.wallets.getAccount(accountStr, accountMeta);
     
     // Print the result
     Serial.print("Result : ");
     Serial.print(IotexHelpers.GetResultString(result));
 
     // If the query suceeded, print the account metadata
-    if (result == iotex::ResultCode::SUCCESS)
+    if (result == ResultCode::SUCCESS)
     {
         Serial.print("Balance:");
         Serial.println(accountMeta.balance);
@@ -70,8 +76,11 @@ void setup() {
         Serial.println(accountMeta.numActions.c_str());
         Serial.println(F("IsContract: "));
         Serial.println(accountMeta.isContract ? "\"true\"" : "\"false\"");
-    } 
-}
+    }
 
-void loop() {
+    Serial.println("Program finished");
+    while (true)
+    {
+        delay(1000);
+    }
 }

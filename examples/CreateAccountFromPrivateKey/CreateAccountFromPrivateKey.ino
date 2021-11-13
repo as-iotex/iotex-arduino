@@ -22,7 +22,9 @@ void setup() {
     #if defined(__SAMD21G18A__)
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
+}
 
+void loop() {
     // Private key of the origin address
     const char pkString[] = SECRET_PRIVATE_KEY;
     
@@ -31,7 +33,7 @@ void setup() {
     signer.str2hex(pkString, pkBytes, IOTEX_SIGNATURE_SIZE);
 
     // Create the account 
-    iotex::Account account(pkBytes);
+    Account account(pkBytes);
 
     // Create buffers for the account details
     char publicKeyBuf[IOTEX_PUBLIC_KEY_C_STRING_SIZE] = {0};
@@ -46,7 +48,7 @@ void setup() {
     account.getIotexAddress(ioAddressBuf);
     
     // Print the account details
-    Serial.println(F("Account created:"));
+    Serial.println("Account created:");
     Serial.print("Private key: ");
     Serial.print(privateKeyBuf);
     Serial.print("Public key: ");
@@ -55,8 +57,9 @@ void setup() {
     Serial.print(ioAddressBuf);
     Serial.print("Ethereum address: ");
     Serial.print(ethAddressBuf);
-}
 
-void loop() {
-    delay(1000);
+    while (true)
+    {
+        delay(1000);
+    }
 }

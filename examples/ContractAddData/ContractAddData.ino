@@ -13,18 +13,18 @@
 #endif
 
 #include <map>
-#include "secrets.h"
 #include "IoTeXClient.h"
+#include "secrets.h"
 #include "addDataAbi.h"
 
-constexpr const char tIp[] = "gateway.iotexlab.io";
-constexpr const char tBaseUrl[] = "iotexapi.APIService";
-constexpr const int tPort = 10000;
+constexpr const char ip[] = "gateway.iotexlab.io";
+constexpr const char baseUrl[] = "iotexapi.APIService";
+constexpr const int port = 10000;
 constexpr const char wifiSsid[] = SECRET_WIFI_SSID;
 constexpr const char wifiPass[] = SECRET_WIFI_PASS;
 
 // Create the IoTeX client connection
-Connection<Api> connection(tIp, tPort, tBaseUrl);
+Connection<Api> connection(ip, port, baseUrl);
 
 void initWiFi() 
 {
@@ -48,14 +48,11 @@ void setup() {
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
 
+    // Connect to the wifi network
     initWiFi();
-
-    IotexHelpers.setModuleLogLevel(generalLogModule, IotexLogLevel::INFO);
 }
 
 void loop() {
-    // VITA token address
-    const char tokenAddress[] = "io1hp6y4eqr90j7tmul4w2wa8pm7wx462hq0mg4tw";
     // Private key of the origin address
     const char pK[] = SECRET_PRIVATE_KEY;
     // Contract address
@@ -72,9 +69,9 @@ void loop() {
     signer.str2hex(pK, pk, IOTEX_SIGNATURE_SIZE);
 
     // Create the account 
-    iotex::Account originAccount(pk);
-    iotex::ResponseTypes::AccountMeta accMeta;
-    char originIotexAddr[IOTEX_ADDRESS_STRLEN+1] = {0};
+    Account originAccount(pk);
+    AccountMeta accMeta;
+    char originIotexAddr[IOTEX_ADDRESS_C_STRING_SIZE] = "";
 
     // Get the account nonce
     originAccount.getIotexAddress(originIotexAddr);
@@ -82,18 +79,18 @@ void loop() {
     if (result != ResultCode::SUCCESS)
     {
         Serial.print("Error getting account meta: ");
-        printResult(result);
+        Serial.print(IotexHelpers.GetResultString(result));
     }
     int nonce = atoi(accMeta.pendingNonce.c_str());
 
     // Contruct the action
-    // Create Parameters
+    // Create the parameters
     ParameterValue paramImei = MakeParamString(imei);
     ParameterValue paramData = MakeParamBytes(data, sizeof(data), true);
     ParameterValue paramSig = MakeParamBytes(signature, sizeof(signature), true);
 
     // Create parameter values dictionary
-    iotex::ParameterValuesDictionary params;
+    ParameterValuesDictionary params;
     params.AddParameter("imei", paramImei);
     params.AddParameter("data", paramData);
     params.AddParameter("signature", paramSig);
@@ -109,14 +106,20 @@ void loop() {
     Serial.println(callData);
 
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
-    iotex::ResultCode result = originAccount.sendExecutionAction(connection, nonce, 20000000, "1000000000000", "0", contractAddress, callData, hash);
+    result = originAccount.sendExecutionAction(connection, nonce, 20000000, "1000000000000", "0", contractAddress, callData, hash);
 
     Serial.print("Result : ");
     Serial.print(IotexHelpers.GetResultString(result));
-    if (result == iotex::ResultCode::SUCCESS)
+    if (result == ResultCode::SUCCESS)
     {
         Serial.print("Hash: ");
-        IOTEX_INFO_BUF(generalLogModule, hash, IOTEX_HASH_SIZE);
+        for (int i=0; i<IOTEX_HASH_SIZE; i++)
+        {
+            char buf[3] = "";
+            sprintf(buf, "%02x", hash[i]);
+            Serial.print(buf);
+        }
+        Serial.println();
     }
 
     Serial.println("Program finished");

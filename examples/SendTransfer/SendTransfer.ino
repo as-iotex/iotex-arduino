@@ -52,56 +52,45 @@ void setup() {
 }
 
 void loop() {
-    // The VITA token address
-    // This can be replaced by the address of any other XRC20 token
-    const char tokenAddress[] = "io1hp6y4eqr90j7tmul4w2wa8pm7wx462hq0mg4tw";
-
     // Private key of the origin address
     const char pkString[] = SECRET_PRIVATE_KEY;
 
-    // Destination address for the transfer (Ethereum address)
-    String destAddrString = "0x5840bf8e5d3f5b66EE52B9b933bDAC9682E386D0";
+    // Recipient IoTeX address
+    char destinationAddr[IOTEX_ADDRESS_C_STRING_SIZE] = "destination-address";
+    
+    // Amount of RAU to transfer
+    char amount[IOTEX_ADDRESS_C_STRING_SIZE] = "1";
 
-    // Amount to transfer
-    uint64_t value = 1000000000000000000;
-
-    // Convert the privte key and address hex strings to byte arrays
+    // Convert the private key and address hex strings to byte arrays
     uint8_t pkBytes[IOTEX_PRIVATE_KEY_SIZE];
     signer.str2hex(pkString, pkBytes, IOTEX_SIGNATURE_SIZE);
 
-    // Convert destination address string to byte array
-    uint8_t destAddrBytes[ETH_ADDRESS_SIZE];
-    signer.str2hex(destAddrString.c_str(), destAddrBytes, ETH_ADDRESS_SIZE);
-
-    // Generate the contract data
-    uint8_t data[IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE] = {0};
-    Xrc20Contract::generateCallDataForTransfer(destAddrBytes, value, data);
-    char callData[IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE * 2 + 1] = {0};
-    signer.hex2str(data, IOTEX_CONTRACT_ENCODED_TRANSFER_SIZE, callData, sizeof(callData));
-
-    // Print the call data
-    Serial.print("Calling contract with data: 0x");
-    Serial.println(callData);
-
-    // Create the account and get the nonce
+    // Create the account object
     Account originAccount(pkBytes);
-    AccountMeta accMeta;
-    char originIotexAddr[IOTEX_ADDRESS_STRLEN] = {0};
+    
+    // Get the IoTeX address
+    char originIotexAddr[IOTEX_ADDRESS_C_STRING_SIZE] = "";
     originAccount.getIotexAddress(originIotexAddr);
-    connection.api.wallets.getAccount(originIotexAddr, accMeta);
 
-    // Send the token transfer execution action
+    // Get the account nonce
+    AccountMeta accMeta;
+    ResultCode result = connection.api.wallets.getAccount(originIotexAddr, accMeta);
+    IotexString nonceString = accMeta.pendingNonce;
+    uint64_t nonce = atoi(nonceString.c_str());
+    if (result != ResultCode::SUCCESS)
+    {
+        Serial.print("Error getting account nonce: ");
+        Serial.println(IotexHelpers.GetResultString(result));
+    }
+
+    // Send the transfer 
     uint8_t hash[IOTEX_HASH_SIZE] = {0};
-    ResultCode result = originAccount.sendExecutionAction(connection, atoi(accMeta.pendingNonce.c_str()), 20000000, "1000000000000", "0", tokenAddress, callData, hash);
+    result = originAccount.sendTokenTransferAction(connection, nonce, 20000000, "1000000000000", amount, destinationAddr, hash);
 
-    // Print the result
-    Serial.print("Result : ");
-    Serial.print(IotexHelpers.GetResultString(result));
-
-    // Print the hash if sucessful
+    // Print the result and the hash if successful
     if (result == ResultCode::SUCCESS)
     {
-        Serial.print("Hash: ");
+        Serial.print("Transfer sent. Hash: ");
         for (int i=0; i<IOTEX_HASH_SIZE; i++)
         {
             char buf[3] = "";
@@ -110,8 +99,13 @@ void loop() {
         }
         Serial.println();
     }
+    else
+    {
+        Serial.print("Error sending transfer: ");
+        Serial.println(IotexHelpers.GetResultString(result));
+    }
 
-    Serial.println("Progrm finished");
+    Serial.println("Program finished");
     while(true)
     {
         delay(1000);

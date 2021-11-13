@@ -16,14 +16,14 @@
 #include "secrets.h"
 #include "IoTeXClient.h"
 
-constexpr const char tIp[] = "gateway.iotexlab.io";
-constexpr const char tBaseUrl[] = "iotexapi.APIService";
-constexpr const int tPort = 10000;
+constexpr const char ip[] = "gateway.iotexlab.io";
+constexpr const char baseUrl[] = "iotexapi.APIService";
+constexpr const int port = 10000;
 constexpr const char wifiSsid[] = SECRET_WIFI_SSID;
 constexpr const char wifiPass[] = SECRET_WIFI_PASS;
 
 // Create the IoTeX client connection
-Connection<Api> connection(tIp, tPort, tBaseUrl);
+Connection<Api> connection(ip, port, baseUrl);
 
 void initWiFi() 
 {
@@ -47,18 +47,24 @@ void setup() {
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
 
+    // Connect to the wifi network
     initWiFi();
+}
 
-    IotexHelpers.setModuleLogLevel(generalLogModule, IotexLogLevel::INFO);
-
+void loop() {
+    // The execution action hash
     const char hash[] = "d5bd3e283ab0f8df2fcea0ae29c971924d8c2a4e5991a1dd25dc446cdcaf707d";
-    iotex::ResponseTypes::ActionInfo_Execution data;
-    iotex::ResultCode result = connection.api.wallets.getExecutionByHash(hash, data);
+
+    // Query the action data 
+    ActionInfo_Execution data;
+    ResultCode result = connection.api.wallets.getExecutionByHash(hash, data);
     
-    // Print the action data
+    // Print the result
     Serial.print("Result : ");
-    printResult(result);
-    if (result == iotex::ResultCode::SUCCESS)
+    Serial.print(IotexHelpers.GetResultString(result));
+
+    // Print the data if successful
+    if (result == ResultCode::SUCCESS)
     {
         Serial.print("Sender public key: ");
         Serial.println(data.action.senderPublicKey);
@@ -77,7 +83,10 @@ void setup() {
         Serial.print("Data: ");
         Serial.println(data.action.core.execution.data);
     }
-}
 
-void loop() {
+    Serial.println("Program finished");
+    while (true)
+    {
+        delay(1000);
+    }
 }

@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "IoTeXClient.h"
 
 #ifdef ESP32
     #include <WiFi.h>
@@ -13,19 +12,19 @@
     #include <WiFiNINA.h>
 #endif
 
+#include "IoTeXClient.h"
 #include <map>
 #include "commands.h"
 #include "secrets.h"
 
-
-constexpr const char tIp[] = "gateway.iotexlab.io";
-constexpr const char tBaseUrl[] = "iotexapi.APIService";
-constexpr const int tPort = 10000;
+constexpr const char ip[] = "gateway.iotexlab.io";
+constexpr const char baseUrl[] = "iotexapi.APIService";
+constexpr const int port = 10000;
 constexpr const char wifiSsid[] = SECRET_WIFI_SSID;
 constexpr const char wifiPass[] = SECRET_WIFI_PASS;
 
 // Create a connection
-Connection<Api> connection(tIp, tPort, tBaseUrl);
+Connection<Api> connection(ip, port, baseUrl);
 
 void initWiFi() 
 {
@@ -51,7 +50,7 @@ void showMenu()
     }
     String input = readLineFromSerial();
     int cmdIndex = input.toInt();
-    if (cmdIndex == 0 || cmdIndex > 10) // TODO max command index
+    if (cmdIndex == 0 || cmdIndex > 10)
     {
         Serial.println("Unrecognized command" + input);
     }
@@ -68,13 +67,14 @@ void setup() {
     delay(5000);    // Delay for 5000 seconds to allow a serial connection to be established
     #endif
 
+    // Connect to the wifi
     initWiFi();
 
+    // Initialize the command set
     initMenu();
-
-    IotexHelpers.setModuleLogLevel(generalLogModule, IotexLogLevel::INFO);
 }
 
 void loop() {
+    // Display the menu and wait for the user to select the command
     showMenu();
 }
