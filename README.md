@@ -1,3 +1,5 @@
+>:warning: Development of this project has been moved to [github.com/trezor/trezor-firmware](https://github.com/iotexproject/arduino-sdk)
+
 # IoTeX-Client
 
 A simple C++ API client implementation in for the IoTeX Blockchain
