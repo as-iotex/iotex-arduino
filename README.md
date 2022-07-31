@@ -1,4 +1,4 @@
->:warning: Development of this project has been moved to [github.com/trezor/trezor-firmware](https://github.com/iotexproject/arduino-sdk)
+>:warning: Development of this project has been moved to the [official IoTeX repository](https://github.com/iotexproject/arduino-sdk)
 
 # IoTeX-Client
 
